@@ -20,12 +20,14 @@ cpu:
 		[31:0] raw_mem [SIZE-1:0]: Instruction memory from a text file.  This should be an array of 32 bit regs
 	if_id: IF/ID state register
 		input [31:0] nxt_pc: next sequential instruction address
+		input [3:0] top4: top 4 bits of nxt_pc. From pc_adder
 		input [31:0] inst_in: Instruction input from inst_mem.inst_out
 		output [31:0] inst_out: Forward inst_in to id_ex, control_unit
 		output [25:21] rs: sliced from inst_in, sent to rfile.r_addr1, id_ex
 		output [20:16] rt: sliced from inst_in, sent to rfile.r_addr2, id_ex
 		output [15:0] imm: sliced from inst_in, sent to sign_extender
 		output [15:11] rd: sliced from inst_in, sent to id_ex
+		ouput [3:0] top4_out: top 4 bits of nxt_pc.  to id_ex
 	sign_extender: sign extend immediate value.
 		input [15:0] imm_in: from if_id state register
 		output [31:0] imm_out: sign extended imm_in to 32 bits.  send to id_ex.
@@ -44,31 +46,72 @@ cpu:
 	hazard_unit: TODO
 	id_ex: ID/EX state register
 		inputs TODO ctrl signals
+		input [3:0] top4_in: top 4 bits of pc_nxt. From if_id
 		input [31:0] r_data1: rs data read from regs[r_addr1]
 		input [31:0] r_data2: rt data read from regs[r_addr2]
-		input [5:0] rs: received from if_id
-		input [5:0] rt: received from if_id
-		input [5:0] rd: received from if_id
+		input [4:0] rs: received from if_id
+		input [4:0] rt: received from if_id
+		input [4:0] rd: received from if_id
 		input [31:0] imm: sign extended immediate value
 		output [31:0] r_data1_out: r_data_1 passthrough. sent to alu_mux_a
 		output [31:0] r_data2_out: r_data_2 passthrough.  to alu_mux_b
 		output [31:0] imm_out: imm passthrough.  to alu_mux_imm, shift_unit
-		output [5:0] rs_out: sent to fwd_unit
-		output [5:0] rt_out: sent to fwd_unit, ex_mux
-		output [5:0] rd_out: sent to ex_mux
+		output [4:0] rs_out: sent to fwd_unit
+		output [4:0] rt_out: sent to fwd_unit, ex_mux
+		output [4:0] rd_out: sent to ex_mux
+		output [3:0] top4_out: top 4 bits of pc_nxt. to jmp_adder
 	alu_mux_a:
+		input [1:0] forward_a: two bit input selector from fwd_unit
+		input [31:0] r_data1: rs data received from id_ex
+		input [31:0] mem_rd: rd from the previous cycle, received from ex_mem
+		input [31:0] wb_rd: rd from two cycles ago, received from wb_mux
+		output [31:0] op1_out: Output for Rs/Op1.  Sent to ALU 
 	alu_mux_b:
+		input [1:0] forward_b: two bit input selector from fwd_unit
+		input [31:0] r_data2: rt data received from id_ex
+		input [31:0] mem_rd: rd from the previous cycle, received from ex_mem
+		input [31:0] wb_rd: rd from two cycles ago, received from wb_mux
+		output [31:0] rt_out: Output for Rt.  Sent to alu_mux_imm, ex_mem
 	alu_mux_imm:
+		input alu_src: one bit input from ctrl_unit
+		input [31:0] rt_in: Rt data from alu_mux_b
+		input [31:0] imm_in: immediate data from sign_extender
+		ouput [31:0] op2_out: Output for Rt/Op2.  Sent to ALU
 	alu: The main ALU
 		input [31:0] op_1: a 32 bit operand.  from alu_mux_1
 		input [31:0] op_2: a 32 bit operand.  from alu_mux_imm
 		input [3:0] alu_op: The 4-bit ALU op code.  See  OpCode table.
 		ouput [31:0] result: a 32 bit result of operation.  to ex_mem
+		ouput z: Zero flag.  to ex_mem
 	ex_mux: 
+		input reg_dst: 1 bit selector from ctrl_unti
+		input [4:0] rt_in: rt, sent from id_ex
+		input [4:0] rd_in: rd, sent from id_ex
+		output [4:0] dest: destination register address, sent to ex_mem
 	fwd_unit:
+		input [4:0] rt_in: current rt address. from id_ex
+		input [4:0] rs_in: current rs_address. from id_ex
+		input [4:0] mem_rd: address of previous rd.  from ex_mem
+		input [4:0] ex_rd: address of 2nd previous rd.  from mem_wb
+		input mem_reg_write: control signal.  from ex_mem
+		input wb_reg_write: control signal.  from mem_wb
+		output [1:0] forward_a: two bit input selector. to alu_mux_a
+		output [1:0] forward_b: two bit input selector. to alu_mux_b
 	shift_unit:
+		input [31:0] imm_in: 32 bit immediate.  from id_ex
+		output [31:0] imm_out: input value shifted left 2 bits
 	jmp_adder:
+		input [3:0] pc_in: Top 4 bits of PC+4.  from id_ex
+		input [31:0] imm_in: 32 bit immedate from shift_unit
+		output [31:0] addr_out: 32 bit jump address. to ex_mem
 	ex_mem:
+		inputs: TODO ctrl signals
+		input [31:0] jmp_addr: jump address.  from jmp_adder
+		input z_in: zero flag.  from alu.
+		input [31:0] result_in: result input. from ALU
+		input [31:0] rt_in: special rt input, for sw. from alu_mux_b
+		input [4:0] reg_dst: destination reg address. from ex_mux
+		output 
 	branch_unit:
 	data_mem:
 	mem_wb:
