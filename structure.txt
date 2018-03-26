@@ -1,31 +1,48 @@
 # MIPS 32 VERILOG SIMULATION
 
 cpu:
-	reg clock: this is the system clock
-	program_counter: This is a simple module that is always set by pc_mux:
+	reg clock: System Clock
+	program_counter: This is a simple module that is always set by pc_mux_a:
 		input clock: system clock
-		input [31:0] nxt_inst: next instruction address
-		output [31:0] cur_pc: next instruction address goes to inst_mem
-	pc_mux: Mux for program_counter input:
+		input [31:0] nxt_inst: next instruction address from pc_mux_b
+		output [31:0] cur_pc: next instruction address goes to inst_mem, pc_mux_c
+	pc_mux_a: 2:1 Mux for program_counter input:
 		input pc_src: which input to use.  From EX/MEM register or branch predictor
-		input [31:0] jmp_addr: a new PC value from the EX/MEM register
+		input [31:0] imm_jmp_addr: a new PC value from the EX/MEM register
 		input [31:0] nxt_pc: sequential next PC from pc_adder
-		output [31:0] nxt_inst: actual next instruction address to program_counter
+		output [31:0] nxt_inst: actual next instruction address to pc_mux_b
+	pc_mux_b: 2:1 Mux to avoid jump stalls
+		input jmp_ctrl: source signal.  from ctrl
+		input [31:0] nxt_inst_in: actual next instruction address
+		input [31:0] jmp_addr_in: jump address from id_shift_left
+		output [31:0] next_address.  to pc_mux_c
+	pc_mux_c: 2:1 mux for stalling.
+		input pc_write: 1 to stall, from hazard_unit.pc_write
+		input [31:0] cur_pc: current PC.  from program_counter
+		input zero: zero input for nop.
+		output [31:0] nxt_pc: to program_counter
 	pc_adder: Increments to next sequential instruction address:
-		input [31:0] cur_pc: current instruction address
-		output [31:0] nxt_pc: next sequential instruction address to pc_mux and if_id
+		input [31:0] cur_pc: current instruction address. from program_counter
+		output [31:0] nxt_pc: next sequential instruction address to pc_mux_a and if_id
 	inst_mem: Instruction Read unit and register:
 		input [31:0] inst_reg: address to read from, from nxt_inst.  this is probably an index of raw_mem array.
-		output [31:0] inst_out: instruction output to IF/ID state register
+		output [31:0] inst_out: instruction output to inst_mem_mux
 		[31:0] raw_mem [SIZE-1:0]: Instruction memory from a text file.  This should be an array of 32 bit regs
+	inst_mem_mux: Mux to support ID jumps by stalling
+		input jmp_ctrl: jump ctrl line from control unit
+		input [31:0] inst_in: Actual instruction from inst_mem
+		"input" [31:0]: This does not actually need to be external, value 0 for nop.
+		ouput [31:0] inst_out: next instruction out to if_id.
 	if_id: IF/ID state register
 		input [31:0] nxt_pc: next sequential instruction address
+		input [3:0] top4: top 4 bits of nxt_pc. From pc_adder
 		input [31:0] inst_in: Instruction input from inst_mem.inst_out
-		output [31:0] inst_out: Forward inst_in to id_ex, control_unit
-		output [25:21] rs: sliced from inst_in, sent to rfile.r_addr1
-		output [20:16] rt: sliced from inst_in, sent to rfile.r_addr2, id_ex
+		output [31:26] funct_out: Forward inst_in to id_ex, ctrl.funct_in
+		output [25:21] rs: sliced from inst_in, sent to rfile.r_addr1, id_ex, hazard_unit.if_id_rs
+		output [20:16] rt: sliced from inst_in, sent to rfile.r_addr2, id_ex, hazard_unit.if_id_rt
 		output [15:0] imm: sliced from inst_in, sent to sign_extender
 		output [15:11] rd: sliced from inst_in, sent to id_ex
+		output [3:0] top4_out: top 4 bits of nxt_pc.  to id_ex
 	sign_extender: sign extend immediate value.
 		input [15:0] imm_in: from if_id state register
 		output [31:0] imm_out: sign extended imm_in to 32 bits.  send to id_ex.
@@ -35,14 +52,151 @@ cpu:
 		input [4:0] r_addr2: read address of rt. from if_id
 		input [4:0] w_addr: write address of rd. from mem_wb
 		input [31:0] w_data: write data.  From write_mux
-		output [31:0] r_data1: data read from regs[r_addr1].  sent to id_ex
+		output [31:0] r_data1: rs data read from regs[r_addr1].  sent to id_ex
 		output [31:0] r_data2: data read from regs[r_addr2].  sent to id_ex
 		[31:0] regs [31:0]: an array of 32, 32-bit registers.
-	ctrl: Main control unit
-		inputs TODO
-		ouputs TODO
+	id_shift_left: early jump support shift target left 2, then concat with top4
+		input [31:28] top4: top 4 bits of PC.  from if_id
+		input [25:0] target: 26 bit immediate jump target.  from if_id
+		output [31:0] jaddr_out: jump address. to pc_mux_b 
+	ctrl: Main control unit. everything to ID_EX passes through a weird mux
+		input [5:0] funct_in: from if_id.funct_out
+		output jump: 1 for jump. to inst_mem_mux.jmp_ctrl, pc_mux_b.jmp_ctrl
+		output branch: activate branch unit, to id_ex.branch_in
+		output [?:0] alu_op: multi-bit alu op code.  see table. to id_ex.alu_op_in
+		output mem_read: activate read from memory, to id_ex.mem_read_in
+		output mem_to_reg: 0 for Alu result writeback, 1 for data writeback. to id_ex.mem_to_reg
+		output mem_write: activate to write to memory. to id_ex
+		output alu_src: 0 for register input, 1 for immediate. to id_ex.alu_src_in
+		output reg_write: activate to write to register.  to id_ex.reg_write_in
+		output reg_dst: 0 to write to Rt ([20:16]), 1 to write to Rd ([15:11]). to id_ex.reg_dst_in
+	ctrl_mux: The weird gate for implementing stalls
+		inputs: all the listed ctrl signals above.
+		input ex_stall_in: activate to stall.
+		outputs: all ctrl signals to id_ex.  0 if ex_stall_in activated.
+	hazard_unit: Hazard detection unit
+		input [4:0]: if_id_rs: current Rs, from if_id.rs
+		input [4:0]: if_id_rt: current Rt, from if_id.rt
+		input [4:0]: id_ex_rt: previous Rt, from id_ex.rt_out
+		input mem_read: previous mem_read ctrl signal. from id_ex.mem_read_out
+		output pc_write: activate to stall (nop). to pc_mux_c
+		output if_id_write: stall if_id stage by setting control signals to 0.
+		output ex_stall: Insert bubble into pipeline by setting ctrl signals to 0. to ctrl_mux
+	id_ex: ID/EX state register
+		input branch_in: activate branch unit, from ctrl.branch
+		input [?:0] alu_op_in: multi-bit alu op code. from ctrl.alu_op
+		input mem_read_in: activate read from memory, from ctrl.mem_read
+		input mem_to_reg_in: 0 for Alu result writeback, 1 for data writeback. from ctrl.mem_to_reg
+		input mem_write_in: activate to write to memory. from ctrl.mem_write
+		input alu_src_in: 0 for register input, 1 for immediate. from ctrl.alu_src
+		input reg_write_in: activate to write to a register. from ctrl.reg_write
+		input reg_dst_in: reg_dst ctrl signal. From ctrl.reg_dst
+		input [3:0] top4_in: top 4 bits of pc_nxt. From if_id
+		input [31:0] r_data1: rs data read from regs[r_addr1]
+		input [31:0] r_data2: rt data read from regs[r_addr2]
+		input [4:0] rs: received from if_id
+		input [4:0] rt: received from if_id
+		input [4:0] rd: received from if_id
+		input [31:0] imm: sign extended immediate value
+		output [31:0] r_data1_out: r_data_1 passthrough. sent to alu_mux_a
+		output [31:0] r_data2_out: r_data_2 passthrough.  to alu_mux_b
+		output [31:0] imm_out: imm passthrough.  to alu_mux_imm, shift_unit
+		output [4:0] rs_out: sent to fwd_unit
+		output [4:0] rt_out: sent to fwd_unit, ex_mux
+		output [4:0] rd_out: sent to ex_mux
+		output [3:0] top4_out: top 4 bits of pc_nxt. to jmp_adder
+		output branch_out: branch ctrl signal to ex_mem.branch_in
+		output [?:0] alu_op_out: ALU op code. To alu.alu_op
+		output mem_read_out: mem_read ctrl signal to ex_mem.mem_read_in
+		output mem_write_out: mem_write ctrl signal to ex_mem.mem_write_in
+		output alu_src_out: 0 for register input, 1 for immediate. To alu_mux_imm.alu_src
+		output reg_write_out: reg_write ctrl signal.  to ex_mem.reg_write_in
+		output reg_dst_out: reg_dst ctrl signal. to ex_mux.reg_dst
+	alu_mux_a: 3:1 Mux for forwarding results from 2 cycles ago
+		input [1:0] forward_a: two bit input selector from fwd_unit
+		input [31:0] r_data1: rs data received from id_ex
+		input [31:0] mem_rd: rd from the previous cycle, received from ex_mem
+		input [31:0] wb_rd: rd from two cycles ago, received from wb_mux
+		output [31:0] op1_out: Output for Rs/Op1.  Sent to ALU 
+	alu_mux_b: 3:1 Mux for forwarding results from 2 cycles ago
+		input [1:0] forward_b: two bit input selector from fwd_unit
+		input [31:0] r_data2: rt data received from id_ex
+		input [31:0] mem_rd: rd from the previous cycle, received from ex_mem
+		input [31:0] wb_rd: rd from two cycles ago, received from wb_mux
+		output [31:0] rt_out: Output for Rt.  Sent to alu_mux_imm, ex_mem
+	alu_mux_imm: 2:1 Mux to support immediate type instructions
+		input alu_src: one bit input from ctrl
+		input [31:0] rt_in: Rt data from alu_mux_b
+		input [31:0] imm_in: immediate data from sign_extender
+		ouput [31:0] op2_out: Output for Rt/Op2.  Sent to ALU
 	alu: The main ALU
 		input [31:0] op_1: a 32 bit operand.  from alu_mux_1
-		input [31:0] op_2: a 32 bit operand.  from alu_mux_2
-		input [3:0] alu_op: The ALU op code.  See table.
+		input [31:0] op_2: a 32 bit operand.  from alu_mux_imm
+		input [3:0] alu_op: The 4-bit ALU op code.  See  OpCode table.
+		ouput [31:0] result: a 32 bit result of operation.  to ex_mem
+		ouput z: Zero flag.  to ex_mem
+	ex_mux: 2:1 Mux to select write addres
+		input reg_dst: 1 bit selector from id_ex.reg_dst_out
+		input [4:0] rt_in: rt, sent from id_ex
+		input [4:0] rd_in: rd, sent from id_ex
+		output [4:0] dest: destination register address, sent to ex_mem
+	fwd_unit: Main forwarding unit, compares addresses.
+		input [4:0] rt_in: current rt address. from id_ex
+		input [4:0] rs_in: current rs_address. from id_ex
+		input [4:0] ex_rd: address of previous rd.  from ex_mem
+		input [4:0] mem_rd: address of 2nd previous rd.  from mem_wb
+		input mem_reg_write: control signal.  from ex_mem
+		input wb_reg_write: control signal.  from mem_wb
+		output [1:0] forward_a: two bit input selector. to alu_mux_a
+		output [1:0] forward_b: two bit input selector. to alu_mux_b
+	shift_unit: simple shifter.
+		input [31:0] imm_in: 32 bit immediate.  from id_ex
+		output [31:0] imm_out: input value shifted left 2 bits
+	branch_adder: calculate addresses for branches
+		input [3:0] pc_in: Top 4 bits of PC+4.  from id_ex
+		input [31:0] imm_in: 32 bit immedate from shift_unit
+		output [31:0] addr_out: 32 bit jump address. to ex_mem
+	ex_mem: Execution / Memory Pipeline register.
+		input branch_in: branch ctrl signal from id_ex.branch_out
+		input mem_read_in: mem_read ctrl signal. from id_ex.mem_read_out
+		input mem_write_in: mem_write ctrl signal. from id_ex.mem_write_out
+		input reg_write_in: reg_write ctrl signal. from id_ex.reg_write_out
+		input [31:0] jmp_addr: jump address.  from branch_adder.addr_out
+		input z_in: zero flag.  from alu.
+		input [31:0] result_in: result input. from ALU
+		input [31:0] rt_in: special rt input, for sw. from alu_mux_b
+		input [4:0] reg_dst: destination reg address. from ex_mux
+		output  [31:0] jmp_addr_out: jump address. to pc_mux_a
+		output z_out: zero flag. to branch_unit
+		output result_out: read ALU result output. to data_mem, mem_wb, alu_mux_a
+		output [31:0] rt_out: special rt output for sw. to data_mem.rt_in, fwd_unit.ex_rd
+		output branch_out: branch ctrl signal to branch_unit.branch_ctrl
+		output mem_read_out: mem_read ctrl signal to data_mem.read_ctrl
+		output mem_write_out: mem_write ctrl signal to data_mem.w_ctrl
+		output reg_write_out: reg_write ctrl signal to mem_wb.reg_write_in
+	branch_unit: Branching Unit
+		input branch_ctrl: Branch control signal.  from ex_mem
+		input z_in: zero flag.  From ex_mem.z_out
+		output pc_src: pc ctrl signal.  to pc_mux_a.pc_src
+	data_mem: Main Data Memory
+		input read_ctrl: read contrl. from ex_mem.mem_read_out
+		input w_ctrl: write control. from ex_mem.mem_write_out
+		input [31:0] mem_addr: read/write address.  from ex_mem
+		input [31:0] wdata: write data. from ex_mem.rt_out
+		output [31:0] rdata: read data. to mem_wb.rdata_in
+	mem_wb: Memory/Writeback pipeline register
+		input reg_write_in: activate to write to the regster on rt_in. from ex_mem.reg_write_out
+		input [31:0] rdata_in: read data.  from data_mem
+		input [31:0] result_in: ALU result. from ex_mem.result_out.
+		input [4:0] rt_in: destination register address.  from ex_mem.reg_dst
+		output [31:0] rdata_out: read data out. to wb_mux
+		output [31:0] result_out: ALU result. to wb_mux.reg_in
+		output [4:0] rt_out: rt_address. To rfile.w_addr, fwd_unit.mem_rd
+		output reg_write_out: reg_write ctrl signal.  to rfile.reg_write
+	wb_mux: Writeback Mux ALU Result / Memory data
+		input mem_to_reg: ctrl signal, from mem_wb.mem_to_reg 1 for memory, 0 for register.
+		input [31:0] rdata_in: Read data input. from mem_wb.rdata_out
+		input [31:0] result_in: result input. from mem_wb.result_out
+		output [31:0] wb_out: output to write to register file. to rfile.w_data
+
 		
