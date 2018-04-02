@@ -12,8 +12,8 @@ def shift_unit(imm_in, imm_out):
     """
     @always_comb
     def logic():
-        # NOT IMPLEMENTED
-        return logic
+        imm_out.next = imm_in << 2
+    return logic
 
 
 def shift_unit_v(imm_in, imm_out):
