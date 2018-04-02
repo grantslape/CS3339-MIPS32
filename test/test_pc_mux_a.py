@@ -1,4 +1,3 @@
-import os
 import unittest
 from random import randint
 from unittest import TestCase
@@ -7,140 +6,111 @@ import sys
 
 sys.path.append("src/python")
 from pc_mux_a import pc_mux_a, pc_mux_a_v
-#import settings as sf
+from settings import settings as sf
+
+HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
-# TODO: Inject period and default test length
-class TestPcMuxAPython(TestCase):
+class TestPcMuxAHoldValue(TestCase):
+
+    def setup(self):
+        pc_src = Signal(intbv(0)[1:])
+        nxt_pc = Signal(intbv(0x00000060)[32:])
+        nxt_inst = Signal(intbv(0x00000060)[32:])
+        imm_jmp_addr = Signal(intbv(0x00000faf)[32:])
+        return pc_src, nxt_pc, nxt_inst, imm_jmp_addr
+
+    def bench(self, pc_src, imm_jmp_addr, nxt_pc, nxt_inst):
+        for i in range(sf['DEFAULT_TEST_LENGTH']):
+            self.assertEqual(bin(pc_src ^ 0), bin(0))
+            self.assertEqual(bin(nxt_pc ^ 0x00000060), bin(0))
+            self.assertEqual(bin(nxt_inst ^ 0x00000060), bin(0))
+            self.assertEqual(bin(imm_jmp_addr ^ 0x00000faf), bin(0))
+            yield HALF_PERIOD
 
     def testHoldValuePython(self):
-        """ Check that module holds value when no input changes """
-        def test():
-            for i in range(10000):
-                # TODO: Use a logger for this
-                # print "pc_src: {0}, nxt_pc: {1}, imm_jmp_addr: {2}, nxt_inst: {3}".format(
-                #     bin(pc_src), bin(nxt_pc), bin(imm_jmp_addr), bin(nxt_inst))
-                self.assertEqual(bin(pc_src ^ 0), bin(0))
-                self.assertEqual(bin(nxt_pc ^ 0x00000060), bin(0))
-                self.assertEqual(bin(nxt_inst ^ 0x00000060), bin(0))
-                self.assertEqual(bin(imm_jmp_addr ^ 0x00000faf), bin(0))
-                yield delay(10 / 2)
+        """ Checking that module holds value when no input changes from Python """
 
-        pc_src = Signal(intbv(0)[1:])
-        nxt_pc = Signal(intbv(0x00000060)[32:])
-        nxt_inst = Signal(intbv(0x00000060)[32:])
-        imm_jmp_addr = Signal(intbv(0x00000faf)[32:])
-
+        pc_src, nxt_pc, nxt_inst, imm_jmp_addr = self.setup()
         dut = pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
-        stim = test()
+        stim = self.bench(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
+
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
-
-    def testCorrectOutputPython(self):
-        """ Check that next sequential PC address is outputted when pc_src is deasserted
-            and that the imm_jmp_addr value is outputted when pc_src is asserted."""
-        def test():
-            for i in range(10000):
-                pc_src.next = ~pc_src
-                nxt_pc.next = intbv(randint(0, 2**31))[32:]
-                imm_jmp_addr.next = intbv(randint(0, 2**31))[32:]
-                if pc_src == 1:
-                    nxt_inst.next = imm_jmp_addr
-                    self.assertEqual(bin(nxt_inst ^ imm_jmp_addr), bin(0))
-                else:
-                    nxt_inst.next = pc_src
-                    self.assertEqual(bin(nxt_inst ^ nxt_pc), bin(0))
-                yield delay(10 / 2)
-
-        pc_src = Signal(intbv(0)[1:])
-        nxt_pc, nxt_inst, imm_jmp_addr = [Signal(intbv(0)[32:]) for i in range(3)]
-        dut = pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
-        stim = test()
-        sim = Simulation(dut, stim)
-        sim.run(quiet=1)
-
-
-class TestPcMuxAVerilog(TestCase):
 
     def testHoldValueVerilog(self):
-        """ Check that module holds value when no input changes """
-        def test():
-                # TODO: Use a logger for this
-                # print "pc_src: {0}, nxt_pc: {1}, imm_jmp_addr: {2}, nxt_inst: {3}".format(
-                #     bin(pc_src), bin(nxt_pc), bin(imm_jmp_addr), bin(nxt_inst))
-                self.assertEqual(bin(pc_src ^ 0), bin(0))
-                self.assertEqual(bin(nxt_pc ^ 0x00000060), bin(0))
-                self.assertEqual(bin(nxt_inst ^ 0x00000060), bin(0))
-                self.assertEqual(bin(imm_jmp_addr ^ 0x00000faf), bin(0))
-                yield delay(10 / 2)
-
-        pc_src = Signal(intbv(0)[1:])
-        nxt_pc = Signal(intbv(0x00000060)[32:])
-        nxt_inst = Signal(intbv(0x00000060)[32:])
-        imm_jmp_addr = Signal(intbv(0x00000faf)[32:])
-
+        """ Checking that module holds value when no input changes from Verilog """
+        pc_src, nxt_pc, nxt_inst, imm_jmp_addr = self.setup()
         dut = pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
-        stim = test()
+        stim = self.bench(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
+
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
-
-    def testCorrectOutputVerilog(self):
-        """ Check that next sequential PC address is outputted when pc_src is deasserted
-            and that the imm_jmp_addr value is outputted when pc_src is asserted."""
-        def test():
-            for i in range(10000):
-                pc_src.next = ~pc_src
-                nxt_pc.next = intbv(randint(0, 2**31))[32:]
-                imm_jmp_addr.next = intbv(randint(0, 2**31))[32:]
-                if pc_src == 1:
-                    nxt_inst.next = imm_jmp_addr
-                    self.assertEqual(bin(nxt_inst ^ imm_jmp_addr), bin(0))
-                else:
-                    nxt_inst.next = pc_src
-                    self.assertEqual(bin(nxt_inst ^ nxt_pc), bin(0))
-                yield delay(10 / 2)
-
-        pc_src = Signal(intbv(0)[1:])
-        nxt_pc, nxt_inst, imm_jmp_addr = [Signal(intbv(0)[32:]) for i in range(3)]
-        dut = pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
-        stim = test()
-        sim = Simulation(dut, stim)
-        sim.run(quiet=1)
-
-
-class TestPCMuxATogether(TestCase):
 
     def testHoldValueTogether(self):
-        """ Check that modules hold value when no input changes """
+        """ Checking that modules hold value when no input changes from Cosimulation """
         def test():
-            for i in range(10000):
-                # TODO: Use a logger for this
-                # print "pc_src: {0}, nxt_pc: {1}, imm_jmp_addr: {2}, nxt_inst: {3}".format(
-                #     bin(pc_src), bin(nxt_pc), bin(imm_jmp_addr), bin(nxt_inst))
+            for i in range(sf['DEFAULT_TEST_LENGTH']):
                 self.assertEqual(bin(pc_src ^ 0), bin(0))
                 self.assertEqual(bin(nxt_pc ^ 0x00000060), bin(0))
                 self.assertEqual(bin(nxt_inst ^ 0x00000060), bin(0))
                 self.assertEqual(bin(nxt_inst_v ^ 0x00000060), bin(0))
                 self.assertEqual(bin(imm_jmp_addr ^ 0x00000faf), bin(0))
-                yield delay(10 / 2)
+                yield HALF_PERIOD
 
-        pc_src = Signal(intbv(0)[1:])
-        nxt_pc = Signal(intbv(0x00000060)[32:])
-        nxt_inst, nxt_inst_v = [Signal(intbv(0x00000060)[32:]) for i in range(2)]
-        imm_jmp_addr = Signal(intbv(0x00000faf)[31:])
-
+        pc_src, nxt_pc, nxt_inst, imm_jmp_addr = self.setup()
+        nxt_inst_v = Signal(intbv(0x00000060)[32:])
         dut = pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
         dut_v = pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst_v)
         stim = test()
+
         sim = Simulation(dut, dut_v, stim)
         sim.run(quiet=1)
 
+
+class TestPcMuxACorrectOutput(TestCase):
+
+    def setup(self):
+        pc_src = Signal(intbv(0)[1:])
+        nxt_pc, nxt_inst, imm_jmp_addr, nxt_inst = [Signal(intbv(0)[32:]) for i in range(4)]
+        return pc_src, imm_jmp_addr, nxt_pc, nxt_inst
+
+    def bench(self, pc_src, imm_jmp_addr, nxt_pc, nxt_inst):
+        for i in range(sf['DEFAULT_TEST_LENGTH']):
+            pc_src.next = ~pc_src
+            nxt_pc.next = intbv(randint(0, 2 ** 31))[32:]
+            imm_jmp_addr.next = intbv(randint(0, 2 ** 31))[32:]
+            if pc_src == 1:
+                nxt_inst.next = imm_jmp_addr
+                self.assertEqual(bin(nxt_inst ^ imm_jmp_addr), bin(0))
+            else:
+                nxt_inst.next = pc_src
+                self.assertEqual(bin(nxt_inst ^ nxt_pc), bin(0))
+            yield HALF_PERIOD
+
+    def testCorrectOutputPython(self):
+        """ Checking correct PC address is outputted from Python """
+        pc_src, imm_jmp_addr, nxt_pc, nxt_inst = self.setup()
+        dut = pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
+        stim = self.bench(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
+
+        sim = Simulation(dut, stim)
+        sim.run(quiet=1)
+
+    def testCorrectOutputVerilog(self):
+        """ Checking correct PC address is outputted from Verilog """
+        pc_src, imm_jmp_addr, nxt_pc, nxt_inst = self.setup()
+        dut = pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
+        stim = self.bench(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
+
+        sim = Simulation(dut, stim)
+        sim.run(quiet=1)
+
     def testCorrectOutputTogether(self):
-        """ Check that next sequential PC address is outputted when pc_src is deasserted
-            and that the imm_jmp_addr value is outputted when pc_src is asserted."""
+        """ Checking correct PC address is outputted from Cosimulation """
 
         def test():
-            for i in range(10000):
+            for i in range(sf['DEFAULT_TEST_LENGTH']):
                 pc_src.next = ~pc_src
                 nxt_pc.next = intbv(randint(0, 2**31))[32:]
                 imm_jmp_addr.next = intbv(randint(0, 2**31))[32:]
@@ -152,13 +122,14 @@ class TestPCMuxATogether(TestCase):
                     nxt_inst.next = pc_src
                     self.assertEqual(bin(nxt_inst ^ nxt_pc), bin(0))
                     self.assertEqual(bin(nxt_inst_v ^ nxt_pc), bin(0))
-                yield delay(10 / 2)
+                yield HALF_PERIOD
 
-        pc_src = Signal(intbv(0)[1:])
-        nxt_pc, nxt_inst, nxt_inst_v, imm_jmp_addr = [Signal(intbv(0)[32:]) for i in range(4)]
+        pc_src, imm_jmp_addr, nxt_pc, nxt_inst = self.setup()
+        nxt_inst_v = Signal(intbv(0)[32:])
         dut = pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
         dut_v = pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst_v)
         stim = test()
+
         sim = Simulation(dut, dut_v, stim)
         sim.run(quiet=1)
 
