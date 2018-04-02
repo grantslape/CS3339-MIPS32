@@ -128,7 +128,7 @@ class TestPCMuxATogether(TestCase):
         pc_src = Signal(intbv(0)[1:])
         nxt_pc = Signal(intbv(0x00000060)[32:])
         nxt_inst, nxt_inst_v = [Signal(intbv(0x00000060)[32:]) for i in range(2)]
-        imm_jmp_addr = Signal(intbv(0x00000faf)[31:])
+        imm_jmp_addr = Signal(intbv(0x00000faf)[32:])
 
         dut = pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
         dut_v = pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst_v)
