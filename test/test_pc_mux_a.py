@@ -8,6 +8,8 @@ sys.path.append("src/python")
 from pc_mux_a import pc_mux_a, pc_mux_a_v
 from settings import settings as sf
 
+HALF_PERIOD = delay(sf['PERIOD'] / 2)
+
 
 class TestPcMuxAPython(TestCase):
 
