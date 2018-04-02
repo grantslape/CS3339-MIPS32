@@ -32,7 +32,7 @@ def pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst):
     :param nxt_inst: actual next instruction address to pc_mux_b
     :return: Cosimulation
     """
-    cmd = "iverilog -o pc_mux_a.out src/verilog/pc_mux_a.v pc_mux_a_tb.v"
+    cmd = "iverilog -o pc_mux_a.out src/verilog/pc_mux_a.v src/verilog/pc_mux_a_tb.v"
     os.system(cmd)
 
     return Cosimulation("vvp -m lib/cosimulation/myhdl.vpi pc_mux_a.out",
