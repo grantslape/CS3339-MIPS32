@@ -7,16 +7,17 @@ import sys
 
 sys.path.append("src/python")
 from pc_mux_a import pc_mux_a, pc_mux_a_v
-#import settings as sf
+from settings import settings as sf
+
+HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
-# TODO: Inject period and default test length
 class TestPcMuxAPython(TestCase):
 
     def testHoldValuePython(self):
         """ Check that module holds value when no input changes """
         def test():
-            for i in range(10000):
+            for i in range(sf['DEFAULT_TEST_LENGTH']):
                 # TODO: Use a logger for this
                 # print "pc_src: {0}, nxt_pc: {1}, imm_jmp_addr: {2}, nxt_inst: {3}".format(
                 #     bin(pc_src), bin(nxt_pc), bin(imm_jmp_addr), bin(nxt_inst))
@@ -24,7 +25,7 @@ class TestPcMuxAPython(TestCase):
                 self.assertEqual(bin(nxt_pc ^ 0x00000060), bin(0))
                 self.assertEqual(bin(nxt_inst ^ 0x00000060), bin(0))
                 self.assertEqual(bin(imm_jmp_addr ^ 0x00000faf), bin(0))
-                yield delay(10 / 2)
+                yield HALF_PERIOD
 
         pc_src = Signal(intbv(0)[1:])
         nxt_pc = Signal(intbv(0x00000060)[32:])
@@ -40,7 +41,7 @@ class TestPcMuxAPython(TestCase):
         """ Check that next sequential PC address is outputted when pc_src is deasserted
             and that the imm_jmp_addr value is outputted when pc_src is asserted."""
         def test():
-            for i in range(10000):
+            for i in range(sf['DEFAULT_TEST_LENGTH']):
                 pc_src.next = ~pc_src
                 nxt_pc.next = intbv(randint(0, 2**31))[32:]
                 imm_jmp_addr.next = intbv(randint(0, 2**31))[32:]
@@ -50,7 +51,7 @@ class TestPcMuxAPython(TestCase):
                 else:
                     nxt_inst.next = pc_src
                     self.assertEqual(bin(nxt_inst ^ nxt_pc), bin(0))
-                yield delay(10 / 2)
+                yield HALF_PERIOD
 
         pc_src = Signal(intbv(0)[1:])
         nxt_pc, nxt_inst, imm_jmp_addr = [Signal(intbv(0)[32:]) for i in range(3)]
@@ -72,7 +73,7 @@ class TestPcMuxAVerilog(TestCase):
                 self.assertEqual(bin(nxt_pc ^ 0x00000060), bin(0))
                 self.assertEqual(bin(nxt_inst ^ 0x00000060), bin(0))
                 self.assertEqual(bin(imm_jmp_addr ^ 0x00000faf), bin(0))
-                yield delay(10 / 2)
+                yield HALF_PERIOD
 
         pc_src = Signal(intbv(0)[1:])
         nxt_pc = Signal(intbv(0x00000060)[32:])
@@ -88,7 +89,7 @@ class TestPcMuxAVerilog(TestCase):
         """ Check that next sequential PC address is outputted when pc_src is deasserted
             and that the imm_jmp_addr value is outputted when pc_src is asserted."""
         def test():
-            for i in range(10000):
+            for i in range(sf['DEFAULT_TEST_LENGTH']):
                 pc_src.next = ~pc_src
                 nxt_pc.next = intbv(randint(0, 2**31))[32:]
                 imm_jmp_addr.next = intbv(randint(0, 2**31))[32:]
@@ -98,7 +99,7 @@ class TestPcMuxAVerilog(TestCase):
                 else:
                     nxt_inst.next = pc_src
                     self.assertEqual(bin(nxt_inst ^ nxt_pc), bin(0))
-                yield delay(10 / 2)
+                yield HALF_PERIOD
 
         pc_src = Signal(intbv(0)[1:])
         nxt_pc, nxt_inst, imm_jmp_addr = [Signal(intbv(0)[32:]) for i in range(3)]
@@ -113,7 +114,7 @@ class TestPCMuxATogether(TestCase):
     def testHoldValueTogether(self):
         """ Check that modules hold value when no input changes """
         def test():
-            for i in range(10000):
+            for i in range(sf['DEFAULT_TEST_LENGTH']):
                 # TODO: Use a logger for this
                 # print "pc_src: {0}, nxt_pc: {1}, imm_jmp_addr: {2}, nxt_inst: {3}".format(
                 #     bin(pc_src), bin(nxt_pc), bin(imm_jmp_addr), bin(nxt_inst))
@@ -122,7 +123,7 @@ class TestPCMuxATogether(TestCase):
                 self.assertEqual(bin(nxt_inst ^ 0x00000060), bin(0))
                 self.assertEqual(bin(nxt_inst_v ^ 0x00000060), bin(0))
                 self.assertEqual(bin(imm_jmp_addr ^ 0x00000faf), bin(0))
-                yield delay(10 / 2)
+                yield HALF_PERIOD
 
         pc_src = Signal(intbv(0)[1:])
         nxt_pc = Signal(intbv(0x00000060)[32:])
@@ -140,7 +141,7 @@ class TestPCMuxATogether(TestCase):
             and that the imm_jmp_addr value is outputted when pc_src is asserted."""
 
         def test():
-            for i in range(10000):
+            for i in range(sf['DEFAULT_TEST_LENGTH']):
                 pc_src.next = ~pc_src
                 nxt_pc.next = intbv(randint(0, 2**31))[32:]
                 imm_jmp_addr.next = intbv(randint(0, 2**31))[32:]
@@ -152,7 +153,7 @@ class TestPCMuxATogether(TestCase):
                     nxt_inst.next = pc_src
                     self.assertEqual(bin(nxt_inst ^ nxt_pc), bin(0))
                     self.assertEqual(bin(nxt_inst_v ^ nxt_pc), bin(0))
-                yield delay(10 / 2)
+                yield HALF_PERIOD
 
         pc_src = Signal(intbv(0)[1:])
         nxt_pc, nxt_inst, nxt_inst_v, imm_jmp_addr = [Signal(intbv(0)[32:]) for i in range(4)]
