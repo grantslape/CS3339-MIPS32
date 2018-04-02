@@ -4,7 +4,8 @@ from unittest import TestCase
 from myhdl import intbv, delay, Simulation, Signal
 import sys
 
-sys.path.append("src")
+sys.path.append("src/verilog")
+sys.path.append("src/python")
 from pc_mux_a import pc_mux_a
 #import settings as sf
 
