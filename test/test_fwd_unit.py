@@ -45,3 +45,6 @@ class TestFwdUnitHoldValue(TestCase):
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
+
+if __name__ == '__main__':
+    unittest.main()
