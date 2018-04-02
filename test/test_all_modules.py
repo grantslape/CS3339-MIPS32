@@ -8,7 +8,7 @@ sys.path.append("test")
 import test_pc_mux_a
 import test_fwd_unit
 
-modules = (test_pc_mux_a)
+modules = (test_pc_mux_a, test_fwd_unit)
 tester = unittest.defaultTestLoader
 
 
