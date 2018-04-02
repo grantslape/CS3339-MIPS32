@@ -3,7 +3,6 @@ from myhdl import always_comb
 
 def pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst):
     """
-    !! TODO: IMPLEMENT !!
     PC Mux A
     :param pc_src: Which instruction to use, 0 for nxt_pc, 1, for imm_jmp_addr.
     :param imm_jmp_addr: a new PC value from the EX/MEM register
