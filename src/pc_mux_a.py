@@ -13,9 +13,9 @@ def pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst):
 
     @always_comb
     def logic():
-        if pc_src == 0:
-            nxt_inst.next = nxt_pc
-        else:
+        if pc_src == 1:
             nxt_inst.next = imm_jmp_addr
+        else:
+            nxt_inst.next = nxt_pc
 
     return logic

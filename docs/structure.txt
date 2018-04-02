@@ -7,13 +7,13 @@ cpu:
 		input [31:0] nxt_inst: next instruction address from pc_mux_b
 		output [31:0] cur_pc: next instruction address goes to inst_mem, pc_mux_c
 	pc_mux_a: 2:1 Mux for program_counter input:
-		input pc_src: which input to use.  From EX/MEM register or branch predictor
+		input pc_src: which input to use. 0 for nxt_pc, 1, for imm_jmp_addr. From branch predictor
 		input [31:0] imm_jmp_addr: a new PC value from the EX/MEM register
 		input [31:0] nxt_pc: sequential next PC from pc_adder
 		output [31:0] nxt_inst: actual next instruction address to pc_mux_b
 	pc_mux_b: 2:1 Mux to avoid jump stalls
 		input jmp_ctrl: source signal.  from ctrl
-		input [31:0] nxt_inst_in: actual next instruction address
+		input [31:0] nxt_inst_in: actual next instruction address from pc_mux_a
 		input [31:0] jmp_addr_in: jump address from id_shift_left
 		output [31:0] next_address.  to pc_mux_c
 	pc_mux_c: 2:1 mux for stalling.
