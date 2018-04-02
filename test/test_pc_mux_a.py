@@ -25,7 +25,7 @@ class TestPcMuxAHoldValue(TestCase):
             yield HALF_PERIOD
 
     def testHoldValuePython(self):
-        """ Check that module holds value when no input changes """
+        """ Checking that module holds value when no input changes from Python """
         pc_src = Signal(intbv(0)[1:])
         nxt_pc = Signal(intbv(0x00000060)[32:])
         nxt_inst = Signal(intbv(0x00000060)[32:])
@@ -38,7 +38,7 @@ class TestPcMuxAHoldValue(TestCase):
         sim.run(quiet=1)
 
     def testHoldValueVerilog(self):
-        """ Check that module holds value when no input changes """
+        """ Checking that module holds value when no input changes from Verilog """
         pc_src = Signal(intbv(0)[1:])
         nxt_pc = Signal(intbv(0x00000060)[32:])
         nxt_inst = Signal(intbv(0x00000060)[32:])
@@ -51,7 +51,7 @@ class TestPcMuxAHoldValue(TestCase):
         sim.run(quiet=1)
 
     def testHoldValueTogether(self):
-        """ Check that modules hold value when no input changes """
+        """ Checking that modules hold value when no input changes from Cosimulation """
         def test():
             for i in range(sf['DEFAULT_TEST_LENGTH']):
                 # TODO: Use a logger for this
@@ -93,8 +93,7 @@ class TestPcMuxACorrectOutput(TestCase):
             yield HALF_PERIOD
 
     def testCorrectOutputPython(self):
-        """ Check that next sequential PC address is outputted when pc_src is deasserted
-            and that the imm_jmp_addr value is outputted when pc_src is asserted."""
+        """ Checking correct PC address is outputted from Python """
         pc_src = Signal(intbv(0)[1:])
         nxt_pc, nxt_inst, imm_jmp_addr = [Signal(intbv(0)[32:]) for i in range(3)]
         dut = pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
@@ -104,8 +103,7 @@ class TestPcMuxACorrectOutput(TestCase):
         sim.run(quiet=1)
 
     def testCorrectOutputVerilog(self):
-        """ Check that next sequential PC address is outputted when pc_src is deasserted
-            and that the imm_jmp_addr value is outputted when pc_src is asserted."""
+        """ Checking correct PC address is outputted from Verilog """
         pc_src = Signal(intbv(0)[1:])
         nxt_pc, nxt_inst, imm_jmp_addr = [Signal(intbv(0)[32:]) for i in range(3)]
         dut = pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
@@ -115,8 +113,7 @@ class TestPcMuxACorrectOutput(TestCase):
         sim.run(quiet=1)
 
     def testCorrectOutputTogether(self):
-        """ Check that next sequential PC address is outputted when pc_src is deasserted
-            and that the imm_jmp_addr value is outputted when pc_src is asserted."""
+        """ Checking correct PC address is outputted from Cosimulation """
 
         def test():
             for i in range(sf['DEFAULT_TEST_LENGTH']):
