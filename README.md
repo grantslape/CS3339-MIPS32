@@ -14,5 +14,5 @@ From the project root:
 ```
 3. Run tests!
 ```shell
-    $ python test/test_pc_mu
+    $ python test/test_all_modules.py
 ```
