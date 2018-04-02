@@ -11,7 +11,7 @@ HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
 class TestFwdUnitHoldValue(TestCase):
-    #
+    pass
     # def setup(self):
     #     rt_in = Signal(intbv(10)[5:])
     #     rs_in = Signal(intbv(11)[5:])
@@ -45,3 +45,5 @@ class TestFwdUnitHoldValue(TestCase):
     #     sim = Simulation(dut, stim)
     #     sim.run(quiet=1)
 
+if __name__ == '__main__':
+    unittest.main()
