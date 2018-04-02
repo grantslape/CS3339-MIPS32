@@ -35,7 +35,7 @@ def pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst):
     cmd = "iverilog -o pc_mux_a.out src/verilog/pc_mux_a.v src/verilog/pc_mux_a_tb.v"
     os.system(cmd)
 
-    return Cosimulation("vvp -m lib/cosimulation/myhdl.vpi pc_mux_a.out",
+    return Cosimulation("vvp -m lib/myhdl.vpi pc_mux_a.out",
                         pc_src=pc_src,
                         imm_jmp_addr=imm_jmp_addr,
                         nxt_pc=nxt_pc,
