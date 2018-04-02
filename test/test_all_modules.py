@@ -2,15 +2,21 @@
 # Main Test Driver
 
 """ Run all cosimulation unit tests. """
-
+import sys
 import unittest
+sys.path.append("test")
+import test_pc_mux_a
+import test_fwd_unit
 
+modules = (test_pc_mux_a, test_fwd_unit)
 tester = unittest.defaultTestLoader
 
 
 def suite():
-    # TODO: test all modules
-    print("Not implemented yet...")
+    all_tests = unittest.TestSuite()
+    for m in modules:
+        all_tests.addTest(tester.loadTestsFromModule(m))
+    return all_tests
 
 
 def main():
