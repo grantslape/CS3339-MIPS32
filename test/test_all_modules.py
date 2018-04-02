@@ -9,7 +9,7 @@ tester = unittest.defaultTestLoader
 
 
 def suite():
-    # TODO: test some stuff
+    # TODO: test all modules
     print("Not implemented yet...")
 
 
