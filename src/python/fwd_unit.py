@@ -21,6 +21,7 @@ def fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a
         # NOT IMPLEMENTED
         return logic
 
+
 def fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b):
     """
     Verilog Forwading Unit.  Detects matches on either rt or rs from previous two cycles, and forwards appropriately

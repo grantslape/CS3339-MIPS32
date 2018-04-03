@@ -154,7 +154,7 @@ cpu:
 		output [31:0] imm_out: input value shifted left 2 bits
 	branch_adder: calculate addresses for branches
 		input [3:0] pc_in: Top 4 bits of PC+4.  from id_ex
-		input [31:0] imm_in: 32 bit immedate from shift_unit
+		input [31:0] imm_in: 32 bit immediate from shift_unit
 		output [31:0] addr_out: 32 bit jump address. to ex_mem
 	ex_mem: Execution / Memory Pipeline register.
 		input branch_in: branch ctrl signal from id_ex.branch_out
