@@ -13,7 +13,7 @@ HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
 def setup():
-    imm_in, imm_out = [Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])[32:]) for i in range(2)]
+    imm_in, imm_out = [Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(2)]
     return imm_in, imm_out
 
 
@@ -53,7 +53,7 @@ class TestShiftUnitZero(TestCase):
             yield HALF_PERIOD
 
         imm_in, imm_out = setup()
-        imm_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])[32:])
+        imm_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
         dut = shift_unit(imm_in, imm_out)
         dut_v = shift_unit_v(imm_in, imm_out_v)
         stim = self.bench(imm_in, imm_out)
@@ -98,7 +98,7 @@ class TestShiftUnitOutput(TestCase):
             yield HALF_PERIOD
 
         imm_in, imm_out = setup()
-        imm_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])[32:])
+        imm_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
         dut = shift_unit(imm_in, imm_out)
         dut_v = shift_unit_v(imm_in, imm_out_v)
         stim = self.bench(imm_in, imm_out)
