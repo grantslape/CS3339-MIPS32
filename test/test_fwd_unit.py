@@ -70,5 +70,9 @@ class TestFwdUnitHoldValue(TestCase):
         sim.run(quiet=1)
 
 
+class TestFwdUnitNextTestDummy(TestCase):
+    pass
+
+
 if __name__ == '__main__':
     unittest.main()
