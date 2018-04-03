@@ -115,7 +115,7 @@ class TestFwdUnitBaseCases(TestCase):
         self.assertEqual(bin(forward_a), bin(2))
 
     # TODO: Break this out into individual test cases
-    def forwardBTest(self, rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b):
+    def forwardBTest(self, rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a):
         """Stim for forward A cases.  See p310 of book"""
         rt_in.next = 11
         ex_rd.next = 11
@@ -217,7 +217,14 @@ class TestFwdUnitBaseCases(TestCase):
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
 
-        sim = Simulation(dut, self.forwardBTest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b))
+        sim = Simulation(dut, self.forwardBTest(rt_in,
+                                                rs_in,
+                                                ex_rd,
+                                                mem_rd,
+                                                mem_reg_write,
+                                                wb_reg_write,
+                                                forward_b,
+                                                forward_a))
         sim.run(quiet=1)
 
     def testForwardBCasesVerilog(self):
@@ -225,7 +232,7 @@ class TestFwdUnitBaseCases(TestCase):
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
 
-        sim = Simulation(dut, self.forwardBTest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b))
+        sim = Simulation(dut, self.forwardBTest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a))
         sim.run(quiet=1)
 
     def testForwardBCasesTogether(self):
