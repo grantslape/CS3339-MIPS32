@@ -67,6 +67,36 @@ class TestRfileRead(TestCase):
         sim = Simulation(CLK, stim, dut)
         sim.run(quiet=1)
 
+    def testRfileReadVerilog(self):
+        """Test correct values are read from register Verilog"""
+        clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2 = setup()
+        CLK = clock_gen(clock)
+        stim = self.bench(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
+        dut = rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
+
+        sim = Simulation(CLK, stim, dut)
+        sim.run(quiet=1)
+
+    def testRfileReadTogether(self):
+        """Test correct values are read from register together"""
+        def test():
+            # TODO: if we use a real setUp method this is unnecessary
+            for i in range(sf['WIDTH'] + 1):
+                yield posedge(clock)
+            yield negedge(clock)
+            self.assertEqual(r_data1_v, self.expected[r_addr1])
+            self.assertEqual(r_data2_v, self.expected[r_addr2])
+
+        clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2 = setup()
+        CLK = clock_gen(clock)
+        r_data1_v, r_data2_v = [Signal(intbv(0)[5:]) for i in range(2)]
+        stim = self.bench(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
+        dut = rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
+        dut_v = rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1_v, r_data2_v)
+
+        sim = Simulation(CLK, stim, dut, dut_v, test())
+        sim.run(quiet=1)
+
 
 if __name__ == '__main__':
     unittest.main()
