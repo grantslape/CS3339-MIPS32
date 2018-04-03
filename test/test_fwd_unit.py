@@ -175,16 +175,18 @@ class TestFwdUnitBaseCases(TestCase):
         """Test Forward A cases Python"""
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
+        stim = self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a)
 
-        sim = Simulation(dut, self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a))
+        sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
     def testForwardACasesVerilog(self):
         """Test Forward A cases Verilog"""
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
+        stim = self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a)
 
-        sim = Simulation(dut, self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a))
+        sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
     def testForwardACasesTogether(self):
