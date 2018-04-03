@@ -134,7 +134,7 @@ class TestPcMuxBDynamic(TestCase):
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
-    def testPcMuxBDeassertedVerilog(self):
+    def testPcMuxBDynamicVerilog(self):
         """Checking dynamic PC Mux B Verilog"""
         jmp_ctrl, nxt_inst_in, jmp_addr_in, next_address = setup()
         dut = pc_mux_b_v(jmp_ctrl, nxt_inst_in, jmp_addr_in, next_address)
@@ -143,7 +143,7 @@ class TestPcMuxBDynamic(TestCase):
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
-    def testPcMuxBDeassertedTogether(self):
+    def testPcMuxBDynamicTogether(self):
         """Checking dynamic PC Mux B Cosimulation"""
         def test():
             yield HALF_PERIOD
