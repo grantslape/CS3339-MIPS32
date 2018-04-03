@@ -18,8 +18,9 @@ def fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a
     """
     @always_comb
     def logic():
+        pass
         # NOT IMPLEMENTED
-        return logic
+    return logic
 
 
 def fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b):

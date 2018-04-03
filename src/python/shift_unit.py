@@ -12,8 +12,9 @@ def shift_unit(imm_in, imm_out):
     """
     @always_comb
     def logic():
+        pass
         # NOT IMPLEMENTED
-        return logic
+    return logic
 
 
 def shift_unit_v(imm_in, imm_out):
