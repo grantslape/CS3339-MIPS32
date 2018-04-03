@@ -83,58 +83,67 @@ class TestFwdUnitBaseCases(TestCase):
         self.assertEqual(forward_b_v, 0)
         raise StopSimulation
 
-    def forwardATest(self, rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, forward_a, forward_b):
+    # TODO: Break this out into individual test cases
+    def forwardATest(self, rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a):
         """Stim for forward A cases.  See p310 of book"""
         rs_in.next = 11
         ex_rd.next = 11
         rt_in.next = 10
         mem_reg_write.next = 1
+        wb_reg_write.next = 0
         yield HALF_PERIOD
         self.assertEqual(forward_b, 0)
-        self.assertEqual(forward_a, 0b10)
+        self.assertEqual(bin(forward_a), bin(2))
         ex_rd.next = 12
         mem_rd.next = 11
+        wb_reg_write.next = 1
         yield HALF_PERIOD
         self.assertEqual(forward_b, 0)
-        self.assertEqual(forward_a, 0b01)
+        self.assertEqual(bin(forward_a), bin(1))
         mem_reg_write.next = 0
+        wb_reg_write.next = 0
         yield HALF_PERIOD
         self.assertEqual(forward_b, 0)
         self.assertEqual(forward_a, 0)
         rs_in.next = 11
         ex_rd.next = 11
+        mem_rd.next = 11
         mem_reg_write.next = 1
-        mem_rd.next = 1
+        wb_reg_write.next = 0
         yield HALF_PERIOD
         self.assertEqual(forward_b, 0)
-        self.assertEqual(forward_a, 0b10)
+        self.assertEqual(bin(forward_a), bin(2))
 
-    def forwardBTest(self, rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, forward_a, forward_b):
+    # TODO: Break this out into individual test cases
+    def forwardBTest(self, rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a):
         """Stim for forward A cases.  See p310 of book"""
         rt_in.next = 11
         ex_rd.next = 11
-        rs_in.next = 10
+        rs_in.next = 13
         mem_reg_write.next = 1
+        wb_reg_write.next = 0
         yield HALF_PERIOD
-        self.assertEqual(forward_a, 0)
-        self.assertEqual(forward_b, 0b10)
+        self.assertEqual(bin(forward_a), bin(0))
+        self.assertEqual(bin(forward_b), bin(2))
         ex_rd.next = 12
         mem_rd.next = 11
+        wb_reg_write.next = 1
         yield HALF_PERIOD
         self.assertEqual(forward_a, 0)
-        self.assertEqual(forward_b, 0b01)
+        self.assertEqual(bin(forward_b), bin(1))
         mem_reg_write.next = 0
+        wb_reg_write.next = 0
         yield HALF_PERIOD
         self.assertEqual(forward_b, 0)
         self.assertEqual(forward_a, 0)
         rt_in.next = 11
         ex_rd.next = 11
+        mem_rd.next = 11
         mem_reg_write.next = 1
-        mem_rd.next = 1
+        wb_reg_write.next = 0
         yield HALF_PERIOD
         self.assertEqual(forward_a, 0)
-        self.assertEqual(forward_b, 0b10)
-
+        self.assertEqual(bin(forward_b), bin(2))
 
     def testNoForwardPython(self):
         """Test no forwarding Python"""
@@ -167,7 +176,7 @@ class TestFwdUnitBaseCases(TestCase):
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
 
-        sim = Simulation(dut, self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, forward_a, forward_b))
+        sim = Simulation(dut, self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a))
         sim.run(quiet=1)
 
     def testForwardACasesVerilog(self):
@@ -175,7 +184,7 @@ class TestFwdUnitBaseCases(TestCase):
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
 
-        sim = Simulation(dut, self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, forward_a, forward_b))
+        sim = Simulation(dut, self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a))
         sim.run(quiet=1)
 
     def testForwardACasesTogether(self):
@@ -183,23 +192,23 @@ class TestFwdUnitBaseCases(TestCase):
         def test():
             yield HALF_PERIOD
             self.assertEqual(forward_b_v, 0)
-            self.assertEqual(forward_a_v, 0b10)
+            self.assertEqual(bin(forward_a_v), bin(2))
             yield HALF_PERIOD
             self.assertEqual(forward_b_v, 0)
-            self.assertEqual(forward_a_v, 0b01)
+            self.assertEqual(bin(forward_a_v), bin(1))
             yield HALF_PERIOD
             self.assertEqual(forward_b_v, 0)
             self.assertEqual(forward_a_v, 0)
             yield HALF_PERIOD
             self.assertEqual(forward_b_v, 0)
-            self.assertEqual(forward_a_v, 0b10)
+            self.assertEqual(bin(forward_a_v), bin(2))
 
         forward_a_v, forward_b_v = [Signal(intbv(0)[2:]) for i in range(2)]
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
         dut_v = fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a_v, forward_b_v)
 
-        stim = self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, forward_a, forward_b)
+        stim = self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a)
         sim = Simulation(dut, dut_v, stim, test())
         sim.run(quiet=1)
 
@@ -208,7 +217,14 @@ class TestFwdUnitBaseCases(TestCase):
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
 
-        sim = Simulation(dut, self.forwardBTest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, forward_a, forward_b))
+        sim = Simulation(dut, self.forwardBTest(rt_in,
+                                                rs_in,
+                                                ex_rd,
+                                                mem_rd,
+                                                mem_reg_write,
+                                                wb_reg_write,
+                                                forward_b,
+                                                forward_a))
         sim.run(quiet=1)
 
     def testForwardBCasesVerilog(self):
@@ -216,31 +232,31 @@ class TestFwdUnitBaseCases(TestCase):
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
 
-        sim = Simulation(dut, self.forwardBTest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, forward_a, forward_b))
+        sim = Simulation(dut, self.forwardBTest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a))
         sim.run(quiet=1)
 
     def testForwardBCasesTogether(self):
         """Test Forward A cases together"""
         def test():
             yield HALF_PERIOD
-            self.assertEqual(forward_a_v, 0)
-            self.assertEqual(forward_b_v, 0b10)
+            self.assertEqual(bin(forward_a_v), bin(0))
+            self.assertEqual(bin(forward_b_v), bin(2))
             yield HALF_PERIOD
             self.assertEqual(forward_a_v, 0)
-            self.assertEqual(forward_b_v, 0b01)
+            self.assertEqual(bin(forward_b_v), bin(1))
             yield HALF_PERIOD
             self.assertEqual(forward_b_v, 0)
             self.assertEqual(forward_a_v, 0)
             yield HALF_PERIOD
             self.assertEqual(forward_a_v, 0)
-            self.assertEqual(forward_b_v, 0b10)
+            self.assertEqual(bin(forward_b_v), bin(2))
 
         forward_a_v, forward_b_v = [Signal(intbv(0)[2:]) for i in range(2)]
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         dut = fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
         dut_v = fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a_v, forward_b_v)
 
-        stim = self.forwardATest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, forward_a, forward_b)
+        stim = self.forwardBTest(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_b, forward_a)
         sim = Simulation(dut, dut_v, stim, test())
         sim.run(quiet=1)
 
