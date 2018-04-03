@@ -1,4 +1,8 @@
-venv/
-.idea/
+# Python and Verilog output files
 *.out
 *.pyc
+
+# virtualenv & project specific
+venv/
+*.vpi
+.idea/
