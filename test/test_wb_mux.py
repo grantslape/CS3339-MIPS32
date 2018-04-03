@@ -132,7 +132,7 @@ class TestWbMuxDynamic(TestCase):
                 self.assertEqual(wb_out, rdata_in)
         raise StopSimulation
 
-    def testHoldAssertPython(self):
+    def testHoldDynamicPython(self):
         """ Checking that correct output is assigned Python"""
         mem_to_reg, rdata_in, result_in, wb_out = setup()
         dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
@@ -141,7 +141,7 @@ class TestWbMuxDynamic(TestCase):
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
-    def testHoldAssertVerilog(self):
+    def testDynamicVerilog(self):
         """ Checking that correct output is assigned Verilog"""
         mem_to_reg, rdata_in, result_in, wb_out = setup()
         dut = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out)
@@ -150,7 +150,7 @@ class TestWbMuxDynamic(TestCase):
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
-    def testHoldAssertTogether(self):
+    def testDynamicTogether(self):
         """ Checking that correct output is assigned Cosimulation"""
         def test():
             for i in range(sf['DEFAULT_TEST_LENGTH']):
