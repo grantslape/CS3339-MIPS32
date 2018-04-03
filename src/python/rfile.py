@@ -17,7 +17,7 @@ def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_
     :param r_data2: data read from regs[r_addr2].  sent to id_ex
     :return: module logic
     """
-    @always_seq(clock.posedge, reset=reset)
+    @always_seq(clock.negedge, reset=reset)
     def logic():
         # NOT IMPLEMENTED
         pass
