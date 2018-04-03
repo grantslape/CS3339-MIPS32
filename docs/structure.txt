@@ -47,6 +47,7 @@ cpu:
 		input [15:0] imm_in: from if_id state register
 		output [31:0] imm_out: sign extended imm_in to 32 bits.  send to id_ex.
 	rfile: Register File
+		input clock: system clock
 		input reg_write: write control signal
 		input [4:0] r_addr1: read address of rs. from if_id
 		input [4:0] r_addr2: read address of rt. from if_id
@@ -135,8 +136,8 @@ cpu:
 		input [3:0] alu_op: The 4-bit ALU op code.  See  OpCode table.
 		ouput [31:0] result: a 32 bit result of operation.  to ex_mem
 		ouput z: Zero flag.  to ex_mem
-	ex_mux: 2:1 Mux to select write addres
-		input reg_dst: 1 bit selector from id_ex.reg_dst_out
+	ex_mux: 2:1 Mux to select write address
+		input reg_dst: 1 bit selector from id_ex.reg_dst_out 0 for rt, 1 for rd
 		input [4:0] rt_in: rt, sent from id_ex
 		input [4:0] rd_in: rd, sent from id_ex
 		output [4:0] dest: destination register address, sent to ex_mem
