@@ -9,9 +9,7 @@ import test_pc_mux_a
 import test_fwd_unit
 import test_shift_unit
 
-modules = (test_pc_mux_a,
-           test_shift_unit,
-           test_fwd_unit)
+modules = (test_pc_mux_a,)
 tester = unittest.defaultTestLoader
 
 
