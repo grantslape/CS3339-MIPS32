@@ -22,11 +22,12 @@ class TestPcMuxAHoldValue(TestCase):
         imm_jmp_addr = Signal(intbv(0x00000faf)[32:])
         return pc_src, nxt_pc, nxt_inst, imm_jmp_addr
 
-    def bench(self, pc_src, imm_jmp_addr, nxt_pc, nxt_inst):
+    def bench(self, pc_src, imm_jmp_addr, nxt_pc, nxt_inst, nxt_inst_v=intbv(0x00000060)):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.assertEqual(bin(pc_src ^ 0), bin(0))
             self.assertEqual(bin(nxt_pc ^ 0x00000060), bin(0))
             self.assertEqual(bin(nxt_inst ^ 0x00000060), bin(0))
+            self.assertEqual(bin(nxt_inst_v ^ 0x00000060), bin(0))
             self.assertEqual(bin(imm_jmp_addr ^ 0x00000faf), bin(0))
             yield HALF_PERIOD
 
@@ -51,18 +52,13 @@ class TestPcMuxAHoldValue(TestCase):
 
     def testHoldValueTogether(self):
         """ Checking that modules hold value when no input changes from Cosimulation """
-        def test():
-            for i in range(sf['DEFAULT_TEST_LENGTH']):
-                self.assertEqual(bin(nxt_inst_v ^ 0x00000060), bin(0))
-                yield HALF_PERIOD
-
         pc_src, nxt_pc, nxt_inst, imm_jmp_addr = self.setup()
         nxt_inst_v = Signal(intbv(0x00000060)[32:])
         dut = pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
         dut_v = pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst_v)
-        stim = self.bench(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
+        stim = self.bench(pc_src, imm_jmp_addr, nxt_pc, nxt_inst, nxt_inst_v)
 
-        sim = Simulation(dut, dut_v, stim, test())
+        sim = Simulation(dut, dut_v, stim)
         sim.run(quiet=1)
 
 
@@ -80,10 +76,8 @@ class TestPcMuxACorrectOutput(TestCase):
             nxt_pc.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[32:]
             imm_jmp_addr.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[32:]
             if pc_src == 1:
-                nxt_inst.next = imm_jmp_addr
                 self.assertEqual(bin(nxt_inst ^ imm_jmp_addr), bin(0))
             else:
-                nxt_inst.next = pc_src
                 self.assertEqual(bin(nxt_inst ^ nxt_pc), bin(0))
             yield HALF_PERIOD
 

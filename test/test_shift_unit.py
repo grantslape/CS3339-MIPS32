@@ -68,7 +68,7 @@ class TestShiftUnitOutput(TestCase):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             # Note that our range of input values is 16bits, it was an immediate extended to 32 bits
             imm_in.next = intbv(randint(-1 * 2**15, 2**15 - 1), min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])
-            imm_out.next = imm_in << 2
+            # Might need to switch next two lines
             self.assertEqual(imm_out, imm_in << 2)
             yield HALF_PERIOD
 
