@@ -43,3 +43,7 @@ Unit Tests:
 	pc_mux_a DONE 2018-04-03
 	fwd_unit DONE 2018-04-03
 	wb_mux DONE 2018-04-03
+	pc_mux_b DONE 2018-04-03
+	pc_mux_c
+	program_counter
+	pc_adder
