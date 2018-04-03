@@ -2,9 +2,10 @@ import unittest
 from random import randint
 from unittest import TestCase
 from myhdl import intbv, delay, Simulation, Signal, Cosimulation
-import sys
 
+import sys
 sys.path.append("src/python")
+
 from pc_mux_a import pc_mux_a, pc_mux_a_v
 from settings import settings as sf
 
@@ -74,8 +75,8 @@ class TestPcMuxACorrectOutput(TestCase):
     def bench(self, pc_src, imm_jmp_addr, nxt_pc, nxt_inst):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             pc_src.next = ~pc_src
-            nxt_pc.next = intbv(randint(0, 2 ** 31))[32:]
-            imm_jmp_addr.next = intbv(randint(0, 2 ** 31))[32:]
+            nxt_pc.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[32:]
+            imm_jmp_addr.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[32:]
             if pc_src == 1:
                 nxt_inst.next = imm_jmp_addr
                 self.assertEqual(bin(nxt_inst ^ imm_jmp_addr), bin(0))
