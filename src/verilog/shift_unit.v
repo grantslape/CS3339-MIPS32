@@ -1,4 +1,4 @@
-`timescale lns/10ps
+`timescale 1ns/10ps
 
 module shift_unit(
 	imm_in, imm_out

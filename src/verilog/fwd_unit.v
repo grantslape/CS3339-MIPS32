@@ -1,4 +1,4 @@
-`timescale lns/10ps
+`timescale 1ns/10ps
 
 module fwd_unit(
 	rt_in, rs_in,
