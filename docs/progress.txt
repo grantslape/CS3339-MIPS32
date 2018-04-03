@@ -44,6 +44,26 @@ Unit Tests:
 	fwd_unit DONE 2018-04-03
 	wb_mux DONE 2018-04-03
 	pc_mux_b DONE 2018-04-03
-	pc_mux_c
-	program_counter
-	pc_adder
+    program_counter
+    pc_mux_c
+    pc_adder
+    sign_extender
+    id_ex
+    hazard_unit
+    if_id
+    id_shift_left
+    ctrl
+    ctrl_mux
+    alu
+    alu_mux_a
+    alu_mux_b
+    alu_mux_imm
+    rfile
+    ex_mux DONE 2018-04-03
+    inst_mem
+    inst_mem_mux
+    ex_mem
+    branch_adder
+    branch_unit
+    data_mem
+    mem_wb
