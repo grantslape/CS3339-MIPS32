@@ -136,7 +136,7 @@ cpu:
 		ouput [31:0] result: a 32 bit result of operation.  to ex_mem
 		ouput z: Zero flag.  to ex_mem
 	ex_mux: 2:1 Mux to select write address
-		input reg_dst: 1 bit selector from id_ex.reg_dst_out
+		input reg_dst: 1 bit selector from id_ex.reg_dst_out 0 for rt, 1 for rd
 		input [4:0] rt_in: rt, sent from id_ex
 		input [4:0] rd_in: rd, sent from id_ex
 		output [4:0] dest: destination register address, sent to ex_mem
