@@ -1,7 +1,7 @@
 import unittest
 from random import randint
 from unittest import TestCase
-from myhdl import intbv, delay, Simulation, Signal, Cosimulation
+from myhdl import intbv, delay, Simulation, Signal
 
 import sys
 sys.path.append("src/python")
@@ -13,6 +13,7 @@ HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
 class TestPcMuxAHoldValue(TestCase):
+    """Test that pc_mux_a holds state"""
 
     def setup(self):
         pc_src = Signal(intbv(0)[1:])
@@ -66,6 +67,7 @@ class TestPcMuxAHoldValue(TestCase):
 
 
 class TestPcMuxACorrectOutput(TestCase):
+    """ Test correct output of pc_mux_a """
 
     def setup(self):
         pc_src = Signal(intbv(0)[1:])

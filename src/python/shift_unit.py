@@ -2,6 +2,7 @@ import os
 
 from myhdl import always_comb, Cosimulation
 
+
 def shift_unit(imm_in, imm_out):
     """
     Shift Left 2 Unit, for calculating addresses from a 16 bit immediate
@@ -13,6 +14,7 @@ def shift_unit(imm_in, imm_out):
     def logic():
         # NOT IMPLEMENTED
         return logic
+
 
 def shift_unit_v(imm_in, imm_out):
     """
