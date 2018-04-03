@@ -47,6 +47,7 @@ cpu:
 		input [15:0] imm_in: from if_id state register
 		output [31:0] imm_out: sign extended imm_in to 32 bits.  send to id_ex.
 	rfile: Register File
+		input clock: system clock
 		input reg_write: write control signal
 		input [4:0] r_addr1: read address of rs. from if_id
 		input [4:0] r_addr2: read address of rt. from if_id
