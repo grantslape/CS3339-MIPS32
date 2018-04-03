@@ -23,8 +23,8 @@ class TestPcMuxBDeasserted(TestCase):
     def bench(self, jmp_ctrl, nxt_inst_in, jmp_addr_in, next_address):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             jmp_ctrl.next = 0
-            nxt_inst_in = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
-            jmp_addr_in = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
+            nxt_inst_in.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
+            jmp_addr_in.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
             yield HALF_PERIOD
             self.assertEqual(jmp_ctrl, 0)
             self.assertEqual(next_address, nxt_inst_in)
@@ -69,8 +69,8 @@ class TestPcMuxBAsserted(TestCase):
     def bench(self, jmp_ctrl, nxt_inst_in, jmp_addr_in, next_address):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             jmp_ctrl.next = 1
-            nxt_inst_in = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
-            jmp_addr_in = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
+            nxt_inst_in.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
+            jmp_addr_in.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
             yield HALF_PERIOD
             self.assertEqual(jmp_ctrl, 0)
             self.assertEqual(next_address, jmp_addr_in)
@@ -115,8 +115,8 @@ class TestPcMuxBDynamic(TestCase):
     def bench(self, jmp_ctrl, nxt_inst_in, jmp_addr_in, next_address):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             jmp_ctrl.next = randint(0, 1)
-            nxt_inst_in = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
-            jmp_addr_in = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
+            nxt_inst_in.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
+            jmp_addr_in.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
             yield HALF_PERIOD
             if jmp_ctrl == 0:
                 self.assertEqual(next_address, nxt_inst_in)
