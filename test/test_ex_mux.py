@@ -18,6 +18,7 @@ def setup():
     return reg_dst, rt_in, rd_in, dest
 
 
+@unittest.skip("Ex Mux not implemented")
 class TestExMuxDeasserted(TestCase):
     """Test when reg_dst is deasserted"""
     def bench(self, reg_dst, rt_in, rd_in, dest):
@@ -63,6 +64,7 @@ class TestExMuxDeasserted(TestCase):
         sim.run(quiet=1)
 
 
+@unittest.skip("Ex Mux not implemented")
 class TestExMuxAsserted(TestCase):
     """Test when reg_dst is asserted"""
     def bench(self, reg_dst, rt_in, rd_in, dest):
@@ -108,6 +110,7 @@ class TestExMuxAsserted(TestCase):
         sim.run(quiet=1)
 
 
+@unittest.skip("Ex Mux not implemented")
 class TestExMuxDynamic(TestCase):
     """Test dynamic behavior"""
     def bench(self, reg_dst, rt_in, rd_in, dest):

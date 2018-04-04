@@ -20,6 +20,7 @@ def setup():
     return mem_to_reg, rdata_in, result_in, wb_out
 
 
+@unittest.skip("WB Mux not implemented")
 class TestWbMuxDeassert(TestCase):
     """Testing deasserted functionality"""
 
@@ -61,6 +62,7 @@ class TestWbMuxDeassert(TestCase):
         Simulation(dut, dut_v, stim, stim_v).run(quiet=1)
 
 
+@unittest.skip("WB Mux not implemented")
 class TestWbMuxAssert(TestCase):
     """Testing asserted functionality"""
 
@@ -102,6 +104,7 @@ class TestWbMuxAssert(TestCase):
         Simulation(dut, dut_v, stim, stim_v).run(quiet=1)
 
 
+@unittest.skip("WB Mux not implemented")
 class TestWbMuxDynamic(TestCase):
     """Testing dynamic functionality"""
 

@@ -18,6 +18,7 @@ def setup():
     return jmp_ctrl, nxt_inst_in, jmp_addr_in, next_address
 
 
+@unittest.skip("PC Mux B not implemented")
 class TestPcMuxBDeasserted(TestCase):
 
     def bench(self, jmp_ctrl, nxt_inst_in, jmp_addr_in, next_address):
@@ -64,6 +65,7 @@ class TestPcMuxBDeasserted(TestCase):
         sim.run(quiet=1)
 
 
+@unittest.skip("PC Mux B not implemented")
 class TestPcMuxBAsserted(TestCase):
 
     def bench(self, jmp_ctrl, nxt_inst_in, jmp_addr_in, next_address):
@@ -110,6 +112,7 @@ class TestPcMuxBAsserted(TestCase):
         sim.run(quiet=1)
 
 
+@unittest.skip("PC Mux B not implemented")
 class TestPcMuxBDynamic(TestCase):
 
     def bench(self, jmp_ctrl, nxt_inst_in, jmp_addr_in, next_address):

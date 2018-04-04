@@ -29,6 +29,7 @@ def setup():
 # TODO: ADD TEST OF RESET FUNCTION
 
 
+@unittest.skip("Rfile not implemented")
 class TestRfileWrite(TestCase):
     # TODO: This test depends on successful reads, and therefore is not completely valid
 
@@ -89,6 +90,7 @@ class TestRfileWrite(TestCase):
         Simulation(CLK, dut, dut_v, stim_1, stim_2, stim_1_v, stim_2_v).run(quiet=1)
 
 
+@unittest.skip("Rfile not implemented")
 class TestRfileRead(TestCase):
     """Test that Rfile reads correctly"""
     # TODO: This test depends on successful writes, and therefore is not completely valid

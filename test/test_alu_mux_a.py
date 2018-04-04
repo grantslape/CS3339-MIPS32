@@ -23,6 +23,7 @@ def setup():
     return forward_a, r_data1, mem_rd, wb_rd, op1_out
 
 
+@unittest.skip("ALU Mux A not implemented")
 class TestAluMuxADeassert(TestCase):
     """Testing deasserted functionality"""
 
@@ -73,6 +74,7 @@ class TestAluMuxADeassert(TestCase):
         Simulation(dut, stim, dut_v, stim_v).run(quiet=1)
 
 
+@unittest.skip("ALU Mux A not implemented")
 class TestAluMuxAMemForward(TestCase):
     """Testing MemForward functionality"""
 
@@ -123,6 +125,7 @@ class TestAluMuxAMemForward(TestCase):
         Simulation(dut, stim, dut_v, stim_v).run(quiet=1)
 
 
+@unittest.skip("ALU Mux A not implemented")
 class TestAluMuxAWbForward(TestCase):
     """Testing WbForward functionality"""
 

@@ -24,6 +24,7 @@ def setup():
     return clock, pc_write, nxt_inst, cur_pc
 
 
+@unittest.skip("Program Counter not implemented")
 class TestNormalOperation(TestCase):
     """Test normal in and out of program counter"""
     def bench(self, clock, pc_write, nxt_inst, cur_pc):
@@ -65,6 +66,7 @@ class TestNormalOperation(TestCase):
         Simulation(CLK, dut, dut_v, stim, stim_v).run(quiet=1)
 
 
+@unittest.skip("Program Counter not implemented")
 class TestStallOperation(TestCase):
     """Test when stall line is asserted"""
     def bench(self, clock, pc_write, nxt_inst, cur_pc):

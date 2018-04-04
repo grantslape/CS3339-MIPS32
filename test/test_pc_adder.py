@@ -16,6 +16,7 @@ def setup(j):
     return [Signal(intbv(0)[32:]) for i in range(j)]
 
 
+@unittest.skip("PC Adder not implemented")
 class TestPcAdderZero(TestCase):
     def bench(self, cur_pc, nxt_pc, nxt_pc_v=intbv(0)[32:]):
         cur_pc.next = intbv(0)[32:]
@@ -45,6 +46,7 @@ class TestPcAdderZero(TestCase):
         Simulation(dut, dut_v, self.bench(cur_pc, nxt_pc, nxt_pc_v=nxt_pc_v)).run(quiet=1)
 
 
+@unittest.skip("PC Adder not implemented")
 class TestPcAdderDynamic(TestCase):
     def bench(self, cur_pc, nxt_pc):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
