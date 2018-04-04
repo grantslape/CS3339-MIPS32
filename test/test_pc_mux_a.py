@@ -12,7 +12,7 @@ from settings import settings as sf
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
-class TestPcMuxAHoldValue(TestCase):
+class TestPcMuxA(TestCase):
     """Test that pc_mux_a holds state"""
 
     def setUp(self):
@@ -21,6 +21,8 @@ class TestPcMuxAHoldValue(TestCase):
         self.nxt_inst = Signal(intbv(0x00000060)[32:])
         self.nxt_inst_v = Signal(intbv(0x00000060)[32:])
         self.imm_jmp_addr = Signal(intbv(0x00000faf)[32:])
+        self.dut = pc_mux_a(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
+        self.dut_v = pc_mux_a(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
 
     def zero_test(self):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -39,55 +41,47 @@ class TestPcMuxAHoldValue(TestCase):
             if self.pc_src == 1:
                 self.assertEqual(bin(nxt_inst ^ self.imm_jmp_addr), bin(intbv(0)[32:]))
             else:
-                self.assertEqual(bin(nxt_inst ^ self.nxt_pc), bin(0))
+                self.assertEqual(bin(nxt_inst ^ self.nxt_pc), bin(intbv(0)[32:]))
             yield HALF_PERIOD
 
     def testHoldValuePython(self):
         """ Checking that module holds value when no input changes from Python """
-        dut = pc_mux_a(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
         stim = self.zero_test()
 
-        Simulation(dut, stim).run(quiet=1)
+        Simulation(self.dut, stim).run(quiet=1)
 
     def testHoldValueVerilog(self):
         """ Checking that module holds value when no input changes from Verilog """
-        dut = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
         stim = self.zero_test()
 
-        Simulation(dut, stim).run(quiet=1)
+        Simulation(self.dut_v, stim).run(quiet=1)
 
     def testHoldValueTogether(self):
         """ Checking that modules hold value when no input changes from Cosimulation """
-        dut = pc_mux_a(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
-        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
         stim = self.zero_test()
 
-        Simulation(dut, dut_v, stim).run(quiet=1)
+        Simulation(self.dut, self.dut_v, stim).run(quiet=1)
 
     def testCorrectOutputPython(self):
         """ Checking correct PC address is outputted from Python """
-        dut = pc_mux_a(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
         stim = self.output_test(self.nxt_inst)
 
-        sim = Simulation(dut, stim)
+        sim = Simulation(self.dut, stim)
         sim.run(quiet=1)
 
     def testCorrectOutputVerilog(self):
         """ Checking correct PC address is outputted from Verilog """
-        dut = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
-        stim = self.output_test(self.nxt_inst)
+        stim = self.output_test(self.nxt_inst_v)
 
-        sim = Simulation(dut, stim)
+        sim = Simulation(self.dut_v, stim)
         sim.run(quiet=1)
 
     def testCorrectOutputTogether(self):
         """ Checking correct PC address is outputted from Cosimulation """
-        dut = pc_mux_a(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
-        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
         stim = self.output_test(self.nxt_inst)
         stim_v = self.output_test(self.nxt_inst_v)
 
-        sim = Simulation(dut, dut_v, stim, stim_v)
+        sim = Simulation(self.dut, self.dut_v, stim, stim_v)
         sim.run(quiet=1)
 
 
