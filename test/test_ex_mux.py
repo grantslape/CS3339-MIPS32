@@ -19,7 +19,6 @@ class TestExMuxDeasserted(TestCase):
         self.reg_dst = Signal(intbv(0)[1:])
         self.rt_in, self.rd_in, self.dest, self.dest_v = [Signal(intbv(0)[5:]) for i in range(4)]
         self.dut = ex_mux(self.reg_dst, self.rt_in, self.rd_in, self.dest)
-        self.dut_v = ex_mux_v(self.reg_dst, self.rt_in, self.rd_in, self.dest_v)
 
     def deassert(self, dest):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -69,14 +68,16 @@ class TestExMuxDeasserted(TestCase):
 
     def testExMuxDeassertedVerilog(self):
         """Check that RT is returned when reg_dst deasserted Verilog"""
+        dut_v = ex_mux_v(self.reg_dst, self.rt_in, self.rd_in, self.dest_v)
         stim = self.deassert(self.dest_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testExMuxDeassertedTogether(self):
         """Check that RT is returned when reg_dst deasserted Together"""
+        dut_v = ex_mux_v(self.reg_dst, self.rt_in, self.rd_in, self.dest_v)
         stim = self.deassert(self.dest)
         stim_v = self.deassert(self.dest_v)
-        Simulation(self.dut, self.dut_v, stim, stim_v).run(quiet=1)
+        Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
 
     def testExMuxAssertedPython(self):
         """Check that RT is returned when reg_dst Asserted Python"""
@@ -85,14 +86,16 @@ class TestExMuxDeasserted(TestCase):
 
     def testExMuxAssertedVerilog(self):
         """Check that RT is returned when reg_dst Asserted Verilog"""
+        dut_v = ex_mux_v(self.reg_dst, self.rt_in, self.rd_in, self.dest_v)
         stim = self.asserted(self.dest_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testExMuxAssertedTogether(self):
         """Check that RT is returned when reg_dst Asserted Together"""
+        dut_v = ex_mux_v(self.reg_dst, self.rt_in, self.rd_in, self.dest_v)
         stim = self.asserted(self.dest)
         stim_v = self.asserted(self.dest_v)
-        Simulation(self.dut, self.dut_v, stim, stim_v).run(quiet=1)
+        Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
 
     def testExMuxDynamicPython(self):
         """Check dynamic behavior Python"""
@@ -101,14 +104,16 @@ class TestExMuxDeasserted(TestCase):
 
     def testExMuxDynamicVerilog(self):
         """Check dynamic behavior Verilog"""
+        dut_v = ex_mux_v(self.reg_dst, self.rt_in, self.rd_in, self.dest_v)
         stim = self.dynamic(self.dest_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testExMuxDynamicTogether(self):
         """Check dynamic behavior Together"""
+        dut_v = ex_mux_v(self.reg_dst, self.rt_in, self.rd_in, self.dest_v)
         stim = self.dynamic(self.dest)
         stim_v = self.dynamic(self.dest_v)
-        Simulation(self.dut, self.dut_v, stim, stim_v).run(quiet=1)
+        Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':

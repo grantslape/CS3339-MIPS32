@@ -18,7 +18,6 @@ class TestNormalOperation(TestCase):
         self.clock, self.pc_write = [Signal(intbv(0)[1:]) for i in range(2)]
         self.cur_pc_v, self.cur_pc, self.nxt_inst = [Signal(intbv(0)[32:]) for i in range(3)]
         self.dut = program_counter(self.clock, self.pc_write, self.nxt_inst, self.cur_pc)
-        self.dut_v = program_counter_v(self.clock, self.pc_write, self.nxt_inst, self.cur_pc_v)
 
     def normalOp(self, cur_pc):
         self.pc_write.next = intbv(0)[1:]
@@ -47,15 +46,17 @@ class TestNormalOperation(TestCase):
     def testNormalOperationVerilog(self):
         """Checking normal PC operation Verilog"""
         CLK = clock_gen(self.clock)
+        dut_v = program_counter_v(self.clock, self.pc_write, self.nxt_inst, self.cur_pc_v)
         stim = self.normalOp(self.cur_pc_v)
-        Simulation(CLK, self.dut_v, stim).run(quiet=1)
+        Simulation(CLK, dut_v, stim).run(quiet=1)
 
     def testNormalOperationTogether(self):
         """Checking normal PC operation together"""
         CLK = clock_gen(self.clock)
+        dut_v = program_counter_v(self.clock, self.pc_write, self.nxt_inst, self.cur_pc_v)
         stim = self.normalOp(self.cur_pc)
         stim_v = self.normalOp(self.cur_pc_v)
-        Simulation(CLK, self.dut, self.dut_v, stim, stim_v).run(quiet=1)
+        Simulation(CLK, self.dut, dut_v, stim, stim_v).run(quiet=1)
 
     def testStallOperationPython(self):
         """Test when stall line is asserted Python"""
@@ -67,17 +68,19 @@ class TestNormalOperation(TestCase):
     def testStallOperationVerilog(self):
         """Checking stall line is asserted Verilog"""
         CLK = clock_gen(self.clock)
+        dut_v = program_counter_v(self.clock, self.pc_write, self.nxt_inst, self.cur_pc_v)
         stim = self.stall(self.cur_pc_v)
 
-        Simulation(CLK, self.dut_v, stim).run(quiet=1)
+        Simulation(CLK, dut_v, stim).run(quiet=1)
 
     def testStallOperationTogether(self):
         """Checking stall line is asserted together"""
         CLK = clock_gen(self.clock)
+        dut_v = program_counter_v(self.clock, self.pc_write, self.nxt_inst, self.cur_pc_v)
         stim = self.stall(self.cur_pc)
         stim_v = self.stall(self.cur_pc_v)
 
-        Simulation(CLK, self.dut, self.dut_v, stim, stim_v).run(quiet=1)
+        Simulation(CLK, self.dut, dut_v, stim, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':

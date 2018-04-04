@@ -38,15 +38,6 @@ class TestRfileWrite(TestCase):
                          self.w_data,
                          self.r_data1,
                          self.r_data2)
-        self.dut_v = rfile_v(self.clock,
-                             self.reset,
-                             self.reg_write,
-                             self.r_addr1,
-                             self.r_addr2,
-                             self.w_addr,
-                             self.w_data,
-                             self.r_data1_v,
-                             self.r_data2_v)
 
     def writeTest(self, r_data):
         self.reset.next = sf['ACTIVE_LOW']
@@ -99,14 +90,32 @@ class TestRfileWrite(TestCase):
         """Test Rfiles writes correctly and reads back Verilog """
         CLK = clock_gen(self.clock)
         stim_1 = self.writeTest(self.r_data1_v)
-        Simulation(CLK, self.dut_v, stim_1).run(quiet=1)
+        dut_v = rfile_v(self.clock,
+                        self.reset,
+                        self.reg_write,
+                        self.r_addr1,
+                        self.r_addr2,
+                        self.w_addr,
+                        self.w_data,
+                        self.r_data1_v,
+                        self.r_data2_v)
+        Simulation(CLK, dut_v, stim_1).run(quiet=1)
 
     def testRfileWriteTogether(self):
         """Test Rfiles writes correctly and reads back together """
         CLK = clock_gen(self.clock)
         stim_1 = self.writeTest(self.r_data1)
         stim_v = self.writeTest(self.r_data1_v)
-        Simulation(CLK, self.dut, self.dut_v, stim_1, stim_v).run(quiet=1)
+        dut_v = rfile_v(self.clock,
+                        self.reset,
+                        self.reg_write,
+                        self.r_addr1,
+                        self.r_addr2,
+                        self.w_addr,
+                        self.w_data,
+                        self.r_data1_v,
+                        self.r_data2_v)
+        Simulation(CLK, self.dut, dut_v, stim_1, stim_v).run(quiet=1)
 
     def testRfileReadPython(self):
         """Test correct values are read from register Python"""
@@ -118,14 +127,32 @@ class TestRfileWrite(TestCase):
         """Test correct values are read from register Verilog"""
         CLK = clock_gen(self.clock)
         stim = self.readTest(self.r_data1_v, self.r_data2_v)
-        Simulation(CLK, stim, self.dut_v).run(quiet=1)
+        dut_v = rfile_v(self.clock,
+                        self.reset,
+                        self.reg_write,
+                        self.r_addr1,
+                        self.r_addr2,
+                        self.w_addr,
+                        self.w_data,
+                        self.r_data1_v,
+                        self.r_data2_v)
+        Simulation(CLK, stim, dut_v).run(quiet=1)
 
     def testRfileReadTogether(self):
         """Test correct values are read from register together"""
         CLK = clock_gen(self.clock)
         stim = self.readTest(self.r_data1, self.r_data2)
         stim_v = self.readTest(self.r_data1_v, self.r_data2_v)
-        Simulation(CLK, stim, self.dut, self.dut_v, stim_v).run(quiet=1)
+        dut_v = rfile_v(self.clock,
+                        self.reset,
+                        self.reg_write,
+                        self.r_addr1,
+                        self.r_addr2,
+                        self.w_addr,
+                        self.w_data,
+                        self.r_data1_v,
+                        self.r_data2_v)
+        Simulation(CLK, stim, self.dut, dut_v, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':

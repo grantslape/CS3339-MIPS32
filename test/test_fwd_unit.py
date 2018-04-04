@@ -26,14 +26,6 @@ class TestFwdUnitHoldValue(TestCase):
                             self.wb_reg_write,
                             self.forward_a,
                             self.forward_b)
-        self.dut_v = fwd_unit(self.rt_in,
-                              self.rs_in,
-                              self.ex_rd,
-                              self.mem_rd,
-                              self.mem_reg_write,
-                              self.wb_reg_write,
-                              self.forward_a_v,
-                              self.forward_b_v)
 
     def holdValue(self, forward_a, forward_b):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -126,13 +118,29 @@ class TestFwdUnitHoldValue(TestCase):
     def testHoldValueVerilog(self):
         """ Checking that module holds value when no input changes from Verilog """
         stim = self.holdValue(self.forward_a_v, self.forward_b_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        dut_v = fwd_unit_v(self.rt_in,
+                           self.rs_in,
+                           self.ex_rd,
+                           self.mem_rd,
+                           self.mem_reg_write,
+                           self.wb_reg_write,
+                           self.forward_a_v,
+                           self.forward_b_v)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testHoldValueTogether(self):
         """ Checking that module holds value when no input changes from Cosimulation """
         stim = self.holdValue(self.forward_a, self.forward_b)
         stim_v = self.holdValue(self.forward_a_v, self.forward_b_v)
-        Simulation(self.dut, self.dut_v, stim, stim_v).run(quiet=1)
+        dut_v = fwd_unit_v(self.rt_in,
+                           self.rs_in,
+                           self.ex_rd,
+                           self.mem_rd,
+                           self.mem_reg_write,
+                           self.wb_reg_write,
+                           self.forward_a_v,
+                           self.forward_b_v)
+        Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
 
     def testNoForwardPython(self):
         """Test no forwarding Python"""
@@ -142,13 +150,29 @@ class TestFwdUnitHoldValue(TestCase):
     def testNoForwardVerilog(self):
         """Test no forwarding Verilog"""
         stim = self.noForwardTest(self.forward_a_v, self.forward_b_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        dut_v = fwd_unit_v(self.rt_in,
+                           self.rs_in,
+                           self.ex_rd,
+                           self.mem_rd,
+                           self.mem_reg_write,
+                           self.wb_reg_write,
+                           self.forward_a_v,
+                           self.forward_b_v)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testNoForwardTogether(self):
         """Test no forwarding Verilog"""
         stim = self.noForwardTest(self.forward_a, self.forward_b)
         stim_v = self.noForwardTest(self.forward_a_v, self.forward_b_v)
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        dut_v = fwd_unit_v(self.rt_in,
+                           self.rs_in,
+                           self.ex_rd,
+                           self.mem_rd,
+                           self.mem_reg_write,
+                           self.wb_reg_write,
+                           self.forward_a_v,
+                           self.forward_b_v)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testForwardACasesPython(self):
         """Test Forward A cases Python"""
@@ -158,13 +182,29 @@ class TestFwdUnitHoldValue(TestCase):
     def testForwardACasesVerilog(self):
         """Test Forward A cases Verilog"""
         stim_v = self.forwardATest(self.forward_a_v, self.forward_b_v)
-        Simulation(self.dut_v, stim_v).run(quiet=1)
+        dut_v = fwd_unit_v(self.rt_in,
+                           self.rs_in,
+                           self.ex_rd,
+                           self.mem_rd,
+                           self.mem_reg_write,
+                           self.wb_reg_write,
+                           self.forward_a_v,
+                           self.forward_b_v)
+        Simulation(dut_v, stim_v).run(quiet=1)
 
     def testForwardACasesTogether(self):
         """Test Forward A cases together"""
         stim = self.forwardATest(self.forward_a, self.forward_b)
         stim_v = self.forwardATest(self.forward_a_v, self.forward_b_v)
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        dut_v = fwd_unit_v(self.rt_in,
+                           self.rs_in,
+                           self.ex_rd,
+                           self.mem_rd,
+                           self.mem_reg_write,
+                           self.wb_reg_write,
+                           self.forward_a_v,
+                           self.forward_b_v)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testForwardBCasesPython(self):
         """Test Forward B cases Python"""
@@ -174,13 +214,29 @@ class TestFwdUnitHoldValue(TestCase):
     def testForwardBCasesVerilog(self):
         """Test Forward B cases Verilog"""
         stim = self.forwardBTest(self.forward_a_v, self.forward_b_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        dut_v = fwd_unit_v(self.rt_in,
+                           self.rs_in,
+                           self.ex_rd,
+                           self.mem_rd,
+                           self.mem_reg_write,
+                           self.wb_reg_write,
+                           self.forward_a_v,
+                           self.forward_b_v)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testForwardBCasesTogether(self):
         """Test Forward A cases together"""
         stim = self.forwardBTest(self.forward_a, self.forward_b)
         stim_v = self.forwardBTest(self.forward_a_v, self.forward_b_v)
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        dut_v = fwd_unit_v(self.rt_in,
+                           self.rs_in,
+                           self.ex_rd,
+                           self.mem_rd,
+                           self.mem_reg_write,
+                           self.wb_reg_write,
+                           self.forward_a_v,
+                           self.forward_b_v)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':

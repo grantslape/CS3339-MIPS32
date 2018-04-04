@@ -18,7 +18,6 @@ class TestPcAdderZero(TestCase):
     def setUp(self):
         self.cur_pc, self.nxt_pc, self.nxt_pc_v = [Signal(intbv(0)[32:]) for i in range(3)]
         self.dut = pc_adder(self.cur_pc, self.nxt_pc)
-        self.dut_v = pc_adder_v(self.cur_pc, self.nxt_pc_v)
 
     def zeroTest(self):
         self.cur_pc.next = intbv(0)[32:]
@@ -41,11 +40,13 @@ class TestPcAdderZero(TestCase):
 
     def testPcAdderZeroVerilog(self):
         """test pc adder hold zero Verilog"""
-        Simulation(self.dut_v, self.zeroTest()).run(quiet=1)
+        dut_v = pc_adder_v(self.cur_pc, self.nxt_pc_v)
+        Simulation(dut_v, self.zeroTest()).run(quiet=1)
 
     def testPcAdderZeroTogether(self):
         """test pc adder hold zero together"""
-        Simulation(self.dut, self.dut_v, self.zeroTest()).run(quiet=1)
+        dut_v = pc_adder_v(self.cur_pc, self.nxt_pc_v)
+        Simulation(self.dut, dut_v, self.zeroTest()).run(quiet=1)
 
     def testPcAdderDynamicPython(self):
         """test pc adder adds 4 Python"""
@@ -53,13 +54,15 @@ class TestPcAdderZero(TestCase):
 
     def testPcAdderDynamicVerilog(self):
         """test pc adder adds 4 Verilog"""
-        Simulation(self.dut, self.dynamic(self.nxt_pc)).run(quiet=1)
+        dut_v = pc_adder_v(self.cur_pc, self.nxt_pc_v)
+        Simulation(dut_v, self.dynamic(self.nxt_pc_v)).run(quiet=1)
 
     def testPcAdderDynamicTogether(self):
         """test pc adder adds 4 together"""
+        dut_v = pc_adder_v(self.cur_pc, self.nxt_pc_v)
         stim = self.dynamic(self.nxt_pc)
         stim_v = self.dynamic(self.nxt_pc_v)
-        Simulation(self.dut, self.dut_v, stim, stim_v).run(quiet=1)
+        Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':

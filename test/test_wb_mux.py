@@ -29,7 +29,6 @@ class TestWbMux(TestCase):
             Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(4)
         ]
         self.dut = wb_mux(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
-        self.dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
 
     def deassert(self, wb_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -72,13 +71,15 @@ class TestWbMux(TestCase):
     def testHoldDeassertVerilog(self):
         """ Checking that result_data is outputted when deasserted Verilog"""
         stim = self.deassert(self.wb_out_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testHoldDeassertTogether(self):
         """ Checking that result_data is outputted when deasserted Cosimulation"""
         stim = self.deassert(self.wb_out)
         stim_v = self.deassert(self.wb_out_v)
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testHoldAssertPython(self):
         """ Checking that rdata_in is outputted when Asserted Python"""
@@ -88,13 +89,15 @@ class TestWbMux(TestCase):
     def testHoldAssertVerilog(self):
         """ Checking that rdata_in is outputted when Asserted Verilog"""
         stim = self.asserted(self.wb_out_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testHoldAssertTogether(self):
         """ Checking that rdata_in is outputted when Asserted Cosimulation"""
         stim = self.asserted(self.wb_out)
         stim_v = self.asserted(self.wb_out_v)
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testHoldDynamicPython(self):
         """ Checking that correct output is assigned Python"""
@@ -104,13 +107,15 @@ class TestWbMux(TestCase):
     def testDynamicVerilog(self):
         """ Checking that correct output is assigned Verilog"""
         stim = self.dynamic(self.wb_out_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testDynamicTogether(self):
         """ Checking that correct output is assigned Cosimulation"""
         stim = self.dynamic(self.wb_out)
         stim_v = self.dynamic(self.wb_out_v)
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':

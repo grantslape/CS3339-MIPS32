@@ -22,7 +22,6 @@ class TestAluMuxA(TestCase):
             Signal(intbv(0, min=sf['MIN_SIGNED_VALUE'], max=sf['MAX_SIGNED_VALUE'])) for i in range(5)
         ]
         self.dut = alu_mux_a(self.forward_a, self.r_data1, self.mem_rd, self.wb_rd, self.op1_out)
-        self.dut_v = alu_mux_a_v(self.forward_a, self.r_data1, self.mem_rd, self.wb_rd, self.op1_out_v)
 
     def deassert(self, op1_out):
         self.forward_a.next = 0
@@ -87,15 +86,17 @@ class TestAluMuxA(TestCase):
     def testAluMuxADeassertVerilog(self):
         """Testing deasserted functionality Verilog"""
         stim = self.deassert(self.op1_out_v)
+        dut_v = alu_mux_a_v(self.forward_a, self.r_data1, self.mem_rd, self.wb_rd, self.op1_out_v)
 
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testAluMuxADeassertTogether(self):
         """Testing deasserted functionality together"""
+        dut_v = alu_mux_a_v(self.forward_a, self.r_data1, self.mem_rd, self.wb_rd, self.op1_out_v)
         stim = self.deassert(self.op1_out)
         stim_v = self.deassert(self.op1_out_v)
 
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testAluMuxAMemForwardPython(self):
         """Testing MemForward functionality Python"""
@@ -105,16 +106,18 @@ class TestAluMuxA(TestCase):
 
     def testAluMuxAMemForwardVerilog(self):
         """Testing MemForward functionality Verilog"""
+        dut_v = alu_mux_a_v(self.forward_a, self.r_data1, self.mem_rd, self.wb_rd, self.op1_out_v)
         stim = self.memForward(self.op1_out_v)
 
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testAluMuxAMemForwardTogether(self):
         """Testing MemForward functionality together"""
+        dut_v = alu_mux_a_v(self.forward_a, self.r_data1, self.mem_rd, self.wb_rd, self.op1_out_v)
         stim = self.memForward(self.op1_out)
         stim_v = self.memForward(self.op1_out_v)
 
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testAluMuxAWbForwardPython(self):
         """Testing WbForward functionality Python"""
@@ -124,16 +127,18 @@ class TestAluMuxA(TestCase):
 
     def testAluMuxAWbForwardVerilog(self):
         """Testing WbForward functionality Verilog"""
+        dut_v = alu_mux_a_v(self.forward_a, self.r_data1, self.mem_rd, self.wb_rd, self.op1_out_v)
         stim = self.wbForward(self.op1_out_v)
 
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testAluMuxAWbForwardTogether(self):
         """Testing WbForward functionality together"""
+        dut_v = alu_mux_a_v(self.forward_a, self.r_data1, self.mem_rd, self.wb_rd, self.op1_out_v)
         stim = self.wbForward(self.op1_out)
         stim_v = self.wbForward(self.op1_out_v)
 
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
 
 if __name__ == '__main)__':

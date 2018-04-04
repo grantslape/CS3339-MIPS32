@@ -22,7 +22,6 @@ class TestPcMuxA(TestCase):
         self.nxt_inst_v = Signal(intbv(0x00000060)[32:])
         self.imm_jmp_addr = Signal(intbv(0x00000faf)[32:])
         self.dut = pc_mux_a(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
-        self.dut_v = pc_mux_a(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
 
     def zero_test(self):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -53,14 +52,16 @@ class TestPcMuxA(TestCase):
     def testHoldValueVerilog(self):
         """ Checking that module holds value when no input changes from Verilog """
         stim = self.zero_test()
+        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
 
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testHoldValueTogether(self):
         """ Checking that modules hold value when no input changes from Cosimulation """
         stim = self.zero_test()
+        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
 
-        Simulation(self.dut, self.dut_v, stim).run(quiet=1)
+        Simulation(self.dut, dut_v, stim).run(quiet=1)
 
     def testCorrectOutputPython(self):
         """ Checking correct PC address is outputted from Python """
@@ -72,16 +73,18 @@ class TestPcMuxA(TestCase):
     def testCorrectOutputVerilog(self):
         """ Checking correct PC address is outputted from Verilog """
         stim = self.output_test(self.nxt_inst_v)
+        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
 
-        sim = Simulation(self.dut_v, stim)
+        sim = Simulation(dut_v, stim)
         sim.run(quiet=1)
 
     def testCorrectOutputTogether(self):
         """ Checking correct PC address is outputted from Cosimulation """
+        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
         stim = self.output_test(self.nxt_inst)
         stim_v = self.output_test(self.nxt_inst_v)
 
-        sim = Simulation(self.dut, self.dut_v, stim, stim_v)
+        sim = Simulation(self.dut, dut_v, stim, stim_v)
         sim.run(quiet=1)
 
 

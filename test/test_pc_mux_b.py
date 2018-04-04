@@ -21,7 +21,6 @@ class TestPcMuxB(TestCase):
             Signal(intbv(0)[32:]) for i in range(4)
         ]
         self.dut = pc_mux_b(self.jmp_ctrl, self.nxt_inst_in, self.jmp_addr_in, self.next_address)
-        self.dut_v = pc_mux_b_v(self.jmp_ctrl, self.nxt_inst_in, self.jmp_addr_in, self.next_address_v)
 
     def deassert(self, next_address):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -63,14 +62,16 @@ class TestPcMuxB(TestCase):
 
     def testPcMuxBDeassertedVerilog(self):
         """Checking that sequential address comes when deasserted Verilog"""
+        dut_v = pc_mux_b_v(self.jmp_ctrl, self.nxt_inst_in, self.jmp_addr_in, self.next_address_v)
         stim = self.deassert(self.next_address_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testPcMuxBDeassertedTogether(self):
         """Checking that sequential address comes when deasserted Cosimulation"""
+        dut_v = pc_mux_b_v(self.jmp_ctrl, self.nxt_inst_in, self.jmp_addr_in, self.next_address_v)
         stim = self.deassert(self.next_address)
         stim_v = self.deassert(self.next_address_v)
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testPcMuxBAssertedPython(self):
         """Checking that sequential address comes when asserted Python"""
@@ -79,14 +80,16 @@ class TestPcMuxB(TestCase):
 
     def testPcMuxBAssertedVerilog(self):
         """Checking that sequential address comes when asserted Verilog"""
+        dut_v = pc_mux_b_v(self.jmp_ctrl, self.nxt_inst_in, self.jmp_addr_in, self.next_address_v)
         stim = self.asserted(self.next_address_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testPcMuxBAssertedTogether(self):
         """Checking that sequential address comes when asserted Cosimulation"""
+        dut_v = pc_mux_b_v(self.jmp_ctrl, self.nxt_inst_in, self.jmp_addr_in, self.next_address_v)
         stim = self.asserted(self.next_address)
         stim_v = self.asserted(self.next_address_v)
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testPcMuxBDynamicPython(self):
         """Checking dynamic PC Mux B Python"""
@@ -95,14 +98,16 @@ class TestPcMuxB(TestCase):
 
     def testPcMuxBDynamicVerilog(self):
         """Checking dynamic PC Mux B Verilog"""
+        dut_v = pc_mux_b_v(self.jmp_ctrl, self.nxt_inst_in, self.jmp_addr_in, self.next_address_v)
         stim = self.dynamic(self.next_address_v)
-        Simulation(self.dut_v, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testPcMuxBDynamicTogether(self):
         """Checking dynamic PC Mux B Cosimulation"""
+        dut_v = pc_mux_b_v(self.jmp_ctrl, self.nxt_inst_in, self.jmp_addr_in, self.next_address_v)
         stim = self.dynamic(self.next_address)
         stim_v = self.dynamic(self.next_address_v)
-        Simulation(self.dut, stim, self.dut_v, stim_v).run(quiet=1)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':
