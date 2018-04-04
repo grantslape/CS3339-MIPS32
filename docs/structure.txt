@@ -4,6 +4,7 @@ cpu:
 	reg clock: System Clock
 	program_counter: This is a simple module that is always set by pc_mux_a:
 		input clock: system clock
+		input pc_write: 1 to stall (repeat instruction), from hazard_unit.pc_write
 		input [31:0] nxt_inst: next instruction address from pc_mux_b
 		output [31:0] cur_pc: next instruction address goes to inst_mem, pc_mux_c
 	pc_mux_a: 2:1 Mux for program_counter input:
@@ -16,11 +17,6 @@ cpu:
 		input [31:0] nxt_inst_in: actual next instruction address from pc_mux_a
 		input [31:0] jmp_addr_in: jump address from id_shift_left
 		output [31:0] next_address.  to pc_mux_c
-	pc_mux_c: 2:1 mux for stalling.
-		input pc_write: 1 to stall, from hazard_unit.pc_write
-		input [31:0] cur_pc: current PC.  from program_counter
-		input zero: zero input for nop.
-		output [31:0] nxt_pc: to program_counter
 	pc_adder: Increments to next sequential instruction address:
 		input [31:0] cur_pc: current instruction address. from program_counter
 		output [31:0] nxt_pc: next sequential instruction address to pc_mux_a and if_id

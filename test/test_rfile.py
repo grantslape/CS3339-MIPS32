@@ -27,8 +27,74 @@ def setup():
     return clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2
 
 
-class TestRfileRead(TestCase):
+class TestRfileWrite(TestCase):
+    # TODO: This test depends on successful reads, and therefore is not completely valid
 
+    reg_1 = intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])
+
+    def bench(self, clock, reset, reg_write, r_addr, w_addr, w_data, r_data):
+        reset.next = sf['ACTIVE_LOW']
+        yield posedge(clock)
+        reset.next = sf['INACTIVE_HIGH']
+        for i in range(sf['DEFAULT_TEST_LENGTH']):
+            self.reg_1 = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']),
+                               min=sf['SIGNED_MIN_VALUE'],
+                               max=sf['SIGNED_MAX_VALUE'])
+            reg_addr = intbv(randint(0, sf['WIDTH'] - 1))[5:0]
+            yield posedge(clock)
+            reg_write.next = 1
+            w_addr.next = reg_addr
+            w_data.next = self.reg_1
+            # Unsure about ordering here for sample on neg edge
+            r_addr.next = reg_addr
+            yield negedge(clock)
+            self.assertEqual(r_data, self.reg_1)
+        raise StopSimulation
+
+    def testRfileWritePython(self):
+        """Test Rfiles writes correctly and reads back Python """
+        clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2 = setup()
+        CLK = clock_gen(clock)
+        stim_1 = self.bench(clock, reset, reg_write, r_addr1, w_addr, w_data, r_data1)
+        stim_2 = self.bench(clock, reset, reg_write, r_addr2, w_addr, w_data, r_data2)
+        dut = rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
+
+        Simulation(CLK, dut, stim_1, stim_2).run(quiet=1)
+
+    def testRfileWriteVerilog(self):
+        """Test Rfiles writes correctly and reads back Verilog """
+        clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2 = setup()
+        CLK = clock_gen(clock)
+        stim_1 = self.bench(clock, reset, reg_write, r_addr1, w_addr, w_data, r_data1)
+        stim_2 = self.bench(clock, reset, reg_write, r_addr2, w_addr, w_data, r_data2)
+        dut = rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
+
+        Simulation(CLK, dut, stim_1, stim_2).run(quiet=1)
+
+    def testRfileWriteTogether(self):
+        """Test Rfiles writes correctly and reads back together """
+        def test(r_data):
+            yield posedge(clock)
+            for i in range(sf['DEFAULT_TEST_LENGTH']):
+                yield posedge(clock)
+                yield negedge(clock)
+                self.assertEqual(r_data, self.reg_1)
+
+        clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2 = setup()
+        r_data1_v, r_data2_v = [Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
+                                for i in range(2)]
+        CLK = clock_gen(clock)
+        stim_1 = self.bench(clock, reset, reg_write, r_addr1, w_addr, w_data, r_data1)
+        stim_2 = self.bench(clock, reset, reg_write, r_addr2, w_addr, w_data, r_data2)
+        dut = rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
+        dut_v = rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1_v, r_data2_v)
+
+        Simulation(CLK, dut, dut_v, stim_1, stim_2, test(r_data1_v), test(r_data2_v)).run(quiet=1)
+
+
+class TestRfileRead(TestCase):
+    """Test that Rfile reads correctly"""
+    # TODO: This test depends on successful writes, and therefore is not completely valid
     # Dynamic expected read data
     expected = [intbv(randint(sf['SIGNED_MIN_VALUE'],sf['SIGNED_MAX_VALUE']),
                       min=sf['SIGNED_MIN_VALUE'],
@@ -64,8 +130,7 @@ class TestRfileRead(TestCase):
         stim = self.bench(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
         dut = rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
 
-        sim = Simulation(CLK, stim, dut)
-        sim.run(quiet=1)
+        Simulation(CLK, stim, dut).run(quiet=1)
 
     def testRfileReadVerilog(self):
         """Test correct values are read from register Verilog"""
@@ -74,8 +139,7 @@ class TestRfileRead(TestCase):
         stim = self.bench(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
         dut = rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
 
-        sim = Simulation(CLK, stim, dut)
-        sim.run(quiet=1)
+        Simulation(CLK, stim, dut).run(quiet=1)
 
     def testRfileReadTogether(self):
         """Test correct values are read from register together"""
@@ -94,8 +158,7 @@ class TestRfileRead(TestCase):
         dut = rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
         dut_v = rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1_v, r_data2_v)
 
-        sim = Simulation(CLK, stim, dut, dut_v, test())
-        sim.run(quiet=1)
+        Simulation(CLK, stim, dut, dut_v, test()).run(quiet=1)
 
 
 if __name__ == '__main__':

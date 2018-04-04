@@ -12,7 +12,8 @@ import test_shift_unit
 import test_wb_mux
 
 modules = (test_pc_mux_a,
-           test_shift_unit,test_fwd_unit)
+           test_shift_unit,
+           test_fwd_unit,)
 tester = unittest.defaultTestLoader
 
 

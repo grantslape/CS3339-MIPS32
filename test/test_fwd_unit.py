@@ -12,9 +12,7 @@ HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
 def setup():
-    rt_in = Signal(intbv(0)[5:])
-    rs_in = Signal(intbv(0)[5:])
-    ex_rd, mem_rd = [Signal(intbv(0)[5:]) for i in range(2)]
+    rt_in, rs_in, ex_rd, mem_rd = [Signal(intbv(0)[5:]) for i in range(4)]
     mem_reg_write, wb_reg_write = [Signal(intbv(0)[1:]) for i in range(2)]
     forward_a, forward_b = [Signal(intbv(0)[2:]) for i in range(2)]
     return rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b
@@ -54,22 +52,18 @@ class TestFwdUnitHoldValue(TestCase):
 
     def testHoldValueTogether(self):
         """ Checking that module holds value when no input changes from Cosimulation """
-        def test():
-            for i in range(sf['DEFAULT_TEST_LENGTH']):
-                self.assertEqual(forward_a_v, 0)
-                self.assertEqual(forward_b_v, 0)
-            yield HALF_PERIOD
-
         rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b = setup()
         forward_a_v, forward_b_v = [Signal(intbv(0)[2:]) for i in range(2)]
         dut = fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
         dut_v = fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a_v, forward_b_v)
         stim = self.bench(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b)
+        stim_v = self.bench(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a_v, forward_b_v)
 
-        sim = Simulation(dut, dut_v, stim, test())
+        sim = Simulation(dut, dut_v, stim, stim_v)
         sim.run(quiet=1)
 
 
+# TODO: REFACTOR THESE TESTS TO REMOVE DUPLICATION
 class TestFwdUnitBaseCases(TestCase):
     """Test Forwarding Known Cases"""
     def noForwardTest(self, rt_in, rs_in, forward_b, forward_a, forward_a_v=intbv(0), forward_b_v=intbv(0)):
