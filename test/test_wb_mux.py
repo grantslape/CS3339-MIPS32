@@ -39,8 +39,7 @@ class TestWbMuxDeassert(TestCase):
         dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
         stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
 
-        sim = Simulation(dut, stim)
-        sim.run(quiet=1)
+        Simulation(dut, stim).run(quiet=1)
 
     def testHoldDeassertVerilog(self):
         """ Checking that result_data is outputted when deasserted Verilog"""
@@ -48,24 +47,18 @@ class TestWbMuxDeassert(TestCase):
         dut = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out)
         stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
 
-        sim = Simulation(dut, stim)
-        sim.run(quiet=1)
+        Simulation(dut, stim).run(quiet=1)
 
     def testHoldDeassertTogether(self):
         """ Checking that result_data is outputted when deasserted Cosimulation"""
-        def test():
-            for i in range(sf['DEFAULT_TEST_LENGTH']):
-                yield HALF_PERIOD
-                self.assertEqual(wb_out_v, result_in)
-
         mem_to_reg, rdata_in, result_in, wb_out = setup()
         wb_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
         dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
         dut_v = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out_v)
         stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
+        stim_v = self.bench(mem_to_reg, rdata_in, result_in, wb_out_v)
 
-        sim = Simulation(dut, dut_v, stim, test())
-        sim.run(quiet=1)
+        Simulation(dut, dut_v, stim, stim_v).run(quiet=1)
 
 
 class TestWbMuxAssert(TestCase):
@@ -87,8 +80,7 @@ class TestWbMuxAssert(TestCase):
         dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
         stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
 
-        sim = Simulation(dut, stim)
-        sim.run(quiet=1)
+        Simulation(dut, stim).run(quiet=1)
 
     def testHoldAssertVerilog(self):
         """ Checking that rdata_in is outputted when Asserted Verilog"""
@@ -96,24 +88,18 @@ class TestWbMuxAssert(TestCase):
         dut = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out)
         stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
 
-        sim = Simulation(dut, stim)
-        sim.run(quiet=1)
+        Simulation(dut, stim).run(quiet=1)
 
     def testHoldAssertTogether(self):
         """ Checking that rdata_in is outputted when Asserted Cosimulation"""
-        def test():
-            for i in range(sf['DEFAULT_TEST_LENGTH']):
-                yield HALF_PERIOD
-                self.assertEqual(wb_out_v, rdata_in)
-
         mem_to_reg, rdata_in, result_in, wb_out = setup()
         wb_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
         dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
         dut_v = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out_v)
         stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
+        stim_v = self.bench(mem_to_reg, rdata_in, result_in, wb_out_v)
 
-        sim = Simulation(dut, dut_v, stim, test())
-        sim.run(quiet=1)
+        Simulation(dut, dut_v, stim, stim_v).run(quiet=1)
 
 
 class TestWbMuxDynamic(TestCase):
@@ -138,8 +124,7 @@ class TestWbMuxDynamic(TestCase):
         dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
         stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
 
-        sim = Simulation(dut, stim)
-        sim.run(quiet=1)
+        Simulation(dut, stim).run(quiet=1)
 
     def testDynamicVerilog(self):
         """ Checking that correct output is assigned Verilog"""
@@ -147,28 +132,18 @@ class TestWbMuxDynamic(TestCase):
         dut = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out)
         stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
 
-        sim = Simulation(dut, stim)
-        sim.run(quiet=1)
+        Simulation(dut, stim).run(quiet=1)
 
     def testDynamicTogether(self):
         """ Checking that correct output is assigned Cosimulation"""
-        def test():
-            for i in range(sf['DEFAULT_TEST_LENGTH']):
-                yield HALF_PERIOD
-                if mem_to_reg == 0:
-                    self.assertEqual(wb_out_v, result_in)
-                else:
-                    self.assertEqual(mem_to_reg, 1)
-                    self.assertEqual(wb_out_v, rdata_in)
-
         mem_to_reg, rdata_in, result_in, wb_out = setup()
         wb_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
         dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
         dut_v = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out_v)
         stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
+        stim_v = self.bench(mem_to_reg, rdata_in, result_in, wb_out_v)
 
-        sim = Simulation(dut, dut_v, stim, test())
-        sim.run(quiet=1)
+        Simulation(dut, dut_v, stim, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':
