@@ -77,7 +77,7 @@ class TestAluMuxAMemForward(TestCase):
     """Testing MemForward functionality"""
 
     def bench(self, forward_a, r_data1, mem_rd, wb_rd, op1_out):
-        forward_a.next = 0
+        forward_a.next = 1
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             mem_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
                                        min=sf['MIN_SIGNED_VALUE'],
@@ -127,7 +127,7 @@ class TestAluMuxAWbForward(TestCase):
     """Testing WbForward functionality"""
 
     def bench(self, forward_a, r_data1, mem_rd, wb_rd, op1_out):
-        forward_a.next = 0
+        forward_a.next = 2
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             wb_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
                                       min=sf['MIN_SIGNED_VALUE'],
