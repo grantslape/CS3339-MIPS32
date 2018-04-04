@@ -24,7 +24,7 @@ Jihan Roujiel:
     inst_mem
     inst_mem_mux
     Isaac Jaimes:
-    fwd_unit
+    fwd_unit DONE 2018-04-03
     shift_unit DONE 2018-04-03
 Robert Tomlinson:
     ex_mem
@@ -43,7 +43,7 @@ Grant Slape:
     	fwd_unit DONE 2018-04-03
     	wb_mux DONE 2018-04-03
     	pc_mux_b DONE 2018-04-03
-        program_counter
+        program_counter DONE 2018-04-03
         pc_adder DONE 2018-04-03
         sign_extender
         id_ex
