@@ -106,3 +106,7 @@ class TestStallOperation(TestCase):
         stim_v = self.bench(clock, pc_write, nxt_inst, cur_pc_v)
 
         Simulation(CLK, dut, dut_v, stim, stim_v).run(quiet=1)
+
+
+if __name__ == '__main__':
+    unittest.main()

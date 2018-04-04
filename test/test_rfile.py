@@ -26,6 +26,8 @@ def setup():
     reset = ResetSignal(0, active=sf['ACTIVE_LOW'], async=True)
     return clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2
 
+# TODO: ADD TEST OF RESET FUNCTION
+
 
 class TestRfileWrite(TestCase):
     # TODO: This test depends on successful reads, and therefore is not completely valid
@@ -73,23 +75,18 @@ class TestRfileWrite(TestCase):
 
     def testRfileWriteTogether(self):
         """Test Rfiles writes correctly and reads back together """
-        def test(r_data):
-            yield posedge(clock)
-            for i in range(sf['DEFAULT_TEST_LENGTH']):
-                yield posedge(clock)
-                yield negedge(clock)
-                self.assertEqual(r_data, self.reg_1)
-
         clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2 = setup()
         r_data1_v, r_data2_v = [Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
                                 for i in range(2)]
         CLK = clock_gen(clock)
         stim_1 = self.bench(clock, reset, reg_write, r_addr1, w_addr, w_data, r_data1)
         stim_2 = self.bench(clock, reset, reg_write, r_addr2, w_addr, w_data, r_data2)
+        stim_1_v = self.bench(clock, reset, reg_write, r_addr1, w_addr, w_data, r_data1_v)
+        stim_2_v = self.bench(clock, reset, reg_write, r_addr2, w_addr, w_data, r_data2_v)
         dut = rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
         dut_v = rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1_v, r_data2_v)
 
-        Simulation(CLK, dut, dut_v, stim_1, stim_2, test(r_data1_v), test(r_data2_v)).run(quiet=1)
+        Simulation(CLK, dut, dut_v, stim_1, stim_2, stim_1_v, stim_2_v).run(quiet=1)
 
 
 class TestRfileRead(TestCase):
@@ -143,22 +140,15 @@ class TestRfileRead(TestCase):
 
     def testRfileReadTogether(self):
         """Test correct values are read from register together"""
-        def test():
-            # TODO: if we use a real setUp method this is unnecessary
-            for i in range(sf['WIDTH'] + 1):
-                yield posedge(clock)
-            yield negedge(clock)
-            self.assertEqual(r_data1_v, self.expected[r_addr1])
-            self.assertEqual(r_data2_v, self.expected[r_addr2])
-
         clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2 = setup()
         CLK = clock_gen(clock)
         r_data1_v, r_data2_v = [Signal(intbv(0)[5:]) for i in range(2)]
         stim = self.bench(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
+        stim_v = self.bench(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1_v, r_data2_v)
         dut = rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2)
         dut_v = rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1_v, r_data2_v)
 
-        Simulation(CLK, stim, dut, dut_v, test()).run(quiet=1)
+        Simulation(CLK, stim, dut, dut_v, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':

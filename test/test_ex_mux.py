@@ -172,3 +172,7 @@ class TestExMuxDynamic(TestCase):
 
         sim = Simulation(dut, dut_v, stim, test())
         sim.run(quiet=1)
+
+
+if __name__ == '__main__':
+    unittest.main()
