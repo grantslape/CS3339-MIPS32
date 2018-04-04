@@ -101,22 +101,14 @@ class TestPcMuxACorrectOutput(TestCase):
 
     def testCorrectOutputTogether(self):
         """ Checking correct PC address is outputted from Cosimulation """
-
-        def test():
-            for i in range(sf['DEFAULT_TEST_LENGTH']):
-                if pc_src == 1:
-                    self.assertEqual(bin(nxt_inst_v ^ imm_jmp_addr), bin(0))
-                else:
-                    self.assertEqual(bin(nxt_inst_v ^ nxt_pc), bin(0))
-                yield HALF_PERIOD
-
         pc_src, imm_jmp_addr, nxt_pc, nxt_inst = self.setup()
         nxt_inst_v = Signal(intbv(0)[32:])
         dut = pc_mux_a(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
         dut_v = pc_mux_a_v(pc_src, imm_jmp_addr, nxt_pc, nxt_inst_v)
         stim = self.bench(pc_src, imm_jmp_addr, nxt_pc, nxt_inst)
+        stim_v = self.bench(pc_src, imm_jmp_addr, nxt_pc, nxt_inst_v)
 
-        sim = Simulation(dut, dut_v, stim, test())
+        sim = Simulation(dut, dut_v, stim, stim_v)
         sim.run(quiet=1)
 
 
