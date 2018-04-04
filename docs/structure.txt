@@ -120,7 +120,7 @@ cpu:
 		input [31:0] r_data2: rt data received from id_ex
 		input [31:0] mem_rd: rd from the previous cycle, received from ex_mem
 		input [31:0] wb_rd: rd from two cycles ago, received from wb_mux
-		output [31:0] rt_out: Output for Rt.  Sent to alu_mux_imm, ex_mem
+		output [31:0] op2_out: Output for Rt.  Sent to alu_mux_imm, ex_mem
 	alu_mux_imm: 2:1 Mux to support immediate type instructions
 		input alu_src: one bit input from ctrl
 		input [31:0] rt_in: Rt data from alu_mux_b
