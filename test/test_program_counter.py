@@ -47,7 +47,7 @@ class TestNormalOperation(TestCase):
     def testNormalOperationVerilog(self):
         """Checking normal PC operation Verilog"""
         CLK = clock_gen(self.clock)
-        stim = self.normalOp(self.cur_pc)
+        stim = self.normalOp(self.cur_pc_v)
         Simulation(CLK, self.dut_v, stim).run(quiet=1)
 
     def testNormalOperationTogether(self):
@@ -67,9 +67,9 @@ class TestNormalOperation(TestCase):
     def testStallOperationVerilog(self):
         """Checking stall line is asserted Verilog"""
         CLK = clock_gen(self.clock)
-        stim = self.stall(self.cur_pc)
+        stim = self.stall(self.cur_pc_v)
 
-        Simulation(CLK, self.dut, stim).run(quiet=1)
+        Simulation(CLK, self.dut_v, stim).run(quiet=1)
 
     def testStallOperationTogether(self):
         """Checking stall line is asserted together"""

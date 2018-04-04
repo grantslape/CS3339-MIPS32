@@ -12,17 +12,6 @@ from settings import settings as sf
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
-def setup():
-    forward_a = Signal(intbv(0)[2:])
-    r_data1, mem_rd, wb_rd, op1_out = [Signal(intbv(0, min=sf['MIN_SIGNED_VALUE'], max=sf['MAX_SIGNED_VALUE']))
-                                       for i in range(4)]
-    return forward_a, r_data1, mem_rd, wb_rd, op1_out
-
-
 @unittest.skip("ALU Mux A not implemented")
 class TestAluMuxA(TestCase):
     """Testing ALU Mux A functionality"""
