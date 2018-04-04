@@ -8,14 +8,9 @@ from myhdl import intbv, delay, Simulation, Signal, StopSimulation, ResetSignal,
 sys.path.append("src/python")
 from rfile import rfile, rfile_v
 from settings import settings as sf
+from clock import clock_gen
 
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
-
-
-def clock_gen(clock):
-    while 1:
-        yield HALF_PERIOD
-        clock.next = not clock
 
 
 def setup():

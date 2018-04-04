@@ -8,14 +8,7 @@ from myhdl import intbv, delay, Simulation, Signal, StopSimulation, posedge
 sys.path.append("src/python")
 from program_counter import program_counter, program_counter_v
 from settings import settings as sf
-
-HALF_PERIOD = delay(sf['PERIOD'] / 2)
-
-
-def clock_gen(clock):
-    while 1:
-        yield HALF_PERIOD
-        clock.next = not clock
+from clock import clock_gen
 
 
 def setup():
