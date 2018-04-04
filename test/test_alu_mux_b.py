@@ -83,7 +83,7 @@ class TestAluMuxBMemForward(TestCase):
                                        min=sf['MIN_SIGNED_VALUE'],
                                        max=sf['MAX_SIGNED_VALUE']))
             while mem_rd == r_data2 or wb_rd == mem_rd:
-                mem_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
+                r_data2.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
                                            min=sf['MIN_SIGNED_VALUE'],
                                            max=sf['MAX_SIGNED_VALUE']))
                 wb_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
@@ -171,3 +171,7 @@ class TestAluMuxBWbForward(TestCase):
         stim_v = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out_v)
 
         Simulation(dut, stim, dut_v, stim_v).run(quiet=1)
+
+
+if __name__ == '__main)__':
+    unittest.main()
