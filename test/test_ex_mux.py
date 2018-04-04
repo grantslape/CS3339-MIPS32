@@ -52,18 +52,14 @@ class TestExMuxDeasserted(TestCase):
 
     def testExMuxDeassertedTogether(self):
         """Check that RT is returned when reg_dst deasserted Together"""
-        def test():
-            yield HALF_PERIOD
-            self.assertEqual(dest_v, rt_in)
-            self.assertNotEquals(dest_v, rd_in)
-
         reg_dst, rt_in, rd_in, dest = setup()
         dest_v = Signal(intbv(0)[5:])
         dut = ex_mux(reg_dst, rt_in, rd_in, dest)
         dut_v = ex_mux_v(reg_dst, rt_in, rd_in, dest_v)
         stim = self.bench(reg_dst, rt_in, rd_in, dest)
+        stim_v = self.bench(reg_dst, rt_in, rd_in, dest_v)
 
-        sim = Simulation(dut, dut_v, stim, test())
+        sim = Simulation(dut, dut_v, stim, stim_v)
         sim.run(quiet=1)
 
 
@@ -101,18 +97,14 @@ class TestExMuxAsserted(TestCase):
 
     def testExMuxAssertedTogether(self):
         """Check that RT is returned when reg_dst Asserted Together"""
-        def test():
-            yield HALF_PERIOD
-            self.assertEqual(dest_v, rd_in)
-            self.assertNotEquals(dest_v, rt_in)
-
         reg_dst, rt_in, rd_in, dest = setup()
         dest_v = Signal(intbv(0)[5:])
         dut = ex_mux(reg_dst, rt_in, rd_in, dest)
         dut_v = ex_mux_v(reg_dst, rt_in, rd_in, dest_v)
         stim = self.bench(reg_dst, rt_in, rd_in, dest)
+        stim_v = self.bench(reg_dst, rt_in, rd_in, dest_v)
 
-        sim = Simulation(dut, dut_v, stim, test())
+        sim = Simulation(dut, dut_v, stim, stim_v)
         sim.run(quiet=1)
 
 
@@ -155,22 +147,14 @@ class TestExMuxDynamic(TestCase):
 
     def testExMuxDynamicTogether(self):
         """Check dynamic behavior Together"""
-        def test():
-            yield HALF_PERIOD
-            if reg_dst == 0:
-                self.assertEqual(dest_v, rt_in)
-                self.assertNotEquals(dest_v, rd_in)
-            else:
-                self.assertEqual(dest_v, rd_in)
-                self.assertNotEquals(dest_v, rt_in)
-
         reg_dst, rt_in, rd_in, dest = setup()
         dest_v = Signal(intbv(0)[5:])
         dut = ex_mux(reg_dst, rt_in, rd_in, dest)
         dut_v = ex_mux_v(reg_dst, rt_in, rd_in, dest_v)
         stim = self.bench(reg_dst, rt_in, rd_in, dest)
+        stim_v = self.bench(reg_dst, rt_in, rd_in, dest_v)
 
-        sim = Simulation(dut, dut_v, stim, test())
+        sim = Simulation(dut, dut_v, stim, stim_v)
         sim.run(quiet=1)
 
 
