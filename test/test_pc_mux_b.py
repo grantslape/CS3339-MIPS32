@@ -13,7 +13,7 @@ HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
 @unittest.skip("PC Mux B not implemented")
-class TestPcMuxBDeasserted(TestCase):
+class TestPcMuxB(TestCase):
     """Test PC Mux B"""
     def setUp(self):
         self.jmp_ctrl = Signal(intbv(0)[1:])
