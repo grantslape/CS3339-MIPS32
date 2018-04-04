@@ -1,67 +1,67 @@
 Mark Gitthens:
-program_counter
-pc_mux_b
-pc_adder
-Huan Wu:
-sign_extender
-id_ex
-Natalie Garza:
-hazard_unit
-if_id
-id_shift_left
-Jubal Grubb:
-ctrl
-ctrl_mux
-Serena Gutierrez:
-alu
-alu_mux_a
-alu_mux_b
-alu_mux_imm
-Ruben Hidalgo:
-rfile
-ex_mux
-Jihan Roujiel:
-inst_mem
-inst_mem_mux
-Isaac Jaimes:
-fwd_unit
-shift_unit DONE 2018-04-03
-Robert Tomlinson:
-ex_mem
-branch_adder
-branch_unit
-Patrick Vinas:
-data_mem
-mem_wb
-wb_mux
-Grant Slape:
-pc_mux_a DONE 2018-04-02
-Main Driver
-Unit Tests:
-	shift_unit DONE 2018-04-03
-	pc_mux_a DONE 2018-04-03
-	fwd_unit DONE 2018-04-03
-	wb_mux DONE 2018-04-03
-	pc_mux_b DONE 2018-04-03
     program_counter
+    pc_mux_b
     pc_adder
+Huan Wu:
     sign_extender
     id_ex
+Natalie Garza:
     hazard_unit
     if_id
     id_shift_left
+Jubal Grubb:
     ctrl
     ctrl_mux
+Serena Gutierrez:
     alu
     alu_mux_a
     alu_mux_b
     alu_mux_imm
-    rfile DONE 2018-04-03
-    ex_mux DONE 2018-04-03
+Ruben Hidalgo:
+    rfile
+    ex_mux
+Jihan Roujiel:
     inst_mem
     inst_mem_mux
+    Isaac Jaimes:
+    fwd_unit
+    shift_unit DONE 2018-04-03
+Robert Tomlinson:
     ex_mem
     branch_adder
     branch_unit
+Patrick Vinas:
     data_mem
     mem_wb
+    wb_mux
+Grant Slape:
+    pc_mux_a DONE 2018-04-02
+    Main Driver
+    Unit Tests:
+    	shift_unit DONE 2018-04-03
+    	pc_mux_a DONE 2018-04-03
+    	fwd_unit DONE 2018-04-03
+    	wb_mux DONE 2018-04-03
+    	pc_mux_b DONE 2018-04-03
+        program_counter
+        pc_adder DONE 2018-04-03
+        sign_extender
+        id_ex
+        hazard_unit
+        if_id
+        id_shift_left
+        ctrl
+        ctrl_mux
+        alu
+        alu_mux_a
+        alu_mux_b
+        alu_mux_imm
+        rfile DONE 2018-04-03
+        ex_mux DONE 2018-04-03
+        inst_mem
+        inst_mem_mux
+        ex_mem
+        branch_adder
+        branch_unit
+        data_mem
+        mem_wb
