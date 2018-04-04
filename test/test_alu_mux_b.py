@@ -12,165 +12,133 @@ from settings import settings as sf
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
-if __name__ == '__main__':
-    unittest.main()
+@unittest.skip("ALU Mux B not implemented")
+class TestAluMuxB(TestCase):
+    """Testing ALU Mux B functionality"""
 
+    def setUp(self):
+        self.forward_b = Signal(intbv(0)[2:])
+        self.r_data2, self.mem_rd, self.wb_rd, self.op2_out, self.op2_out_v = [
+            Signal(intbv(0, min=sf['MIN_SIGNED_VALUE'], max=sf['MAX_SIGNED_VALUE'])) for i in range(5)
+        ]
+        self.dut = alu_mux_b(self.forward_b, self.r_data2, self.mem_rd, self.wb_rd, self.op2_out)
 
-def setup():
-    forward_a = Signal(intbv(0)[2:])
-    r_data2, mem_rd, wb_rd, op2_out = [Signal(intbv(0, min=sf['MIN_SIGNED_VALUE'], max=sf['MAX_SIGNED_VALUE']))
-                                       for i in range(4)]
-    return forward_a, r_data2, mem_rd, wb_rd, op2_out
-
-
-class TestAluMuxBDeassert(TestCase):
-    """Testing deasserted functionality"""
-
-    def bench(self, forward_a, r_data2, mem_rd, wb_rd, op2_out):
-        forward_a.next = 0
+    def deassert(self, op2_out):
+        self.forward_b.next = 0
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            r_data2.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
+            self.r_data2.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
                                         min=sf['MIN_SIGNED_VALUE'],
                                         max=sf['MAX_SIGNED_VALUE']))
-            while mem_rd == r_data2 or wb_rd == r_data2:
-                mem_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
+            while self.mem_rd == self.r_data2 or self.wb_rd == self.r_data2:
+                self.mem_rd.next, self.wb_rd.next = [
+                    Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
+                                 min=sf['MIN_SIGNED_VALUE'],
+                                 max=sf['MAX_SIGNED_VALUE']))
+                    for i in range (2)]
+            yield HALF_PERIOD
+            self.assertEqual(op2_out, self.r_data2)
+            self.assertNotEquals(op2_out, self.mem_rd)
+            self.assertNotEquals(op2_out, self.wb_rd)
+        raise StopSimulation
+
+    def memForward(self, op2_out):
+        self.forward_b.next = 1
+        for i in range(sf['DEFAULT_TEST_LENGTH']):
+            self.mem_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
+                                            min=sf['MIN_SIGNED_VALUE'],
+                                            max=sf['MAX_SIGNED_VALUE']))
+            while self.mem_rd == self.r_data2 or self.wb_rd == self.mem_rd:
+                self.r_data2.next, self.wb_rd.next = [
+                    Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
+                                 min=sf['MIN_SIGNED_VALUE'],
+                                 max=sf['MAX_SIGNED_VALUE']))
+                    for i in range(2)]
+            yield HALF_PERIOD
+            self.assertEqual(op2_out, self.mem_rd)
+            self.assertNotEquals(op2_out, self.r_data2)
+            self.assertNotEquals(op2_out, self.wb_rd)
+        raise StopSimulation
+
+    def wbForward(self, op2_out):
+        self.forward_b.next = 2
+        for i in range(sf['DEFAULT_TEST_LENGTH']):
+            self.wb_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
                                            min=sf['MIN_SIGNED_VALUE'],
                                            max=sf['MAX_SIGNED_VALUE']))
-                wb_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
-                                          min=sf['MIN_SIGNED_VALUE'],
-                                          max=sf['MAX_SIGNED_VALUE']))
+            while self.wb_rd == self.r_data2 or self.wb_rd == self.mem_rd:
+                self.r_data2.next, self.mem_rd.next = [
+                    Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
+                                 min=sf['MIN_SIGNED_VALUE'],
+                                 max=sf['MAX_SIGNED_VALUE']))
+                    for i in range(2)]
             yield HALF_PERIOD
-            self.assertEqual(op2_out, r_data2)
-            self.assertNotEquals(op2_out, mem_rd)
-            self.assertNotEquals(op2_out, wb_rd)
+            self.assertEqual(op2_out, self.wb_rd)
+            self.assertNotEquals(op2_out, self.r_data2)
+            self.assertNotEquals(op2_out, self.mem_rd)
         raise StopSimulation
 
     def testAluMuxBDeassertPython(self):
         """Testing deasserted functionality Python"""
-        forward_a, r_data2, mem_rd, wb_rd, op2_out = setup()
-        dut = alu_mux_b(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        stim = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out)
+        stim = self.deassert(self.op2_out)
 
-        Simulation(dut, stim).run(quiet=1)
+        Simulation(self.dut, stim).run(quiet=1)
 
     def testAluMuxBDeassertVerilog(self):
         """Testing deasserted functionality Verilog"""
-        forward_a, r_data2, mem_rd, wb_rd, op2_out = setup()
-        dut = alu_mux_b_v(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        stim = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out)
+        dut_v = alu_mux_b_v(self.forward_b, self.r_data2, self.mem_rd, self.wb_rd, self.op2_out_v)
+        stim = self.deassert(self.op2_out_v)
 
-        Simulation(dut, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testAluMuxBDeassertTogether(self):
         """Testing deasserted functionality together"""
-        forward_a, r_data2, mem_rd, wb_rd, op2_out = setup()
-        op2_out_v = Signal(intbv(0, min=sf['MIN_SIGNED_VALUE'], max=sf['MAX_SIGNED_VALUE']))
-        dut = alu_mux_b(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        dut_v = alu_mux_b_v(forward_a, r_data2, mem_rd, wb_rd, op2_out_v)
-        stim = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        stim_v = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out_v)
+        dut_v = alu_mux_b_v(self.forward_b, self.r_data2, self.mem_rd, self.wb_rd, self.op2_out_v)
+        stim = self.deassert(self.op2_out)
+        stim_v = self.deassert(self.op2_out_v)
 
-        Simulation(dut, stim, dut_v, stim_v).run(quiet=1)
-
-
-class TestAluMuxBMemForward(TestCase):
-    """Testing MemForward functionality"""
-
-    def bench(self, forward_a, r_data2, mem_rd, wb_rd, op2_out):
-        forward_a.next = 1
-        for i in range(sf['DEFAULT_TEST_LENGTH']):
-            mem_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
-                                       min=sf['MIN_SIGNED_VALUE'],
-                                       max=sf['MAX_SIGNED_VALUE']))
-            while mem_rd == r_data2 or wb_rd == mem_rd:
-                r_data2.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
-                                           min=sf['MIN_SIGNED_VALUE'],
-                                           max=sf['MAX_SIGNED_VALUE']))
-                wb_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
-                                          min=sf['MIN_SIGNED_VALUE'],
-                                          max=sf['MAX_SIGNED_VALUE']))
-            yield HALF_PERIOD
-            self.assertEqual(op2_out, mem_rd)
-            self.assertNotEquals(op2_out, r_data2)
-            self.assertNotEquals(op2_out, wb_rd)
-        raise StopSimulation
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testAluMuxBMemForwardPython(self):
         """Testing MemForward functionality Python"""
-        forward_a, r_data2, mem_rd, wb_rd, op2_out = setup()
-        dut = alu_mux_b(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        stim = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out)
+        stim = self.memForward(self.op2_out)
 
-        Simulation(dut, stim).run(quiet=1)
+        Simulation(self.dut, stim).run(quiet=1)
 
-    def testAluMuxbMemForwardVerilog(self):
+    def testAluMuxBMemForwardVerilog(self):
         """Testing MemForward functionality Verilog"""
-        forward_a, r_data2, mem_rd, wb_rd, op2_out = setup()
-        dut = alu_mux_b_v(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        stim = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out)
+        dut_v = alu_mux_b_v(self.forward_b, self.r_data2, self.mem_rd, self.wb_rd, self.op2_out_v)
+        stim = self.memForward(self.op2_out_v)
 
-        Simulation(dut, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testAluMuxBMemForwardTogether(self):
         """Testing MemForward functionality together"""
-        forward_a, r_data2, mem_rd, wb_rd, op2_out = setup()
-        op2_out_v = Signal(intbv(0, min=sf['MIN_SIGNED_VALUE'], max=sf['MAX_SIGNED_VALUE']))
-        dut = alu_mux_b(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        dut_v = alu_mux_b_v(forward_a, r_data2, mem_rd, wb_rd, op2_out_v)
-        stim = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        stim_v = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out_v)
+        dut_v = alu_mux_b_v(self.forward_b, self.r_data2, self.mem_rd, self.wb_rd, self.op2_out_v)
+        stim = self.memForward(self.op2_out)
+        stim_v = self.memForward(self.op2_out_v)
 
-        Simulation(dut, stim, dut_v, stim_v).run(quiet=1)
-
-
-class TestAluMuxBWbForward(TestCase):
-    """Testing WbForward functionality"""
-
-    def bench(self, forward_a, r_data2, mem_rd, wb_rd, op2_out):
-        forward_a.next = 2
-        for i in range(sf['DEFAULT_TEST_LENGTH']):
-            wb_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
-                                      min=sf['MIN_SIGNED_VALUE'],
-                                      max=sf['MAX_SIGNED_VALUE']))
-            while wb_rd == r_data2 or wb_rd == mem_rd:
-                mem_rd.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
-                                           min=sf['MIN_SIGNED_VALUE'],
-                                           max=sf['MAX_SIGNED_VALUE']))
-                r_data2.next = Signal(intbv(randint(sf['MIN_SIGNED_VALUE'], sf['MAX_SIGNED_VALUE']),
-                                            min=sf['MIN_SIGNED_VALUE'],
-                                            max=sf['MAX_SIGNED_VALUE']))
-            yield HALF_PERIOD
-            self.assertEqual(op2_out, wb_rd)
-            self.assertNotEquals(op2_out, r_data2)
-            self.assertNotEquals(op2_out, mem_rd)
-        raise StopSimulation
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
     def testAluMuxBWbForwardPython(self):
         """Testing WbForward functionality Python"""
-        forward_a, r_data2, mem_rd, wb_rd, op2_out = setup()
-        dut = alu_mux_b(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        stim = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out)
+        stim = self.wbForward(self.op2_out)
 
-        Simulation(dut, stim).run(quiet=1)
+        Simulation(self.dut, stim).run(quiet=1)
 
     def testAluMuxBWbForwardVerilog(self):
         """Testing WbForward functionality Verilog"""
-        forward_a, r_data2, mem_rd, wb_rd, op2_out = setup()
-        dut = alu_mux_b_v(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        stim = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out)
+        dut_v = alu_mux_b_v(self.forward_b, self.r_data2, self.mem_rd, self.wb_rd, self.op2_out_v)
+        stim = self.wbForward(self.op2_out_v)
 
-        Simulation(dut, stim).run(quiet=1)
+        Simulation(dut_v, stim).run(quiet=1)
 
     def testAluMuxBWbForwardTogether(self):
         """Testing WbForward functionality together"""
-        forward_a, r_data2, mem_rd, wb_rd, op2_out = setup()
-        op2_out_v = Signal(intbv(0, min=sf['MIN_SIGNED_VALUE'], max=sf['MAX_SIGNED_VALUE']))
-        dut = alu_mux_b(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        dut_v = alu_mux_b_v(forward_a, r_data2, mem_rd, wb_rd, op2_out_v)
-        stim = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out)
-        stim_v = self.bench(forward_a, r_data2, mem_rd, wb_rd, op2_out_v)
+        dut_v = alu_mux_b_v(self.forward_b, self.r_data2, self.mem_rd, self.wb_rd, self.op2_out_v)
+        stim = self.wbForward(self.op2_out)
+        stim_v = self.wbForward(self.op2_out_v)
 
-        Simulation(dut, stim, dut_v, stim_v).run(quiet=1)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
 
 if __name__ == '__main)__':
