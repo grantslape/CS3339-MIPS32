@@ -12,4 +12,5 @@ from settings import settings as sf
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
-
+if __name__ == '__main__':
+    unittest.main()
