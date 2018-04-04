@@ -3,12 +3,16 @@
 #output [31:0] cur_pc: next instruction address
 
 import os
-from myhdl import Cosimulation, always
+from myhdl import Cosimulation, always, intbv
 
-def program_counter(clock, nxt_inst, cur_pc):
+def program_counter(clock, pc_write, nxt_inst, cur_pc):
+	
 	@always(clock.posedge)
 	def seq_logic():
-		cur_pc.next = nxt_inst
+		if pc_write == 0:
+			cur_pc.next = nxt_inst
+			pc_reg = nxt_inst
+			
 	return seq_logic
 
 def program_counter_v(clock, reset, nxt_inst, cur_pc):
