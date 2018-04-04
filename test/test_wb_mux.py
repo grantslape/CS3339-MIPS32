@@ -23,6 +23,11 @@ def setup():
 @unittest.skip("WB Mux not implemented")
 class TestWbMuxDeassert(TestCase):
     """Testing deasserted functionality"""
+    def setUp(self):
+        self.mem_to_reg = Signal(intbv(0)[1:])
+        self.rdata_in, self.result_in, self.wb_out, self.wb_out_v = [
+            Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(4)
+        ]
 
     def bench(self, mem_to_reg, rdata_in, result_in, wb_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -36,28 +41,24 @@ class TestWbMuxDeassert(TestCase):
 
     def testHoldDeassertPython(self):
         """ Checking that result_data is outputted when deasserted Python"""
-        mem_to_reg, rdata_in, result_in, wb_out = setup()
-        dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
-        stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
+        dut = wb_mux(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        stim = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
 
         Simulation(dut, stim).run(quiet=1)
 
     def testHoldDeassertVerilog(self):
         """ Checking that result_data is outputted when deasserted Verilog"""
-        mem_to_reg, rdata_in, result_in, wb_out = setup()
-        dut = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out)
-        stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
+        dut = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        stim = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
 
         Simulation(dut, stim).run(quiet=1)
 
     def testHoldDeassertTogether(self):
         """ Checking that result_data is outputted when deasserted Cosimulation"""
-        mem_to_reg, rdata_in, result_in, wb_out = setup()
-        wb_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
-        dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
-        dut_v = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out_v)
-        stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
-        stim_v = self.bench(mem_to_reg, rdata_in, result_in, wb_out_v)
+        dut = wb_mux(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
+        stim = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        stim_v = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
 
         Simulation(dut, dut_v, stim, stim_v).run(quiet=1)
 
@@ -65,6 +66,11 @@ class TestWbMuxDeassert(TestCase):
 @unittest.skip("WB Mux not implemented")
 class TestWbMuxAssert(TestCase):
     """Testing asserted functionality"""
+    def setUp(self):
+        self.mem_to_reg = Signal(intbv(0)[1:])
+        self.rdata_in, self.result_in, self.wb_out, self.wb_out_v = [
+            Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(4)
+        ]
 
     def bench(self, mem_to_reg, rdata_in, result_in, wb_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -78,28 +84,24 @@ class TestWbMuxAssert(TestCase):
 
     def testHoldAssertPython(self):
         """ Checking that rdata_in is outputted when Asserted Python"""
-        mem_to_reg, rdata_in, result_in, wb_out = setup()
-        dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
-        stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
+        dut = wb_mux(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        stim = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
 
         Simulation(dut, stim).run(quiet=1)
 
     def testHoldAssertVerilog(self):
         """ Checking that rdata_in is outputted when Asserted Verilog"""
-        mem_to_reg, rdata_in, result_in, wb_out = setup()
-        dut = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out)
-        stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
+        dut = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        stim = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
 
         Simulation(dut, stim).run(quiet=1)
 
     def testHoldAssertTogether(self):
         """ Checking that rdata_in is outputted when Asserted Cosimulation"""
-        mem_to_reg, rdata_in, result_in, wb_out = setup()
-        wb_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
-        dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
-        dut_v = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out_v)
-        stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
-        stim_v = self.bench(mem_to_reg, rdata_in, result_in, wb_out_v)
+        dut = wb_mux(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
+        stim = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        stim_v = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
 
         Simulation(dut, dut_v, stim, stim_v).run(quiet=1)
 
@@ -107,8 +109,13 @@ class TestWbMuxAssert(TestCase):
 @unittest.skip("WB Mux not implemented")
 class TestWbMuxDynamic(TestCase):
     """Testing dynamic functionality"""
+    def setUp(self):
+        self.mem_to_reg = Signal(intbv(0)[1:])
+        self.rdata_in, self.result_in, self.wb_out, self.wb_out_v = [
+            Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(4)
+        ]
 
-    def bench(self, mem_to_reg, rdata_in, result_in, wb_out):
+    def dynamic(self, mem_to_reg, rdata_in, result_in, wb_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             mem_to_reg.next = randint(0, 1)
             rdata_in.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
@@ -123,28 +130,24 @@ class TestWbMuxDynamic(TestCase):
 
     def testHoldDynamicPython(self):
         """ Checking that correct output is assigned Python"""
-        mem_to_reg, rdata_in, result_in, wb_out = setup()
-        dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
-        stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
+        dut = wb_mux(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        stim = self.dynamic(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
 
         Simulation(dut, stim).run(quiet=1)
 
     def testDynamicVerilog(self):
         """ Checking that correct output is assigned Verilog"""
-        mem_to_reg, rdata_in, result_in, wb_out = setup()
-        dut = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out)
-        stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
+        dut = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        stim = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
 
         Simulation(dut, stim).run(quiet=1)
 
     def testDynamicTogether(self):
         """ Checking that correct output is assigned Cosimulation"""
-        mem_to_reg, rdata_in, result_in, wb_out = setup()
-        wb_out_v = Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))
-        dut = wb_mux(mem_to_reg, rdata_in, result_in, wb_out)
-        dut_v = wb_mux_v(mem_to_reg, rdata_in, result_in, wb_out_v)
-        stim = self.bench(mem_to_reg, rdata_in, result_in, wb_out)
-        stim_v = self.bench(mem_to_reg, rdata_in, result_in, wb_out_v)
+        dut = wb_mux(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        dut_v = wb_mux_v(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
+        stim = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out)
+        stim_v = self.bench(self.mem_to_reg, self.rdata_in, self.result_in, self.wb_out_v)
 
         Simulation(dut, dut_v, stim, stim_v).run(quiet=1)
 
