@@ -1,7 +1,6 @@
 Mark Gitthens:
 program_counter
 pc_mux_b
-pc_mux_c
 pc_adder
 Huan Wu:
 sign_extender
@@ -45,7 +44,6 @@ Unit Tests:
 	wb_mux DONE 2018-04-03
 	pc_mux_b DONE 2018-04-03
     program_counter
-    pc_mux_c
     pc_adder
     sign_extender
     id_ex
