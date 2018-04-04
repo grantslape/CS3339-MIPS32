@@ -12,13 +12,19 @@ from shift_unit import shift_unit, shift_unit_v
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
+# TODO: refactor this in classmethod setUp
 def setup(j):
     return [Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(j)]
 
 
-# TODO: Stop repeating yourself...lost of duplicated code here.
+# TODO: Still a lot of duplication.
 class TestShiftUnitZero(TestCase):
     """Test no change on input """
+    def setUp(self):
+        self.imm_in, self.imm_out, self.imm_out_v = [Signal(intbv(0,
+                                                                  min=sf['SIGNED_MIN_VALUE'],
+                                                                  max=sf['SIGNED_MAX_VALUE']))
+                                                     for i in range(3)]
 
     def bench(self, imm_in, imm_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -28,29 +34,26 @@ class TestShiftUnitZero(TestCase):
 
     def testHoldZeroPython(self):
         """Checking that modules holds zero w/o input change from Python"""
-        imm_in, imm_out = setup(2)
-        dut = shift_unit(imm_in, imm_out)
-        stim = self.bench(imm_in, imm_out)
+        dut = shift_unit(self.imm_in, self.imm_out)
+        stim = self.bench(self.imm_in, self.imm_out)
 
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
     def testHoldZeroVerilog(self):
         """Checking that modules holds zero w/o input change from Verilog"""
-        imm_in, imm_out = setup(2)
-        dut = shift_unit_v(imm_in, imm_out)
-        stim = self.bench(imm_in, imm_out)
+        dut = shift_unit_v(self.imm_in, self.imm_out)
+        stim = self.bench(self.imm_in, self.imm_out)
 
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
     def testHoldZeroTogether(self):
         """Checking that modules holds zero w/o input change from Cosimulation"""
-        imm_in, imm_out, imm_out_v = setup(3)
-        dut = shift_unit(imm_in, imm_out)
-        dut_v = shift_unit_v(imm_in, imm_out_v)
-        stim = self.bench(imm_in, imm_out)
-        stim_v = self.bench(imm_in, imm_out_v)
+        dut = shift_unit(self.imm_in, self.imm_out)
+        dut_v = shift_unit_v(self.imm_in, self.imm_out_v)
+        stim = self.bench(self.imm_in, self.imm_out)
+        stim_v = self.bench(self.imm_in, self.imm_out_v)
 
         sim = Simulation(dut, dut_v, stim, stim_v)
         sim.run(quiet=1)
@@ -58,6 +61,12 @@ class TestShiftUnitZero(TestCase):
 
 class TestShiftUnitOutput(TestCase):
     """Test normal operations """
+    def setUp(self):
+        self.imm_in, self.imm_out, self.imm_out_v = [Signal(intbv(0,
+                                                                  min=sf['SIGNED_MIN_VALUE'],
+                                                                  max=sf['SIGNED_MAX_VALUE']))
+                                                     for i in range(3)]
+
     def bench(self, imm_in, imm_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             # Note that our range of input values is 16bits, it was an immediate extended to 32 bits
@@ -68,29 +77,26 @@ class TestShiftUnitOutput(TestCase):
 
     def testCorrectOutputPython(self):
         """ Checking shift_unit shifts input by 4 in Python"""
-        imm_in, imm_out = setup(2)
-        dut = shift_unit(imm_in, imm_out)
-        stim = self.bench(imm_in, imm_out)
+        dut = shift_unit(self.imm_in, self.imm_out)
+        stim = self.bench(self.imm_in, self.imm_out)
 
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
     def testCorrectOutputVerilog(self):
         """ Checking shift_unit shifts input by 4 in Verilog"""
-        imm_in, imm_out = setup(2)
-        dut = shift_unit(imm_in, imm_out)
-        stim = self.bench(imm_in, imm_out)
+        dut = shift_unit(self.imm_in, self.imm_out)
+        stim = self.bench(self.imm_in, self.imm_out)
 
         sim = Simulation(dut, stim)
         sim.run(quiet=1)
 
     def testHoldZeroTogether(self):
         """Checking shift_unit shifts input by 4 in Cosimulation"""
-        imm_in, imm_out, imm_out_v = setup(3)
-        dut = shift_unit(imm_in, imm_out)
-        dut_v = shift_unit_v(imm_in, imm_out_v)
-        stim = self.bench(imm_in, imm_out)
-        stim_v = self.bench(imm_in, imm_out_v)
+        dut = shift_unit(self.imm_in, self.imm_out)
+        dut_v = shift_unit_v(self.imm_in, self.imm_out_v)
+        stim = self.bench(self.imm_in, self.imm_out)
+        stim_v = self.bench(self.imm_in, self.imm_out_v)
 
         sim = Simulation(dut, dut_v, stim, stim_v)
         sim.run(quiet=1)
