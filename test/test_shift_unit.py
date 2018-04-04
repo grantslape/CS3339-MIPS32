@@ -57,7 +57,7 @@ class TestShiftUnitZero(TestCase):
 
 
 class TestShiftUnitOutput(TestCase):
-    """Test normal operations"""
+    """Test normal operations """
     def bench(self, imm_in, imm_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             # Note that our range of input values is 16bits, it was an immediate extended to 32 bits
