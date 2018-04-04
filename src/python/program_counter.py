@@ -3,7 +3,7 @@
 #output [31:0] cur_pc: next instruction address
 
 import os
-from myhdl import Cosimulation, always, intbv
+from myhdl import Cosimulation, always
 
 def program_counter(clock, pc_write, nxt_inst, cur_pc):
 	
