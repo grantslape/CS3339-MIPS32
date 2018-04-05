@@ -2,7 +2,7 @@ import os
 
 from myhdl import always_comb, Cosimulation
 
-def mux32bit2to1(ctrl_line, input1, input2, output):
+def mux32bit2to1(ctrl_line, input1, input2, out):
 	"""
 	32_bit_2_to_1_mux
 
@@ -16,12 +16,12 @@ def mux32bit2to1(ctrl_line, input1, input2, output):
 	@always_comb
 	def logic():
 		if ctrl_line == 0:
-			output.next = input1
+			out.next = input1
 		else:
-			output.next = input2
-	return
+			out.next = input2
+	return logic
 
-def mux32bit2to1_v(ctrl_line, input1, input2, output):
+def mux32bit2to1_v(ctrl_line, input1, input2, out):
 	"""
 	Instantiate Vefilog module
 
@@ -31,11 +31,11 @@ def mux32bit2to1_v(ctrl_line, input1, input2, output):
 	:param output: 32-bit output
 	:return: Cosimulation 
 	"""
-	cmd = "iverilog -o 32_bit_2_to_1_mux.out src/verilog/32_bit_2_to_1_mux.v src/verilog/32_bit_2_to_1_mux_tb.v"
+	cmd = "iverilog -o mux32bit2to1.out src/verilog/mux32bit2to1.v src/verilog/mux32bit2to1_tb.v"
 	os.system(cmd)
 
-	return Cosimulation("vvp -m lib/myhdl.vpi 32_bit_2_to_1_mux.out",
+	return Cosimulation("vvp -m lib/myhdl.vpi mux32bit2to1.out",
 			ctrl_line = ctrl_line,
 			input1 = input1,
 			input2 = input2,
-			output = output)	
+			out = out)	
