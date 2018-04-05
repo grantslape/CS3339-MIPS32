@@ -6,14 +6,14 @@ from myhdl import intbv, delay, Simulation, Signal
 import sys
 sys.path.append("src/python")
 
-from pc_mux_a import pc_mux_a, pc_mux_a_v
+from mux32bit2to1 import mux32bit2to1, mux32bit2to1_v
 from settings import settings as sf
 
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
 class TestPcMuxA(TestCase):
-    """Test that pc_mux_a holds state"""
+    """Test that mux32bit2to1 holds state"""
 
     def setUp(self):
         self.pc_src = Signal(intbv(0)[1:])
@@ -21,7 +21,7 @@ class TestPcMuxA(TestCase):
         self.nxt_inst = Signal(intbv(0x00000060)[32:])
         self.nxt_inst_v = Signal(intbv(0x00000060)[32:])
         self.imm_jmp_addr = Signal(intbv(0x00000faf)[32:])
-        self.dut = pc_mux_a(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst)
+        self.dut = mux32bit2to1(self.pc_src, self.nxt_pc, self.imm_jmp_addr, self.nxt_inst)
 
     def zero_test(self):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -52,14 +52,14 @@ class TestPcMuxA(TestCase):
     def testHoldValueVerilog(self):
         """ Checking that module holds value when no input changes from Verilog """
         stim = self.zero_test()
-        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
+        dut_v = mux32bit2to1_v(self.pc_src, self.nxt_pc, self.imm_jmp_addr, self.nxt_inst_v)
 
         Simulation(dut_v, stim).run(quiet=1)
 
     def testHoldValueTogether(self):
         """ Checking that modules hold value when no input changes from Cosimulation """
         stim = self.zero_test()
-        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
+        dut_v = mux32bit2to1_v(self.pc_src, self.nxt_pc, self.imm_jmp_addr, self.nxt_inst_v)
 
         Simulation(self.dut, dut_v, stim).run(quiet=1)
 
@@ -73,14 +73,14 @@ class TestPcMuxA(TestCase):
     def testCorrectOutputVerilog(self):
         """ Checking correct PC address is outputted from Verilog """
         stim = self.output_test(self.nxt_inst_v)
-        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
+	dut_v = mux32bit2to1_v(self.pc_src, self.nxt_pc, self.imm_jmp_addr, self.nxt_inst_v)
 
         sim = Simulation(dut_v, stim)
         sim.run(quiet=1)
 
     def testCorrectOutputTogether(self):
         """ Checking correct PC address is outputted from Cosimulation """
-        dut_v = pc_mux_a_v(self.pc_src, self.imm_jmp_addr, self.nxt_pc, self.nxt_inst_v)
+	dut_v = mux32bit2to1_v(self.pc_src, self.nxt_pc, self.imm_jmp_addr, self.nxt_inst_v)
         stim = self.output_test(self.nxt_inst)
         stim_v = self.output_test(self.nxt_inst_v)
 
