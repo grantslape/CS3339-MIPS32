@@ -2,7 +2,7 @@ import os
 
 from myhdl import always_comb, Cosimulation
 
-def 32_bit_2_to_1_mux(ctrl_line, input1, input2, output):
+def mux32bit2to1(ctrl_line, input1, input2, output):
 	"""
 	32_bit_2_to_1_mux
 
@@ -21,7 +21,7 @@ def 32_bit_2_to_1_mux(ctrl_line, input1, input2, output):
 			output.next = input2
 	return
 
-def 32_bit_2_to_1_mux(ctrl_line, input1, input2, output):
+def mux32bit2to1_v(ctrl_line, input1, input2, output):
 	"""
 	Instantiate Vefilog module
 
