@@ -12,7 +12,6 @@ from settings import settings as sf
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
-
 class TestPcMuxB(TestCase):
     """Test PC Mux B"""
     def setUp(self):
