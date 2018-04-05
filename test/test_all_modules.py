@@ -6,9 +6,13 @@ import sys
 import unittest
 sys.path.append("test")
 import test_pc_mux_a
+import test_pc_mux_b
 import test_fwd_unit
+import test_shift_unit
+import test_wb_mux
 
-modules = (test_pc_mux_a,)
+modules = (test_pc_mux_a,
+           test_shift_unit,)
 tester = unittest.defaultTestLoader
 
 
