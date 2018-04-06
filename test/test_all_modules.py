@@ -16,6 +16,7 @@ import test_program_counter
 import test_rfile
 
 modules = (test_mux32bit2to1,
+           test_alu_mux_a,
            test_alu_mux_b,
            test_ex_mux,
            test_fwd_unit,
