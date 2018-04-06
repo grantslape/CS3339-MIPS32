@@ -1,0 +1,113 @@
+import unittest
+import sys
+from random import randint
+
+from unittest import TestCase
+from myhdl import intbv, delay, Simulation, Signal, StopSimulation
+
+sys.path.append("src/python")
+from mux32bit2to1 import mux32bit2to1, mux32bit2to1_v
+from settings import settings as sf
+
+HALF_PERIOD = delay(sf['PERIOD'] / 2)
+
+
+class TestMux32Bit2To1(TestCase):
+    """Testing deasserted functionality"""
+    def setUp(self):
+        self.ctrl_signal = Signal(intbv(0)[1:])
+        self.input1, self.input2, self.output, self.output_v = [
+            Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(4)
+        ]
+        self.dut = mux32bit2to1(self.ctrl_signal, self.input1, self.input2, self.output)
+
+    def deassert(self, output):
+        for i in range(sf['DEFAULT_TEST_LENGTH']):
+            self.ctrl_signal.next = 0
+            self.input2.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
+            self.input1.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
+            yield HALF_PERIOD
+            self.assertEqual(self.ctrl_signal, 0)
+            self.assertEqual(output, self.input1)
+        raise StopSimulation
+
+    def asserted(self, output):
+        for i in range(sf['DEFAULT_TEST_LENGTH']):
+            self.ctrl_signal.next = 1
+            self.input2.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
+            self.input1.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
+            yield HALF_PERIOD
+            self.assertEqual(self.ctrl_signal, 1)
+            self.assertEqual(output, self.input2)
+        raise StopSimulation
+
+    def dynamic(self, output):
+        for i in range(sf['DEFAULT_TEST_LENGTH']):
+            self.ctrl_signal.next = randint(0, 1)
+            self.input2.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
+            self.input1.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
+            yield HALF_PERIOD
+            if self.ctrl_signal == 0:
+                self.assertEqual(output, self.input1)
+            else:
+                self.assertEqual(self.ctrl_signal, 1)
+                self.assertEqual(output, self.input2)
+        raise StopSimulation
+
+    def testHoldDeassertPython(self):
+        """ Checking that result_data is outputted when deasserted Python"""
+        stim = self.deassert(self.output)
+        Simulation(self.dut, stim).run(quiet=1)
+
+    def testHoldDeassertVerilog(self):
+        """ Checking that result_data is outputted when deasserted Verilog"""
+        stim = self.deassert(self.output_v)
+        dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
+        Simulation(dut_v, stim).run(quiet=1)
+
+    def testHoldDeassertTogether(self):
+        """ Checking that result_data is outputted when deasserted Cosimulation"""
+        stim = self.deassert(self.output)
+        stim_v = self.deassert(self.output_v)
+        dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
+
+    def testHoldAssertPython(self):
+        """ Checking that input2 is outputted when Asserted Python"""
+        stim = self.asserted(self.output)
+        Simulation(self.dut, stim).run(quiet=1)
+
+    def testHoldAssertVerilog(self):
+        """ Checking that input2 is outputted when Asserted Verilog"""
+        stim = self.asserted(self.output_v)
+        dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
+        Simulation(dut_v, stim).run(quiet=1)
+
+    def testHoldAssertTogether(self):
+        """ Checking that input2 is outputted when Asserted Cosimulation"""
+        stim = self.asserted(self.output)
+        stim_v = self.asserted(self.output_v)
+        dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
+
+    def testHoldDynamicPython(self):
+        """ Checking that correct output is assigned Python"""
+        stim = self.dynamic(self.output)
+        Simulation(self.dut, stim).run(quiet=1)
+
+    def testDynamicVerilog(self):
+        """ Checking that correct output is assigned Verilog"""
+        stim = self.dynamic(self.output_v)
+        dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
+        Simulation(dut_v, stim).run(quiet=1)
+
+    def testDynamicTogether(self):
+        """ Checking that correct output is assigned Cosimulation"""
+        stim = self.dynamic(self.output)
+        stim_v = self.dynamic(self.output_v)
+        dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
+        Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
+
+
+if __name__ == '__main__':
+    unittest.main()

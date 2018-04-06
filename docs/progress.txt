@@ -1,6 +1,9 @@
 Mark Gitthens:
     program_counter
-    pc_mux_b
+    alu_mux_imm genericized 2018-04-05
+    pc_mux_a DONE 2018-04-02, genericized 2018-04-05
+    pc_mux_b genericized 2018-04-05
+    wb_mux genericized 2018-04-05
     pc_adder
 Huan Wu:
     sign_extender
@@ -16,7 +19,6 @@ Serena Gutierrez:
     alu
     alu_mux_a
     alu_mux_b
-    alu_mux_imm
 Ruben Hidalgo:
     rfile
     ex_mux
@@ -33,9 +35,7 @@ Robert Tomlinson:
 Patrick Vinas:
     data_mem
     mem_wb
-    wb_mux
 Grant Slape:
-    pc_mux_a DONE 2018-04-02
     Main Driver
     Unit Tests:
     	shift_unit DONE 2018-04-03
