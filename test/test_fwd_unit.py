@@ -1,6 +1,5 @@
-import unittest
 import sys
-
+import unittest
 from unittest import TestCase
 from myhdl import intbv, delay, Simulation, Signal, StopSimulation
 
@@ -17,7 +16,9 @@ class TestFwdUnitHoldValue(TestCase):
     def setUp(self):
         self.rt_in, self.rs_in, self.ex_rd, self.mem_rd = [Signal(intbv(0)[5:]) for i in range(4)]
         self.mem_reg_write, self.wb_reg_write = [Signal(intbv(0)[1:]) for i in range(2)]
-        self.forward_a, self.forward_b, self.forward_a_v, self.forward_b_v = [Signal(intbv(0)[2:]) for i in range(4)]
+        self.forward_a, self.forward_b, self.forward_a_v, self.forward_b_v = [
+            Signal(intbv(0)[2:]) for i in range(4)
+        ]
         self.dut = fwd_unit(self.rt_in,
                             self.rs_in,
                             self.ex_rd,
@@ -27,7 +28,8 @@ class TestFwdUnitHoldValue(TestCase):
                             self.forward_a,
                             self.forward_b)
 
-    def holdValue(self, forward_a, forward_b):
+    def hold_value(self, forward_a, forward_b):
+        """test fwd unit holds value"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.assertEqual(forward_a, 0)
             self.assertEqual(forward_b, 0)
@@ -39,7 +41,7 @@ class TestFwdUnitHoldValue(TestCase):
             self.assertEqual(self.mem_rd, 0)
             yield HALF_PERIOD
 
-    def noForwardTest(self, forward_a, forward_b):
+    def no_forward_test(self, forward_a, forward_b):
         """Stim for no forwarding"""
         self.rt_in.next = 10
         self.rs_in.next = 11
@@ -49,7 +51,7 @@ class TestFwdUnitHoldValue(TestCase):
         raise StopSimulation
 
     # TODO: Break this out into individual test cases
-    def forwardATest(self, forward_a, forward_b):
+    def forward_a_test(self, forward_a, forward_b):
         """Stim for forward A cases.  See p310 of book"""
         self.rs_in.next = 11
         self.ex_rd.next = 11
@@ -80,7 +82,7 @@ class TestFwdUnitHoldValue(TestCase):
         self.assertEqual(bin(forward_a), bin(2))
 
     # TODO: Break this out into individual test cases
-    def forwardBTest(self, forward_a, forward_b):
+    def forward_b_test(self, forward_a, forward_b):
         """Stim for forward A cases.  See p310 of book"""
         self.rt_in.next = 11
         self.ex_rd.next = 11
@@ -112,12 +114,12 @@ class TestFwdUnitHoldValue(TestCase):
 
     def testHoldValuePython(self):
         """ Checking that module holds value when no input changes from Python """
-        stim = self.holdValue(self.forward_a, self.forward_b)
+        stim = self.hold_value(self.forward_a, self.forward_b)
         Simulation(self.dut, stim).run(quiet=1)
 
     def testHoldValueVerilog(self):
         """ Checking that module holds value when no input changes from Verilog """
-        stim = self.holdValue(self.forward_a_v, self.forward_b_v)
+        stim = self.hold_value(self.forward_a_v, self.forward_b_v)
         dut_v = fwd_unit_v(self.rt_in,
                            self.rs_in,
                            self.ex_rd,
@@ -130,8 +132,8 @@ class TestFwdUnitHoldValue(TestCase):
 
     def testHoldValueTogether(self):
         """ Checking that module holds value when no input changes from Cosimulation """
-        stim = self.holdValue(self.forward_a, self.forward_b)
-        stim_v = self.holdValue(self.forward_a_v, self.forward_b_v)
+        stim = self.hold_value(self.forward_a, self.forward_b)
+        stim_v = self.hold_value(self.forward_a_v, self.forward_b_v)
         dut_v = fwd_unit_v(self.rt_in,
                            self.rs_in,
                            self.ex_rd,
@@ -144,12 +146,12 @@ class TestFwdUnitHoldValue(TestCase):
 
     def testNoForwardPython(self):
         """Test no forwarding Python"""
-        stim = self.noForwardTest(self.forward_a, self.forward_b)
+        stim = self.no_forward_test(self.forward_a, self.forward_b)
         Simulation(self.dut, stim).run(quiet=1)
 
     def testNoForwardVerilog(self):
         """Test no forwarding Verilog"""
-        stim = self.noForwardTest(self.forward_a_v, self.forward_b_v)
+        stim = self.no_forward_test(self.forward_a_v, self.forward_b_v)
         dut_v = fwd_unit_v(self.rt_in,
                            self.rs_in,
                            self.ex_rd,
@@ -162,8 +164,8 @@ class TestFwdUnitHoldValue(TestCase):
 
     def testNoForwardTogether(self):
         """Test no forwarding Verilog"""
-        stim = self.noForwardTest(self.forward_a, self.forward_b)
-        stim_v = self.noForwardTest(self.forward_a_v, self.forward_b_v)
+        stim = self.no_forward_test(self.forward_a, self.forward_b)
+        stim_v = self.no_forward_test(self.forward_a_v, self.forward_b_v)
         dut_v = fwd_unit_v(self.rt_in,
                            self.rs_in,
                            self.ex_rd,
@@ -176,12 +178,12 @@ class TestFwdUnitHoldValue(TestCase):
 
     def testForwardACasesPython(self):
         """Test Forward A cases Python"""
-        stim = self.forwardATest(self.forward_a, self.forward_b)
+        stim = self.forward_a_test(self.forward_a, self.forward_b)
         Simulation(self.dut, stim).run(quiet=1)
 
     def testForwardACasesVerilog(self):
         """Test Forward A cases Verilog"""
-        stim_v = self.forwardATest(self.forward_a_v, self.forward_b_v)
+        stim_v = self.forward_a_test(self.forward_a_v, self.forward_b_v)
         dut_v = fwd_unit_v(self.rt_in,
                            self.rs_in,
                            self.ex_rd,
@@ -194,8 +196,8 @@ class TestFwdUnitHoldValue(TestCase):
 
     def testForwardACasesTogether(self):
         """Test Forward A cases together"""
-        stim = self.forwardATest(self.forward_a, self.forward_b)
-        stim_v = self.forwardATest(self.forward_a_v, self.forward_b_v)
+        stim = self.forward_a_test(self.forward_a, self.forward_b)
+        stim_v = self.forward_a_test(self.forward_a_v, self.forward_b_v)
         dut_v = fwd_unit_v(self.rt_in,
                            self.rs_in,
                            self.ex_rd,
@@ -208,12 +210,12 @@ class TestFwdUnitHoldValue(TestCase):
 
     def testForwardBCasesPython(self):
         """Test Forward B cases Python"""
-        stim = self.forwardBTest(self.forward_a, self.forward_b)
+        stim = self.forward_b_test(self.forward_a, self.forward_b)
         Simulation(self.dut, stim).run(quiet=1)
 
     def testForwardBCasesVerilog(self):
         """Test Forward B cases Verilog"""
-        stim = self.forwardBTest(self.forward_a_v, self.forward_b_v)
+        stim = self.forward_b_test(self.forward_a_v, self.forward_b_v)
         dut_v = fwd_unit_v(self.rt_in,
                            self.rs_in,
                            self.ex_rd,
@@ -226,8 +228,8 @@ class TestFwdUnitHoldValue(TestCase):
 
     def testForwardBCasesTogether(self):
         """Test Forward A cases together"""
-        stim = self.forwardBTest(self.forward_a, self.forward_b)
-        stim_v = self.forwardBTest(self.forward_a_v, self.forward_b_v)
+        stim = self.forward_b_test(self.forward_a, self.forward_b)
+        stim_v = self.forward_b_test(self.forward_a_v, self.forward_b_v)
         dut_v = fwd_unit_v(self.rt_in,
                            self.rs_in,
                            self.ex_rd,

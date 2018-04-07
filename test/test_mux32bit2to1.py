@@ -8,44 +8,46 @@ from myhdl import intbv, delay, Simulation, Signal, StopSimulation
 sys.path.append("src/python")
 from mux32bit2to1 import mux32bit2to1, mux32bit2to1_v
 from settings import settings as sf
+from intbv_generator import random_signed_intbv, signed_intbv_set
 
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
 class TestMux32Bit2To1(TestCase):
-    """Testing deasserted functionality"""
+    """Testing 32bit2to1Mux functionality"""
     def setUp(self):
         self.ctrl_signal = Signal(intbv(0)[1:])
-        self.input1, self.input2, self.output, self.output_v = [
-            Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(4)
-        ]
+        self.input1, self.input2, self.output, self.output_v = signed_intbv_set(4, value=0)
         self.dut = mux32bit2to1(self.ctrl_signal, self.input1, self.input2, self.output)
 
     def deassert(self, output):
+        """Testing deasserted functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.ctrl_signal.next = 0
-            self.input2.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
-            self.input1.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
+            self.input2.next = random_signed_intbv()
+            self.input1.next = random_signed_intbv()
             yield HALF_PERIOD
             self.assertEqual(self.ctrl_signal, 0)
             self.assertEqual(output, self.input1)
         raise StopSimulation
 
     def asserted(self, output):
+        """Testing asserted functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.ctrl_signal.next = 1
-            self.input2.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
-            self.input1.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
+            self.input2.next = random_signed_intbv()
+            self.input1.next = random_signed_intbv()
             yield HALF_PERIOD
             self.assertEqual(self.ctrl_signal, 1)
             self.assertEqual(output, self.input2)
         raise StopSimulation
 
     def dynamic(self, output):
+        """Testing dynamic functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.ctrl_signal.next = randint(0, 1)
-            self.input2.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
-            self.input1.next = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
+            self.input2.next = random_signed_intbv()
+            self.input1.next = random_signed_intbv()
             yield HALF_PERIOD
             if self.ctrl_signal == 0:
                 self.assertEqual(output, self.input1)
