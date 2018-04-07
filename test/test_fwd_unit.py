@@ -1,13 +1,13 @@
 import sys
 import unittest
 from unittest import TestCase
-from myhdl import intbv, delay, Simulation, Signal, StopSimulation
+from myhdl import intbv, Simulation, Signal, StopSimulation
 
 sys.path.append("src/python")
 from fwd_unit import fwd_unit, fwd_unit_v
+sys.path.append("src/commons")
 from settings import settings as sf
-
-HALF_PERIOD = delay(sf['PERIOD'] / 2)
+from clock import half_period
 
 
 # TODO: Dynamically test this module over many iterations
@@ -39,13 +39,13 @@ class TestFwdUnitHoldValue(TestCase):
             self.assertEqual(self.rs_in, 0)
             self.assertEqual(self.ex_rd, 0)
             self.assertEqual(self.mem_rd, 0)
-            yield HALF_PERIOD
+            yield half_period()
 
     def no_forward_test(self, forward_a, forward_b):
         """Stim for no forwarding"""
         self.rt_in.next = 10
         self.rs_in.next = 11
-        yield HALF_PERIOD
+        yield half_period()
         self.assertEqual(forward_b, 0)
         self.assertEqual(forward_a, 0)
         raise StopSimulation
@@ -58,18 +58,18 @@ class TestFwdUnitHoldValue(TestCase):
         self.rt_in.next = 10
         self.mem_reg_write.next = 1
         self.wb_reg_write.next = 0
-        yield HALF_PERIOD
+        yield half_period()
         self.assertEqual(forward_b, 0)
         self.assertEqual(bin(forward_a), bin(2))
         self.ex_rd.next = 12
         self.mem_rd.next = 11
         self.wb_reg_write.next = 1
-        yield HALF_PERIOD
+        yield half_period()
         self.assertEqual(forward_b, 0)
         self.assertEqual(bin(forward_a), bin(1))
         self.mem_reg_write.next = 0
         self.wb_reg_write.next = 0
-        yield HALF_PERIOD
+        yield half_period()
         self.assertEqual(forward_b, 0)
         self.assertEqual(forward_a, 0)
         self.rs_in.next = 11
@@ -77,7 +77,7 @@ class TestFwdUnitHoldValue(TestCase):
         self.mem_rd.next = 11
         self.mem_reg_write.next = 1
         self.wb_reg_write.next = 0
-        yield HALF_PERIOD
+        yield half_period()
         self.assertEqual(forward_b, 0)
         self.assertEqual(bin(forward_a), bin(2))
 
@@ -89,18 +89,18 @@ class TestFwdUnitHoldValue(TestCase):
         self.rs_in.next = 13
         self.mem_reg_write.next = 1
         self.wb_reg_write.next = 0
-        yield HALF_PERIOD
+        yield half_period()
         self.assertEqual(bin(forward_a), bin(0))
         self.assertEqual(bin(forward_b), bin(2))
         self.ex_rd.next = 12
         self.mem_rd.next = 11
         self.wb_reg_write.next = 1
-        yield HALF_PERIOD
+        yield half_period()
         self.assertEqual(forward_a, 0)
         self.assertEqual(bin(forward_b), bin(1))
         self.mem_reg_write.next = 0
         self.wb_reg_write.next = 0
-        yield HALF_PERIOD
+        yield half_period()
         self.assertEqual(forward_b, 0)
         self.assertEqual(forward_a, 0)
         self.rt_in.next = 11
@@ -108,7 +108,7 @@ class TestFwdUnitHoldValue(TestCase):
         self.mem_rd.next = 11
         self.mem_reg_write.next = 1
         self.wb_reg_write.next = 0
-        yield HALF_PERIOD
+        yield half_period()
         self.assertEqual(forward_a, 0)
         self.assertEqual(bin(forward_b), bin(2))
 

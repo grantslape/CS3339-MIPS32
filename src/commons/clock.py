@@ -11,3 +11,7 @@ def clock_gen(clock):
     while 1:
         yield HALF_PERIOD
         clock.next = not clock
+
+
+def half_period(period=sf['PERIOD']):
+    return delay(period / 2)

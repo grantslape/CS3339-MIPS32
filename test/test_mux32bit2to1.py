@@ -3,14 +3,14 @@ import sys
 from random import randint
 
 from unittest import TestCase
-from myhdl import intbv, delay, Simulation, Signal, StopSimulation
+from myhdl import intbv, Simulation, Signal, StopSimulation
 
 sys.path.append("src/python")
 from mux32bit2to1 import mux32bit2to1, mux32bit2to1_v
+sys.path.append("src/commons")
 from settings import settings as sf
 from intbv_generator import random_signed_intbv, signed_intbv_set
-
-HALF_PERIOD = delay(sf['PERIOD'] / 2)
+from clock import half_period
 
 
 class TestMux32Bit2To1(TestCase):
@@ -26,7 +26,7 @@ class TestMux32Bit2To1(TestCase):
             self.ctrl_signal.next = 0
             self.input2.next = random_signed_intbv()
             self.input1.next = random_signed_intbv()
-            yield HALF_PERIOD
+            yield half_period()
             self.assertEqual(self.ctrl_signal, 0)
             self.assertEqual(output, self.input1)
         raise StopSimulation
@@ -37,7 +37,7 @@ class TestMux32Bit2To1(TestCase):
             self.ctrl_signal.next = 1
             self.input2.next = random_signed_intbv()
             self.input1.next = random_signed_intbv()
-            yield HALF_PERIOD
+            yield half_period()
             self.assertEqual(self.ctrl_signal, 1)
             self.assertEqual(output, self.input2)
         raise StopSimulation
@@ -48,7 +48,7 @@ class TestMux32Bit2To1(TestCase):
             self.ctrl_signal.next = randint(0, 1)
             self.input2.next = random_signed_intbv()
             self.input1.next = random_signed_intbv()
-            yield HALF_PERIOD
+            yield half_period()
             if self.ctrl_signal == 0:
                 self.assertEqual(output, self.input1)
             else:

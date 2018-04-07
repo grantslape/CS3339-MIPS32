@@ -7,10 +7,10 @@ from myhdl import intbv, delay, Simulation, Signal, StopSimulation, ResetSignal,
 
 sys.path.append("src/python")
 from rfile import rfile, rfile_v
+sys.path.append("src/commons")
 from settings import settings as sf
 from clock import clock_gen
-
-HALF_PERIOD = delay(sf['PERIOD'] / 2)
+from intbv_generator import signed_intbv_set, random_signed_intbv
 
 
 # TODO: ADD TEST OF RESET FUNCTION
@@ -20,15 +20,12 @@ class TestRfileWrite(TestCase):
     def setUp(self):
         self.clock, self.reg_write = [Signal(intbv(0)[1:]) for i in range(2)]
         self.r_addr1, self.r_addr2, self.w_addr = [Signal(intbv(0)[5:]) for i in range(3)]
-        self.w_data, self.r_data1, self.r_data2, self.r_data1_v, self.r_data2_v = [
-            Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(5)
-        ]
+        self.w_data, self.r_data1, self.r_data2, self.r_data1_v, self.r_data2_v\
+            = signed_intbv_set(5, 0)
         self.reset = ResetSignal(0, active=sf['ACTIVE_LOW'], async=True)
-        self.reg_1 = intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])
-        self.expected = [intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']),
-                               min=sf['SIGNED_MIN_VALUE'],
-                               max=sf['SIGNED_MAX_VALUE'])
-                         for i in range(sf['WIDTH'])]
+        self.reg_1 = random_signed_intbv()
+        self.expected = signed_intbv_set(sf['WIDTH'],
+                                         randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
         self.dut = rfile(self.clock,
                          self.reset,
                          self.reg_write,
@@ -39,14 +36,12 @@ class TestRfileWrite(TestCase):
                          self.r_data1,
                          self.r_data2)
 
-    def writeTest(self, r_data):
+    def write_test(self, r_data):
         self.reset.next = sf['ACTIVE_LOW']
         yield posedge(self.clock)
         self.reset.next = sf['INACTIVE_HIGH']
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            self.reg_1 = intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']),
-                               min=sf['SIGNED_MIN_VALUE'],
-                               max=sf['SIGNED_MAX_VALUE'])
+            self.reg_1 = random_signed_intbv()
             self.reg_addr = intbv(randint(0, sf['WIDTH'] - 1))[5:0]
             yield posedge(self.clock)
             self.reg_write.next = 1
@@ -58,7 +53,7 @@ class TestRfileWrite(TestCase):
             self.assertEqual(r_data, self.reg_1)
         raise StopSimulation
 
-    def readTest(self, r_data1, r_data2):
+    def read_test(self, r_data1, r_data2):
         """Stim for Read tests"""
         count = 0
         self.reset.next = sf['ACTIVE_LOW']
@@ -83,13 +78,13 @@ class TestRfileWrite(TestCase):
     def testRfileWritePython(self):
         """Test Rfiles writes correctly and reads back Python """
         CLK = clock_gen(self.clock)
-        stim_1 = self.writeTest(self.r_data1)
+        stim_1 = self.write_test(self.r_data1)
         Simulation(CLK, self.dut, stim_1).run(quiet=1)
 
     def testRfileWriteVerilog(self):
         """Test Rfiles writes correctly and reads back Verilog """
         CLK = clock_gen(self.clock)
-        stim_1 = self.writeTest(self.r_data1_v)
+        stim_1 = self.write_test(self.r_data1_v)
         dut_v = rfile_v(self.clock,
                         self.reset,
                         self.reg_write,
@@ -104,8 +99,8 @@ class TestRfileWrite(TestCase):
     def testRfileWriteTogether(self):
         """Test Rfiles writes correctly and reads back together """
         CLK = clock_gen(self.clock)
-        stim_1 = self.writeTest(self.r_data1)
-        stim_v = self.writeTest(self.r_data1_v)
+        stim_1 = self.write_test(self.r_data1)
+        stim_v = self.write_test(self.r_data1_v)
         dut_v = rfile_v(self.clock,
                         self.reset,
                         self.reg_write,
@@ -120,13 +115,13 @@ class TestRfileWrite(TestCase):
     def testRfileReadPython(self):
         """Test correct values are read from register Python"""
         CLK = clock_gen(self.clock)
-        stim = self.readTest(self.r_data1, self.r_data2)
+        stim = self.read_test(self.r_data1, self.r_data2)
         Simulation(CLK, stim, self.dut).run(quiet=1)
 
     def testRfileReadVerilog(self):
         """Test correct values are read from register Verilog"""
         CLK = clock_gen(self.clock)
-        stim = self.readTest(self.r_data1_v, self.r_data2_v)
+        stim = self.read_test(self.r_data1_v, self.r_data2_v)
         dut_v = rfile_v(self.clock,
                         self.reset,
                         self.reg_write,
@@ -141,8 +136,8 @@ class TestRfileWrite(TestCase):
     def testRfileReadTogether(self):
         """Test correct values are read from register together"""
         CLK = clock_gen(self.clock)
-        stim = self.readTest(self.r_data1, self.r_data2)
-        stim_v = self.readTest(self.r_data1_v, self.r_data2_v)
+        stim = self.read_test(self.r_data1, self.r_data2)
+        stim_v = self.read_test(self.r_data1_v, self.r_data2_v)
         dut_v = rfile_v(self.clock,
                         self.reset,
                         self.reg_write,

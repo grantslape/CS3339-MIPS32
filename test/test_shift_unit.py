@@ -1,15 +1,14 @@
 import unittest
 from random import randint
 from unittest import TestCase
-from myhdl import delay, Signal, intbv, Simulation
+from myhdl import Signal, intbv, Simulation
 
 import sys
 sys.path.append("src/python")
-
-from settings import settings as sf
 from shift_unit import shift_unit, shift_unit_v
-
-HALF_PERIOD = delay(sf['PERIOD'] / 2)
+sys.path.append("src/commons")
+from settings import settings as sf
+from clock import half_period
 
 
 class TestShiftUnit(TestCase):
@@ -24,7 +23,7 @@ class TestShiftUnit(TestCase):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.assertEqual(self.imm_in, 0)
             self.assertEqual(imm_out, 0)
-        yield HALF_PERIOD
+        yield half_period()
 
     def outputTest(self, imm_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -32,7 +31,7 @@ class TestShiftUnit(TestCase):
             self.imm_in.next = intbv(randint(-1 * 2**15, 2**15 - 1),
                                      min=sf['SIGNED_MIN_VALUE'],
                                      max=sf['SIGNED_MAX_VALUE'])
-            yield HALF_PERIOD
+            yield half_period()
             self.assertEqual(imm_out, self.imm_in << 2)
 
     def testHoldZeroPython(self):

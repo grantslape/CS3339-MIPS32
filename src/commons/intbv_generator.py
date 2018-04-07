@@ -50,4 +50,4 @@ def unsigned_intbv_set(j, value=0):
 
 def random_unsigned_intbv():
     """Return random unsigned 32 bit intbv"""
-    return unsigned_intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))
+    return unsigned_intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[32:]

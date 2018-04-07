@@ -9,8 +9,7 @@ sys.path.append("src/python")
 from alu_mux_a import alu_mux_a, alu_mux_a_v
 sys.path.append("src/commons")
 from intbv_generator import *
-
-HALF_PERIOD = delay(sf['PERIOD'] / 2)
+from clock import half_period
 
 
 @unittest.skip("ALU Mux A not implemented")
@@ -34,7 +33,7 @@ class Test32Bit3To1Mux(TestCase):
                 self.data2.next, self.data3.next = [
                     Signal(random_signed_intbv())
                     for i in range(2)]
-            yield HALF_PERIOD
+            yield half_period()
             self.assertEqual(output, self.data1)
             self.assertNotEquals(output, self.data2)
             self.assertNotEquals(output, self.data3)
@@ -49,7 +48,7 @@ class Test32Bit3To1Mux(TestCase):
                 self.data1.next, self.data3.next = [
                     Signal(random_signed_intbv())
                     for i in range(2)]
-            yield HALF_PERIOD
+            yield half_period()
             self.assertEqual(output, self.data2)
             self.assertNotEquals(output, self.data1)
             self.assertNotEquals(output, self.data3)
@@ -63,7 +62,7 @@ class Test32Bit3To1Mux(TestCase):
                 self.data1.next, self.data2.next = [
                     Signal(random_signed_intbv()) for i in range(2)
                 ]
-            yield HALF_PERIOD
+            yield half_period()
             self.assertEqual(output, self.data3)
             self.assertNotEquals(output, self.data1)
             self.assertNotEquals(output, self.data2)
