@@ -16,7 +16,7 @@ def program_counter(clock, pc_write, nxt_inst, cur_pc):
 	return seq_logic
 
 def program_counter_v(clock, pc_write, nxt_inst, cur_pc):
-	cmd = "iverilog -o program_counter_v.out src/verilog/program_counter.v src/verilog/program_counter_tb.v"
+	cmd = "iverilog -o program_counter.out src/verilog/program_counter.v src/verilog/program_counter_tb.v"
 	os.system(cmd)
 	
 	return Cosimulation("vvp -m lib/myhdl.vpi program_counter.out", 
