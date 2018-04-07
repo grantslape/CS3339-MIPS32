@@ -8,7 +8,7 @@ sys.path.append("test")
 import test_mux32bit2to1
 import test_fwd_unit
 import test_shift_unit
-import test_alu_mux_a
+import test_32bit3to1mux
 import test_alu_mux_b
 import test_ex_mux
 import test_pc_adder
@@ -16,7 +16,7 @@ import test_program_counter
 import test_rfile
 
 modules = (test_mux32bit2to1,
-           test_alu_mux_a,
+           test_32bit3to1mux,
            test_alu_mux_b,
            test_ex_mux,
            test_fwd_unit,
