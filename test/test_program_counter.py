@@ -11,7 +11,6 @@ from settings import settings as sf
 from clock import clock_gen
 
 
-@unittest.skip("Program Counter not implemented")
 class TestNormalOperation(TestCase):
     """Test program counter"""
     def setUp(self):
@@ -22,18 +21,20 @@ class TestNormalOperation(TestCase):
     def normalOp(self, cur_pc):
         self.pc_write.next = intbv(0)[1:]
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            self.nxt_inst.next = intbv(randint(0, sf['MAX_UNSIGNED_VALUE']))[32:]
-            yield posedge(self.clock)
+            self.nxt_inst.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[32:]
+            yield self.clock.posedge  #First posedge triggers program_counter to do work
+	    yield self.clock.posedge  #TODO: Is this really necessary?
             self.assertEqual(cur_pc, self.nxt_inst)
         raise StopSimulation
 
     def stall(self, cur_pc):
         self.pc_write.next = intbv(0)[1:]
         for i in range(sf['DEFAULT_TEST_LENGTH'] / 2):
-            self.nxt_inst.next = intbv(randint(0, sf['MAX_UNSIGNED_VALUE']))[32:]
+            self.nxt_inst.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[32:]
             yield posedge(self.clock)
         self.pc_write.next = intbv(1)[1:]
         for i in range(sf['DEFAULT_TEST_LENGTH'] / 2):
+	    yield posedge(self.clock)
             self.assertEqual(self.nxt_inst, cur_pc)
         raise StopSimulation
 

@@ -12,7 +12,6 @@ from settings import settings as sf
 HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
-@unittest.skip("PC Adder not implemented")
 class TestPcAdderZero(TestCase):
     """Test PC Adder"""
     def setUp(self):
