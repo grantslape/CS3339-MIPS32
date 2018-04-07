@@ -1,7 +1,7 @@
 # CS3339-MIPS32
 Class Project for CS3339
 [![Build Status](https://semaphoreci.com/api/v1/projects/60cb7614-3fe5-40f7-9c80-8cf79916ae93/1881968/badge.svg)](https://semaphoreci.com/grantslape-61/cs3339-mips32)
-
+[![CodeFactor](https://www.codefactor.io/repository/github/grantslape/cs3339-mips32/badge)](https://www.codefactor.io/repository/github/grantslape/cs3339-mips32)
 ## Execution
 From the project root:
 1. Make sure Icarus Verilog is installed. Available on Homebrew for MacOS.  For Ubuntu:

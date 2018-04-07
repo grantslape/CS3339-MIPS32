@@ -7,12 +7,12 @@ cpu:
 		input pc_write: 1 to stall (repeat instruction), from hazard_unit.pc_write
 		input [31:0] nxt_inst: next instruction address from pc_mux_b
 		output [31:0] cur_pc: next instruction address goes to inst_mem, pc_mux_c
-	pc_mux_a: 2:1 Mux for program_counter input:
+	pc_mux_a: 2:1 Mux for program_counter input: instance of 32 bit 2:1 mux
 		input pc_src: which input to use. 0 for nxt_pc, 1, for imm_jmp_addr. From branch predictor
 		input [31:0] imm_jmp_addr: a new PC value from the EX/MEM register
 		input [31:0] nxt_pc: sequential next PC from pc_adder
 		output [31:0] nxt_inst: actual next instruction address to pc_mux_b
-	pc_mux_b: 2:1 Mux to avoid jump stalls
+	pc_mux_b: 2:1 Mux to avoid jump stalls instance of 32 bit 2:1 mux
 		input jmp_ctrl: source signal.  from ctrl
 		input [31:0] nxt_inst_in: actual next instruction address from pc_mux_a
 		input [31:0] jmp_addr_in: jump address from id_shift_left
@@ -67,7 +67,7 @@ cpu:
 		output alu_src: 0 for register input, 1 for immediate. to id_ex.alu_src_in
 		output reg_write: activate to write to register.  to id_ex.reg_write_in
 		output reg_dst: 0 to write to Rt ([20:16]), 1 to write to Rd ([15:11]). to id_ex.reg_dst_in
-	ctrl_mux: The weird gate for implementing stalls
+	ctrl_mux: The weird gate for implementing stalls.  This may need to store signals internally to hold state
 		inputs: all the listed ctrl signals above.
 		input ex_stall_in: activate to stall.
 		outputs: all ctrl signals to id_ex.  0 if ex_stall_in activated.
@@ -121,7 +121,7 @@ cpu:
 		input [31:0] mem_rd: rd from the previous cycle, received from ex_mem
 		input [31:0] wb_rd: rd from two cycles ago, received from wb_mux
 		output [31:0] op2_out: Output for Rt.  Sent to alu_mux_imm, ex_mem
-	alu_mux_imm: 2:1 Mux to support immediate type instructions
+	alu_mux_imm: 2:1 Mux to support immediate type instructions instance of 32 bit 2:1 mux
 		input alu_src: one bit input from ctrl
 		input [31:0] rt_in: Rt data from alu_mux_b
 		input [31:0] imm_in: immediate data from sign_extender
@@ -190,7 +190,7 @@ cpu:
 		output [31:0] result_out: ALU result. to wb_mux.reg_in
 		output [4:0] rt_out: rt_address. To rfile.w_addr, fwd_unit.mem_rd
 		output reg_write_out: reg_write ctrl signal.  to rfile.reg_write
-	wb_mux: Writeback Mux ALU Result / Memory data
+	wb_mux: Writeback Mux ALU Result / Memory data instance of 2:1 32 bit mux
 		input mem_to_reg: ctrl signal, from mem_wb.mem_to_reg 1 for memory, 0 for register.
 		input [31:0] rdata_in: Read data input. from mem_wb.rdata_out
 		input [31:0] result_in: result input. from mem_wb.result_out
