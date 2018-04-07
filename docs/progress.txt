@@ -4,7 +4,7 @@ Mark Gitthens:
     pc_mux_a DONE 2018-04-02, genericized 2018-04-05
     pc_mux_b genericized 2018-04-05
     wb_mux genericized 2018-04-05
-    pc_adder
+    pc_adder DON 2018-04-05
 Huan Wu:
     sign_extender
     id_ex
