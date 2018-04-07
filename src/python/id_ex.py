@@ -4,9 +4,10 @@ from myhdl import always_seq, Cosimulation
 
 
 # YOU NEED TO INSTANTIATE WITH KEYWORD ARGUMENTS
-def id_ex(clock, **kwargs):
+def id_ex(**kwargs):
     """
     ID/EX Pipeline Register
+    :param clock
     :param branch_in:
     :param alu_op:
     :param mem_read_in:
@@ -42,7 +43,8 @@ def id_ex(clock, **kwargs):
         pass
     return logic
 
+
 # YOU NEED TO INSTANTIATE WITH KEYWORD ARGUMENTS
-def id_ex_v(clock, **kwargs):
+def id_ex_v(**kwargs):
     """ See above, Verilog"""
     return Cosimulation()

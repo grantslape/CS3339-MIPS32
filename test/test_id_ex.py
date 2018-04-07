@@ -92,7 +92,7 @@ class TestIdExRegister(TestCase):
             'reg_dst_out': self.reg_dst_out_v
         }
 
-        self.dut = id_ex(self.params)
+        self.dut = id_ex(**self.params)
 
     def deassert(self, branch_out, mem_read_out, mem_to_reg_out, mem_write_out, alu_src_out,
                  reg_write_out, reg_dst_out):
@@ -170,7 +170,7 @@ class TestIdExRegister(TestCase):
                                reg_write_out=self.reg_write_out_v,
                                reg_dst_out=self.reg_dst_out_v)
 
-        dut_v = id_ex_v(self.v_params)
+        dut_v = id_ex_v(**self.v_params)
         Simulation(CLK, stim_v, dut_v).run(quiet=1)
 
     def testDeassertTogether(self):
@@ -217,7 +217,7 @@ class TestIdExRegister(TestCase):
                              reg_write_out=self.reg_write_out_v,
                              reg_dst_out=self.reg_dst_out_v)
 
-        dut_v = id_ex_v(self.v_params)
+        dut_v = id_ex_v(**self.v_params)
         Simulation(CLK, stim, dut_v).run(quiet=1)
 
     def testDynamicTogether(self):
@@ -238,7 +238,7 @@ class TestIdExRegister(TestCase):
                                reg_write_out=self.reg_write_out_v,
                                reg_dst_out=self.reg_dst_out_v)
 
-        dut_v = id_ex_v(self.params)
+        dut_v = id_ex_v(**self.params)
         Simulation(CLK, stim, self.dut, dut_v, stim_v).run(quiet=1)
 
 
