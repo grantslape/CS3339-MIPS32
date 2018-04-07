@@ -1,6 +1,7 @@
+"""Unit tests for 32 bit 2 to 1 Multiplexer"""
 import unittest
-from random import randint
 from unittest import TestCase
+from random import randint
 from myhdl import intbv, Simulation, Signal, StopSimulation
 from src.commons.signal_generator import random_signed_intbv, signed_signal_set
 from src.commons.settings import settings as sf

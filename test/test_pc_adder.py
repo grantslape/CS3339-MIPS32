@@ -1,7 +1,8 @@
+"""PC Adder Unit Tests"""
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import intbv, Simulation, Signal, StopSimulation
+from myhdl import intbv, Simulation, StopSimulation
 
 from src.commons.signal_generator import unsigned_signal_set
 from src.python.pc_adder import pc_adder, pc_adder_v
@@ -16,14 +17,16 @@ class TestPcAdderZero(TestCase):
         self.dut = pc_adder(self.cur_pc, self.nxt_pc)
 
     def zeroTest(self):
-        self.cur_pc.next = intbv(0)[32:]
+        """Test when value held at zero"""
+        self.cur_pc.next = intbv()[32:]
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             yield half_period()
-            self.assertEqual(bin(self.nxt_pc), bin(intbv(0)[32:]))
-            self.assertEqual(bin(self.nxt_pc_v), bin(intbv(0)[32:]))
+            self.assertEqual(bin(self.nxt_pc), bin(intbv()[32:]))
+            self.assertEqual(bin(self.nxt_pc_v), bin(intbv()[32:]))
         raise StopSimulation
 
     def dynamic(self, nxt_pc):
+        """Test dynamic values"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.cur_pc.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE'] - 4))[32:]
             yield half_period()

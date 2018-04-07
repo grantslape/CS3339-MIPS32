@@ -1,3 +1,4 @@
+"""EX stage Multiplexer unit tests"""
 import unittest
 from unittest import TestCase
 from random import randint
