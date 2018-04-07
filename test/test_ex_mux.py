@@ -1,8 +1,8 @@
-import unittest
 import sys
+import unittest
+from unittest import TestCase
 from random import randint
 
-from unittest import TestCase
 from myhdl import intbv, delay, Simulation, Signal, StopSimulation
 
 sys.path.append("src/python")
@@ -21,6 +21,7 @@ class TestExMuxDeasserted(TestCase):
         self.dut = ex_mux(self.reg_dst, self.rt_in, self.rd_in, self.dest)
 
     def deassert(self, dest):
+        """Test Deasserted functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = 0
             self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
@@ -33,6 +34,7 @@ class TestExMuxDeasserted(TestCase):
         raise StopSimulation
 
     def asserted(self, dest):
+        """Test Asserted functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = 1
             self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
@@ -45,6 +47,7 @@ class TestExMuxDeasserted(TestCase):
         raise StopSimulation
 
     def dynamic(self, dest):
+        """Test Dynamic functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = randint(0, 1)
             self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
