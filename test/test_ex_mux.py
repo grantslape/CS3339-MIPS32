@@ -1,15 +1,10 @@
 import unittest
-import sys
-from random import randint
-
 from unittest import TestCase
-from myhdl import intbv, delay, Simulation, Signal, StopSimulation
-
-sys.path.append("src/python")
-from ex_mux import ex_mux, ex_mux_v
-from settings import settings as sf
-
-HALF_PERIOD = delay(sf['PERIOD'] / 2)
+from random import randint
+from myhdl import intbv, Simulation, Signal, StopSimulation
+from src.python.ex_mux import ex_mux, ex_mux_v
+from src.commons.settings import settings as sf
+from src.commons.clock import half_period
 
 
 @unittest.skip("Ex Mux not implemented")
@@ -21,37 +16,40 @@ class TestExMuxDeasserted(TestCase):
         self.dut = ex_mux(self.reg_dst, self.rt_in, self.rd_in, self.dest)
 
     def deassert(self, dest):
+        """Test Deasserted functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = 0
             self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
             self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
             while self.rd_in == self.rt_in:
                 self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
-            yield HALF_PERIOD
+            yield half_period()
             self.assertEqual(dest, self.rt_in)
             self.assertNotEquals(dest, self.rd_in)
         raise StopSimulation
 
     def asserted(self, dest):
+        """Test Asserted functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = 1
             self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
             self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
             while self.rd_in == self.rt_in:
                 self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
-            yield HALF_PERIOD
+            yield half_period()
             self.assertEqual(dest, self.rd_in)
             self.assertNotEquals(dest, self.rt_in)
         raise StopSimulation
 
     def dynamic(self, dest):
+        """Test Dynamic functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = randint(0, 1)
             self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
             self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
             while self.rd_in == self.rt_in:
                 self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
-            yield HALF_PERIOD
+            yield half_period()
             if self.reg_dst == 0:
                 self.assertEqual(dest, self.rt_in)
                 self.assertNotEquals(dest, self.rd_in)
