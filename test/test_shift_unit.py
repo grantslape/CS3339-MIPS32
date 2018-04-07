@@ -1,38 +1,30 @@
 import unittest
 from random import randint
 from unittest import TestCase
-from myhdl import delay, Signal, intbv, Simulation
-
-import sys
-sys.path.append("src/python")
-
-from settings import settings as sf
-from shift_unit import shift_unit, shift_unit_v
-
-HALF_PERIOD = delay(sf['PERIOD'] / 2)
+from myhdl import Simulation
+from src.python.shift_unit import shift_unit, shift_unit_v
+from src.commons.settings import settings as sf
+from src.commons.clock import half_period
+from src.commons.signal_generator import signed_signal_set, signed_intbv
 
 
 class TestShiftUnit(TestCase):
     """Test no change on input """
     def setUp(self):
-        self.imm_in, self.imm_out, self.imm_out_v = [
-            Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE'])) for i in range(3)
-        ]
+        self.imm_in, self.imm_out, self.imm_out_v = signed_signal_set(3, 0)
         self.dut = shift_unit(self.imm_in, self.imm_out)
 
     def hold(self, imm_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.assertEqual(self.imm_in, 0)
             self.assertEqual(imm_out, 0)
-        yield HALF_PERIOD
+        yield half_period()
 
     def outputTest(self, imm_out):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             # Note that our range of input values is 16bits, it was an immediate extended to 32 bits
-            self.imm_in.next = intbv(randint(-1 * 2**15, 2**15 - 1),
-                                     min=sf['SIGNED_MIN_VALUE'],
-                                     max=sf['SIGNED_MAX_VALUE'])
-            yield HALF_PERIOD
+            self.imm_in.next = signed_intbv(randint(-1 * 2**15, 2**15 - 1))
+            yield half_period()
             self.assertEqual(imm_out, self.imm_in << 2)
 
     def testHoldZeroPython(self):
