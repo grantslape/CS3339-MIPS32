@@ -1,3 +1,4 @@
+"""Unit tests for Program counter module"""
 import unittest
 from unittest import TestCase
 from myhdl import intbv, Simulation, Signal, StopSimulation, posedge

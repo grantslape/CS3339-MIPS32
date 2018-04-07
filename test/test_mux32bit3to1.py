@@ -1,10 +1,11 @@
 import unittest
 from unittest import TestCase
-from myhdl import Simulation, StopSimulation
+from myhdl import Simulation, StopSimulation, Signal, intbv
 # TODO: Update this to generic 32 bit mux
 from src.python.alu_mux_a import alu_mux_a, alu_mux_a_v
-from src.commons.signal_generator import *
+from src.commons.signal_generator import random_signed_intbv, signed_signal_set
 from src.commons.clock import half_period
+from src.commons.settings import settings as sf
 
 
 @unittest.skip("ALU Mux 3:1 not implemented")
@@ -12,7 +13,7 @@ class Test32Bit3To1Mux(TestCase):
     """Testing 3:1 Mux functionality"""
 
     def setUp(self):
-        self.ctrl_signal = Signal(intbv(0)[2:])
+        self.ctrl_signal = Signal(intbv()[2:])
         self.data1, self.data2, self.data3, self.output, self.output_v = signed_signal_set(5)
         self.dut = alu_mux_a(self.ctrl_signal, self.data1, self.data2, self.data3, self.output)
 
@@ -20,7 +21,7 @@ class Test32Bit3To1Mux(TestCase):
         """Testing deasserted functionality"""
         self.ctrl_signal.next = 0
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            self.data1.next = Signal()
+            self.data1.next = Signal(random_signed_intbv())
             while self.data2 == self.data1 or self.data3 == self.data1:
                 self.data2.next, self.data3.next = [
                     Signal(random_signed_intbv())
