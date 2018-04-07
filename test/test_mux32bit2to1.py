@@ -52,18 +52,18 @@ class TestMux32Bit2To1(TestCase):
         raise StopSimulation
 
     def testHoldDeassertPython(self):
-        """ Checking that result_data is outputted when deasserted Python"""
+        """ Checking that input1 is outputted when deasserted Python"""
         stim = self.deassert(self.output)
         Simulation(self.dut, stim).run(quiet=1)
 
     def testHoldDeassertVerilog(self):
-        """ Checking that result_data is outputted when deasserted Verilog"""
+        """ Checking that input1 is outputted when deasserted Verilog"""
         stim = self.deassert(self.output_v)
         dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
         Simulation(dut_v, stim).run(quiet=1)
 
     def testHoldDeassertTogether(self):
-        """ Checking that result_data is outputted when deasserted Cosimulation"""
+        """ Checking that input1 is outputted when deasserted Cosimulation"""
         stim = self.deassert(self.output)
         stim_v = self.deassert(self.output_v)
         dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)

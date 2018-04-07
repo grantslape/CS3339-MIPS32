@@ -9,7 +9,7 @@ from src.commons.clock import half_period
 
 @unittest.skip("ALU Mux 3:1 not implemented")
 class Test32Bit3To1Mux(TestCase):
-    """Testing ALU Mux A functionality"""
+    """Testing 3:1 Mux functionality"""
 
     def setUp(self):
         self.ctrl_signal = Signal(intbv(0)[2:])
@@ -32,7 +32,7 @@ class Test32Bit3To1Mux(TestCase):
         raise StopSimulation
 
     def forwardA(self, output):
-        """"""
+        """testing forward A functionality"""
         self.ctrl_signal.next = 1
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.data2.next = Signal(random_signed_intbv())
@@ -47,6 +47,7 @@ class Test32Bit3To1Mux(TestCase):
         raise StopSimulation
 
     def forwardB(self, output):
+        """testing forward B functionality"""
         self.ctrl_signal.next = 2
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.data3.next = Signal(random_signed_intbv())
@@ -60,20 +61,20 @@ class Test32Bit3To1Mux(TestCase):
             self.assertNotEquals(output, self.data2)
         raise StopSimulation
 
-    def testAluMuxADeassertPython(self):
+    def test3To1MuxDeassertPython(self):
         """Testing deasserted functionality Python"""
         stim = self.deassert(self.output)
 
         Simulation(self.dut, stim).run(quiet=1)
 
-    def testAluMuxADeassertVerilog(self):
+    def test3To1MuxDeassertVerilog(self):
         """Testing deasserted functionality Verilog"""
         stim = self.deassert(self.output_v)
         dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
 
         Simulation(dut_v, stim).run(quiet=1)
 
-    def testAluMuxADeassertTogether(self):
+    def test3To1MuxDeassertTogether(self):
         """Testing deasserted functionality together"""
         dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.deassert(self.output)
@@ -81,42 +82,42 @@ class Test32Bit3To1Mux(TestCase):
 
         Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
-    def testAluMuxAMemForwardPython(self):
-        """Testing MemForward functionality Python"""
+    def test3To1MuxForwardPython(self):
+        """Testing ForwardA functionality Python"""
         stim = self.forwardA(self.output)
 
         Simulation(self.dut, stim).run(quiet=1)
 
-    def testAluMuxAMemForwardVerilog(self):
-        """Testing MemForward functionality Verilog"""
+    def test3To1MuxForwardAVerilog(self):
+        """Testing ForwardA functionality Verilog"""
         dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.forwardA(self.output_v)
 
         Simulation(dut_v, stim).run(quiet=1)
 
-    def testAluMuxAMemForwardTogether(self):
-        """Testing MemForward functionality together"""
+    def test3To1MuxForwardATogether(self):
+        """Testing ForwardA functionality together"""
         dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.forwardA(self.output)
         stim_v = self.forwardA(self.output_v)
 
         Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
 
-    def testAluMuxAWbForwardPython(self):
-        """Testing WbForward functionality Python"""
+    def test3To1MuxForwardBPython(self):
+        """Testing ForwardB functionality Python"""
         stim = self.forwardB(self.output)
 
         Simulation(self.dut, stim).run(quiet=1)
 
-    def testAluMuxAWbForwardVerilog(self):
-        """Testing WbForward functionality Verilog"""
+    def test3To1MuxForwardBVerilog(self):
+        """Testing ForwardB functionality Verilog"""
         dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.forwardB(self.output_v)
 
         Simulation(dut_v, stim).run(quiet=1)
 
-    def testAluMuxAWbForwardTogether(self):
-        """Testing WbForward functionality together"""
+    def test3To1MuxForwardBTogether(self):
+        """Testing ForwardB functionality together"""
         dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.forwardB(self.output)
         stim_v = self.forwardB(self.output_v)
