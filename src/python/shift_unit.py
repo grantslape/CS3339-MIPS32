@@ -24,9 +24,9 @@ def shift_unit_v(imm_in, imm_out):
     :return:A cosimulation object 
     """
 
-    cmd = "iverilog -o shift_unit.out src/verilog/shift_unit.v src/verilog/shift_unit_tb.v"
+    cmd = "iverilog -o bin/shift_unit.out src/verilog/shift_unit.v src/verilog/shift_unit_tb.v"
     os.system(cmd)
 
-    return Cosimulation("vvp -m ./lib/myhdl.vpi shift_unit.out",
+    return Cosimulation("vvp -m ./lib/myhdl.vpi bin/shift_unit.out",
                         imm_in=imm_in,
                         imm_out=imm_out)

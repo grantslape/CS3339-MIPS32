@@ -4,14 +4,15 @@ from myhdl import intbv, Simulation, Signal, StopSimulation, posedge
 from src.python.program_counter import program_counter, program_counter_v
 from src.commons.settings import settings as sf
 from src.commons.clock import clock_gen
-from src.commons.signal_generator import random_unsigned_intbv, unsigned_intbv_set
+from src.commons.signal_generator import random_unsigned_intbv,\
+    unsigned_intbv_set, unsigned_signal_set
 
 
 class TestNormalOperation(TestCase):
     """Test program counter"""
     def setUp(self):
         self.clock, self.pc_write = [Signal(intbv(0)[1:]) for i in range(2)]
-        self.cur_pc_v, self.cur_pc, self.nxt_inst = unsigned_intbv_set(3)
+        self.cur_pc_v, self.cur_pc, self.nxt_inst = unsigned_signal_set(3)
         self.dut = program_counter(self.clock, self.pc_write, self.nxt_inst, self.cur_pc)
 
     def normal_op(self, cur_pc):

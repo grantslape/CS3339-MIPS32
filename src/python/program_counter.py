@@ -7,7 +7,7 @@ def program_counter(clock, pc_write, nxt_inst, cur_pc):
     Program Counter
     :param clock: system clock
     :param pc_write: 1 to stall (repeat instruction), from hazard_unit.pc_write
-    :param nxt_pc: next instruction address from pc_mux_b
+    :param nxt_inst: next instruction address from pc_mux_b
     :param cur_pc: next instruction addres goes to inst_mem, pc_mux_c
     :return: module logic
     """

@@ -8,24 +8,28 @@ From the project root:
 ```shell
     $ sudo apt-get install iverilog
 ```
-1. Create a virtual env if you don't already have one:
+2. Create a virtual env if you don't already have one:
 ```shell
     $ pip install virtualenv
     $ virtualenv venv
 ```
-2. Activate and install MyHDL:
+3. Activate and install MyHDL:
 ```shell
     $ source venv/bin/activate
     $ pip install -r requirements.txt
 ```
-3. Set up Cosimulation:
+4. Set up Cosimulation:
 ```shell
     $ cd venv/share/myhdl/cosimulation/icarus
     $ make
     $ cd ../../../../..
     $ mv venv/share/myhdl/cosimulation/icarus/myhdl.vpi ./lib
 ```
-3. Run tests!
+5. Add modules to PYTHONPATH:
+```shell
+    $ export PYTHONPATH=`pwd`
+```
+6. Run tests!
 ```shell
     $ python test/test_all_modules.py
 ```

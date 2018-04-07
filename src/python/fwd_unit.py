@@ -58,10 +58,10 @@ def fwd_unit_v(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward
     :param forward_b: two bit input selector. to alu_mux_b
     :return: generator logic
     """
-    cmd = "iverilog -o fwd_unit.out src/verilog/fwd_unit.v src/verilog/fwd_unit_tb.v"
+    cmd = "iverilog -o bin/fwd_unit.out src/verilog/fwd_unit.v src/verilog/fwd_unit_tb.v"
     os.system(cmd)
 
-    return Cosimulation("vvp -m ./lib/myhdl.vpi fwd_unit.out",
+    return Cosimulation("vvp -m ./lib/myhdl.vpi bin/fwd_unit.out",
                         rt_in=rt_in,
                         rs_in=rs_in,
                         ex_rd=ex_rd,

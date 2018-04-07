@@ -1,6 +1,6 @@
 from random import randint
 
-from myhdl import intbv
+from myhdl import intbv, Signal
 from settings import settings as sf
 
 
@@ -49,14 +49,24 @@ def unsigned_intbv_set(j, value=0):
 
 def random_unsigned_intbv():
     """Return random unsigned 32 bit intbv"""
-    return unsigned_intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[32:]
+    return unsigned_intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[sf['WIDTH']:]
 
 
 def unsigned_signal_set(j, value=0):
     """
     Generate many unsigned intbv signals
-    :param j:
-    :param value:
+    :param j: # of signals to generate
+    :param value: initial value
     :return:
     """
-    return Sig
+    return [Signal(unsigned_intbv(value)) for i in range(j)]
+
+
+def signed_signal_set(j, value=0):
+    """
+    Generate many unsigned intbv signals
+    :param j: # of signals to generate
+    :param value: initial value
+    :return:
+    """
+    return [Signal(signed_intbv(value)) for i in range(j)]

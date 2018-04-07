@@ -34,9 +34,9 @@ def mux32bit2to1_v(ctrl_line, input1, input2, out):
     :param out: 32-bit output
     :return: Cosimulation
     """
-    cmd = "iverilog -o mux32bit2to1.out src/verilog/mux32bit2to1.v src/verilog/mux32bit2to1_tb.v"
+    cmd = "iverilog -o bin/mux32bit2to1.out src/verilog/mux32bit2to1.v src/verilog/mux32bit2to1_tb.v"
     os.system(cmd)
-    return Cosimulation("vvp -m lib/myhdl.vpi mux32bit2to1.out",
+    return Cosimulation("vvp -m lib/myhdl.vpi bin/mux32bit2to1.out",
                         ctrl_line=ctrl_line,
                         input1=input1,
                         input2=input2,

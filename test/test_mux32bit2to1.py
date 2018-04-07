@@ -2,7 +2,7 @@ import unittest
 from random import randint
 from unittest import TestCase
 from myhdl import intbv, Simulation, Signal, StopSimulation
-from src.commons.signal_generator import signed_intbv_set, random_signed_intbv
+from src.commons.signal_generator import signed_intbv_set, random_signed_intbv, signed_signal_set
 from src.commons.settings import settings as sf
 from src.commons.clock import half_period
 from src.python.mux32bit2to1 import mux32bit2to1, mux32bit2to1_v
@@ -12,7 +12,7 @@ class TestMux32Bit2To1(TestCase):
     """Testing 32bit2to1Mux functionality"""
     def setUp(self):
         self.ctrl_signal = Signal(intbv(0)[1:])
-        self.input1, self.input2, self.output, self.output_v = signed_intbv_set(4, value=0)
+        self.input1, self.input2, self.output, self.output_v = signed_signal_set(4)
         self.dut = mux32bit2to1(self.ctrl_signal, self.input1, self.input2, self.output)
 
     def deassert(self, output):
