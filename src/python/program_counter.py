@@ -29,10 +29,10 @@ def program_counter_v(clock, pc_write, nxt_inst, cur_pc):
     :param cur_pc: next instruction addres goes to inst_mem, pc_mux_c
     :return: cosimulation
     """
-    cmd = "iverilog -o program_counter.out src/verilog/program_counter.v src/verilog/program_counter_tb.v"
+    cmd = "iverilog -o bin/program_counter.out src/verilog/program_counter.v src/verilog/program_counter_tb.v"
     os.system(cmd)
 
-    return Cosimulation("vvp -m lib/myhdl.vpi program_counter.out",
+    return Cosimulation("vvp -m lib/myhdl.vpi bin/program_counter.out",
                         clock=clock,
                         pc_write=pc_write,
                         nxt_inst=nxt_inst,
