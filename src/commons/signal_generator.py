@@ -1,7 +1,7 @@
 from random import randint
 
 from myhdl import intbv, Signal
-from settings import settings as sf
+from src.commons.settings import settings as sf
 
 
 def signed_intbv(value=0):

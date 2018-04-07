@@ -1,7 +1,7 @@
 import unittest
 from random import randint
 from unittest import TestCase
-from myhdl import Signal, intbv, Simulation
+from myhdl import Simulation
 from src.python.shift_unit import shift_unit, shift_unit_v
 from src.commons.settings import settings as sf
 from src.commons.clock import half_period

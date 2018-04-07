@@ -1,19 +1,16 @@
 import unittest
-import sys
 from random import randint
-
 from unittest import TestCase
-from myhdl import intbv, delay, Simulation, Signal, StopSimulation, ResetSignal, negedge, posedge
+from myhdl import intbv, Simulation, Signal, StopSimulation, ResetSignal, negedge, posedge
 
-sys.path.append("src/python")
-from rfile import rfile, rfile_v
-sys.path.append("src/commons")
-from settings import settings as sf
-from clock import clock_gen
-from signal_generator import signed_intbv_set, random_signed_intbv
+from src.python.rfile import rfile, rfile_v
+from src.commons.settings import settings as sf
+from src.commons.clock import clock_gen
+from src.commons.signal_generator import signed_intbv_set, random_signed_intbv
 
 
 # TODO: ADD TEST OF RESET FUNCTION
+# TODO: use signal_generator functions
 @unittest.skip("Rfile not implemented")
 class TestRfileWrite(TestCase):
     # TODO: These tests are interdependent and not completely valid

@@ -2,7 +2,7 @@ import unittest
 from random import randint
 from unittest import TestCase
 from myhdl import intbv, Simulation, Signal, StopSimulation
-from src.commons.signal_generator import signed_intbv_set, random_signed_intbv, signed_signal_set
+from src.commons.signal_generator import random_signed_intbv, signed_signal_set
 from src.commons.settings import settings as sf
 from src.commons.clock import half_period
 from src.python.mux32bit2to1 import mux32bit2to1, mux32bit2to1_v

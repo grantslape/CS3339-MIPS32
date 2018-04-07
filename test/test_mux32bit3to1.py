@@ -13,10 +13,7 @@ class Test32Bit3To1Mux(TestCase):
 
     def setUp(self):
         self.ctrl_signal = Signal(intbv(0)[2:])
-        self.data1, self.data2, self.data3, self.output, self.output_v = [
-            Signal(signed_intbv(0))
-            for i in range(5)
-        ]
+        self.data1, self.data2, self.data3, self.output, self.output_v = signed_signal_set(5)
         self.dut = alu_mux_a(self.ctrl_signal, self.data1, self.data2, self.data3, self.output)
 
     def deassert(self, output):

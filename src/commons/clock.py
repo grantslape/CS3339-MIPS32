@@ -1,5 +1,5 @@
 from myhdl import delay
-from settings import settings as sf
+from src.commons.settings import settings as sf
 
 
 def clock_gen(clock):
