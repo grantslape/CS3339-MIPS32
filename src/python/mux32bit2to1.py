@@ -10,7 +10,7 @@ def mux32bit2to1(ctrl_line, input1, input2, out):
     :param ctrl_line: Which input should be output. If 1 input2 else input1
     :param input1: first 32-bit input
     :param input2: second 32-bit input
-    :param output: 32-bit output
+    :param out: 32-bit output
     :return: generator logic
     """
 

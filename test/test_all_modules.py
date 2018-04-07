@@ -1,24 +1,28 @@
+"""
 # CS3339-265, Team White Group Project
-# Main Test Driver
+# Main Test Driver for all unit tests
+"""
 import unittest
-from test import test_fwd_unit, test_shift_unit,test_mux32bit2to1, test_pc_adder,\
-    test_mux32bit3to1, test_ex_mux, test_program_counter, test_rfile
+from test import test_fwd_unit, test_shift_unit, test_mux32bit2to1, test_pc_adder, \
+    test_mux32bit3to1, test_ex_mux, test_program_counter, test_rfile, test_sign_extender
 
-modules = (test_mux32bit2to1,
+MODULES = (test_mux32bit2to1,
            test_mux32bit3to1,
            test_ex_mux,
            test_fwd_unit,
            test_pc_adder,
            test_program_counter,
            test_rfile,
-           test_shift_unit,)
-tester = unittest.defaultTestLoader
+           test_shift_unit,
+           test_sign_extender,)
+TESTER = unittest.defaultTestLoader
 
 
 def suite():
+    """Build test suite from MODULES"""
     all_tests = unittest.TestSuite()
-    for m in modules:
-        all_tests.addTest(tester.loadTestsFromModule(m))
+    for module in MODULES:
+        all_tests.addTest(TESTER.loadTestsFromModule(module))
     return all_tests
 
 

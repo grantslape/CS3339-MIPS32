@@ -1,6 +1,7 @@
+"""Unit tests for Shift Unit"""
 import unittest
-from random import randint
 from unittest import TestCase
+from random import randint
 from myhdl import Simulation
 from src.python.shift_unit import shift_unit, shift_unit_v
 from src.commons.settings import settings as sf
@@ -15,15 +16,18 @@ class TestShiftUnit(TestCase):
         self.dut = shift_unit(self.imm_in, self.imm_out)
 
     def hold(self, imm_out):
+        """Test when input is held constant"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.assertEqual(self.imm_in, 0)
             self.assertEqual(imm_out, 0)
         yield half_period()
 
     def outputTest(self, imm_out):
+        """Test dynamic output"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             # Note that our range of input values is 16bits, it was an immediate extended to 32 bits
-            self.imm_in.next = signed_intbv(randint(-1 * 2**15, 2**15 - 1))
+            self.imm_in.next = signed_intbv(randint(sf['16_SIGNED_MIN_VALUE'],
+                                                    sf['16_SIGNED_MAX_VALUE']))
             yield half_period()
             self.assertEqual(imm_out, self.imm_in << 2)
 
