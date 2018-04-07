@@ -11,7 +11,6 @@ from settings import settings as sf
 from clock import clock_gen
 
 
-#@unittest.skip("Program Counter not implemented")
 class TestNormalOperation(TestCase):
     """Test program counter"""
     def setUp(self):
@@ -24,7 +23,7 @@ class TestNormalOperation(TestCase):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.nxt_inst.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[32:]
             yield self.clock.posedge  #First posedge triggers program_counter to do work
-	    yield self.clock.posedge  #wait until clock cycle has finished
+	    yield self.clock.posedge  #TODO: Is this really necessary?
             self.assertEqual(cur_pc, self.nxt_inst)
         raise StopSimulation
 
