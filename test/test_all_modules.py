@@ -3,8 +3,10 @@
 # Main Test Driver for all unit tests
 """
 import unittest
+
 from test import test_fwd_unit, test_shift_unit, test_mux32bit2to1, test_pc_adder, \
-    test_mux32bit3to1, test_ex_mux, test_program_counter, test_rfile, test_sign_extender
+    test_mux32bit3to1, test_ex_mux, test_program_counter, test_rfile, test_sign_extender, \
+    test_id_ex
 
 MODULES = (test_mux32bit2to1,
            test_mux32bit3to1,
@@ -14,7 +16,8 @@ MODULES = (test_mux32bit2to1,
            test_program_counter,
            test_rfile,
            test_shift_unit,
-           test_sign_extender,)
+           test_sign_extender,
+           test_id_ex,)
 TESTER = unittest.defaultTestLoader
 
 

@@ -28,13 +28,14 @@ def random_signed_intbv():
     return signed_intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MIN_VALUE']))
 
 
-def unsigned_intbv(value=0):
+def unsigned_intbv(value=0, width=sf['WIDTH']):
     """
     Generate an unsigned intbv
     :param value: initial value
+    :param width: width of intbv
     :return: intbv
     """
-    return intbv(value)[32:]
+    return intbv(value)[width:]
 
 
 def unsigned_intbv_set(j, value=0):
@@ -52,14 +53,15 @@ def random_unsigned_intbv():
     return unsigned_intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[sf['WIDTH']:]
 
 
-def unsigned_signal_set(j, value=0):
+def unsigned_signal_set(j, value=0, width=sf['WIDTH']):
     """
     Generate many unsigned intbv signals
     :param j: # of signals to generate
     :param value: initial value
+    :param width: width of intbv
     :return:
     """
-    return [Signal(unsigned_intbv(value)) for i in range(j)]
+    return [Signal(unsigned_intbv(value, width)) for i in range(j)]
 
 
 def signed_signal_set(j, value=0):

@@ -13,6 +13,7 @@ def id_ex(clock, **kwargs):
     :param mem_to_reg_in:
     :param mem_write_in:
     :param reg_dst_in:
+    :param reset_in
     :param top4_in:
     :param r_data1:
     :param r_data2:
