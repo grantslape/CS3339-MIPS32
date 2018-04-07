@@ -1,15 +1,10 @@
-import sys
 import unittest
 from unittest import TestCase
 from random import randint
-
 from myhdl import intbv, Simulation, Signal, StopSimulation
-
-sys.path.append("src/python")
-from ex_mux import ex_mux, ex_mux_v
-sys.path.append("src/commons")
-from settings import settings as sf
-from clock import half_period
+from src.python.ex_mux import ex_mux, ex_mux_v
+from src.commons.settings import settings as sf
+from src.commons.clock import half_period
 
 
 @unittest.skip("Ex Mux not implemented")

@@ -1,16 +1,11 @@
 import unittest
-import sys
 from random import randint
-
 from unittest import TestCase
 from myhdl import intbv, Simulation, Signal, StopSimulation
-
-sys.path.append("src/python")
-from mux32bit2to1 import mux32bit2to1, mux32bit2to1_v
-sys.path.append("src/commons")
-from settings import settings as sf
-from intbv_generator import random_signed_intbv, signed_intbv_set
-from clock import half_period
+from src.commons.signal_generator import signed_intbv_set, random_signed_intbv
+from src.commons.settings import settings as sf
+from src.commons.clock import half_period
+from src.python.mux32bit2to1 import mux32bit2to1, mux32bit2to1_v
 
 
 class TestMux32Bit2To1(TestCase):

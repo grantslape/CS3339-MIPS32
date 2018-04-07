@@ -1,15 +1,10 @@
-import sys
 from myhdl import delay
-
-sys.path.append("src/python")
 from settings import settings as sf
-
-HALF_PERIOD = delay(sf['PERIOD'] / 2)
 
 
 def clock_gen(clock):
     while 1:
-        yield HALF_PERIOD
+        yield half_period()
         clock.next = not clock
 
 

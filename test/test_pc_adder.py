@@ -1,15 +1,10 @@
 import unittest
-import sys
-from random import randint
-
 from unittest import TestCase
+from random import randint
 from myhdl import intbv, Simulation, Signal, StopSimulation
-
-sys.path.append("src/python")
-from pc_adder import pc_adder, pc_adder_v
-sys.path.append("src/commons")
-from settings import settings as sf
-from clock import half_period
+from src.python.pc_adder import pc_adder, pc_adder_v
+from src.commons.settings import settings as sf
+from src.commons.clock import half_period
 
 
 class TestPcAdderZero(TestCase):

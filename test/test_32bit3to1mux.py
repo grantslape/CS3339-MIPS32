@@ -1,15 +1,10 @@
-import sys
 import unittest
-from random import randint
 from unittest import TestCase
-from myhdl import intbv, delay, Simulation, Signal, StopSimulation
-
-sys.path.append("src/python")
+from myhdl import Simulation, Signal, StopSimulation
 # TODO: Update this to generic 32 bit mux
-from alu_mux_a import alu_mux_a, alu_mux_a_v
-sys.path.append("src/commons")
-from intbv_generator import *
-from clock import half_period
+from src.python.alu_mux_a import alu_mux_a, alu_mux_a_v
+from src.commons.signal_generator import *
+from src.commons.clock import half_period
 
 
 @unittest.skip("ALU Mux A not implemented")

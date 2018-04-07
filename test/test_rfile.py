@@ -10,7 +10,7 @@ from rfile import rfile, rfile_v
 sys.path.append("src/commons")
 from settings import settings as sf
 from clock import clock_gen
-from intbv_generator import signed_intbv_set, random_signed_intbv
+from signal_generator import signed_intbv_set, random_signed_intbv
 
 
 # TODO: ADD TEST OF RESET FUNCTION

@@ -1,13 +1,9 @@
-import sys
 import unittest
 from unittest import TestCase
 from myhdl import intbv, Simulation, Signal, StopSimulation
-
-sys.path.append("src/python")
-from fwd_unit import fwd_unit, fwd_unit_v
-sys.path.append("src/commons")
-from settings import settings as sf
-from clock import half_period
+from src.python.fwd_unit import fwd_unit, fwd_unit_v
+from src.commons.settings import settings as sf
+from src.commons.clock import half_period
 
 
 # TODO: Dynamically test this module over many iterations

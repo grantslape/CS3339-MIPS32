@@ -1,15 +1,10 @@
 import unittest
-import sys
-
 from unittest import TestCase
 from myhdl import intbv, Simulation, Signal, StopSimulation, posedge
-
-sys.path.append("src/python")
-from program_counter import program_counter, program_counter_v
-sys.path.append("src/commons")
-from settings import settings as sf
-from clock import clock_gen
-from intbv_generator import random_unsigned_intbv, unsigned_intbv_set
+from src.python.program_counter import program_counter, program_counter_v
+from src.commons.settings import settings as sf
+from src.commons.clock import clock_gen
+from src.commons.signal_generator import random_unsigned_intbv, unsigned_intbv_set
 
 
 class TestNormalOperation(TestCase):
@@ -21,7 +16,7 @@ class TestNormalOperation(TestCase):
 
     def normal_op(self, cur_pc):
         """Test normal operations"""
-        self.pc_write.next = intbv(0)[1:]
+        self.pc_write.next = 0
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.nxt_inst.next = random_unsigned_intbv()
             # First posedge triggers program_counter to do work
@@ -33,11 +28,11 @@ class TestNormalOperation(TestCase):
 
     def stall(self, cur_pc):
         """test stalling operations"""
-        self.pc_write.next = intbv(0)[1:]
+        self.pc_write.next = 0
         for i in range(sf['DEFAULT_TEST_LENGTH'] / 2):
             self.nxt_inst.next = random_unsigned_intbv()
             yield posedge(self.clock)
-        self.pc_write.next = intbv(1)[1:]
+        self.pc_write.next = 1
         for i in range(sf['DEFAULT_TEST_LENGTH'] / 2):
             yield posedge(self.clock)
             self.assertEqual(self.nxt_inst, cur_pc)
