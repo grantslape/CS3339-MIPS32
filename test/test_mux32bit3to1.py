@@ -1,13 +1,13 @@
 import unittest
 from unittest import TestCase
-from myhdl import Simulation, Signal, StopSimulation
+from myhdl import Simulation, StopSimulation
 # TODO: Update this to generic 32 bit mux
 from src.python.alu_mux_a import alu_mux_a, alu_mux_a_v
 from src.commons.signal_generator import *
 from src.commons.clock import half_period
 
 
-@unittest.skip("ALU Mux A not implemented")
+@unittest.skip("ALU Mux 3:1 not implemented")
 class Test32Bit3To1Mux(TestCase):
     """Testing ALU Mux A functionality"""
 
