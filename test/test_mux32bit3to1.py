@@ -8,7 +8,6 @@ from src.commons.clock import half_period
 from src.commons.settings import settings as sf
 
 
-@unittest.skip("ALU Mux 3:1 not implemented")
 class Test32Bit3To1Mux(TestCase):
     """Testing 3:1 Mux functionality"""
 

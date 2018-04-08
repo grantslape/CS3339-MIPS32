@@ -3,7 +3,7 @@ import os
 
 from myhdl import always_comb, Cosimulation
 
-def mux32bit3to1(ctrl, data1, mem_rd, wb_rd):
+def mux32bit3to1(ctrl, data1, mem_rd, wb_rd,output):
     
     """
     3:1 Mux for forwarding results from 2 cycles ago
@@ -15,21 +15,17 @@ def mux32bit3to1(ctrl, data1, mem_rd, wb_rd):
     :return: module logic
     """
    
-    #fwd_a/fwd_b == ctrl sig
-    #r_data1, r_data2 == data 1
-    #data2 = mem_rd
-    #data3 = wb_rd
     @always_comb
     def logic():
        if(ctrl == 2):
            #datasrc is the ex/mem pipeline register
-           output.next = mem_rd;
+           output = mem_rd;
        elif(ctrl == 1):
            #datasrc is mem/wb pipeline register
-           output.next = wb_rd;
+           output = wb_rd;
        else: #ctrl == 0
            #datasrc is the id/ex pipeline register
-           output.next = data1;
+           output = data1;
     return logic
    
 def mux32bit3to1_v(ctrl, data1, mem_rd, wb_rd, output):
@@ -44,7 +40,7 @@ def mux32bit3to1_v(ctrl, data1, mem_rd, wb_rd, output):
     :return: module logic
     """
 
-    cmd = "iverilog -o mux32bit3to1.out src/verilog/mux32bit3to1.v src/verilog/mux32bit3to1_tb.v"
+    cmd = "iverilog -o bin/mux32bit3to1.out src/verilog/mux32bit3to1.v src/verilog/mux32bit3to1_tb.v"
     os.system(cmd)
     return Cosimulation("vvp -m  lib/myhdl.vpi bin/mux32bit3to1.out",
                         ctrl=ctrl,
