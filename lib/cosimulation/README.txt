@@ -1,3 +1,9 @@
+!! IMPORTANT !!
+This directory is only for knowledge, it does not affect the functionality of this repo
+in any way.
+If you are looking for the actual working directory it is located from the project root:
+venv/share/myhdl/cosimulation
+
 MyHDL co-simulation relies on Unix-style interprocess communication.
 To run co-simulation on Windows, compile and use all tools involved
 (including Python itself) on a Unix-like environment for Windows, such

@@ -1,25 +1,37 @@
+"""
 # CS3339-265, Team White Group Project
-# Main Test Driver
-
-""" Run all cosimulation unit tests. """
-import sys
+# Main Test Driver for all unit tests
+"""
 import unittest
-sys.path.append("test")
-import test_pc_mux_a
-import test_fwd_unit
 
-modules = (test_pc_mux_a, test_fwd_unit)
-tester = unittest.defaultTestLoader
+from test import test_fwd_unit, test_shift_unit, test_mux32bit2to1, test_pc_adder, \
+    test_mux32bit3to1, test_ex_mux, test_program_counter, test_rfile, test_sign_extender, \
+    test_id_ex, test_id_shift_left
+
+MODULES = (test_mux32bit2to1,
+           test_mux32bit3to1,
+           test_ex_mux,
+           test_fwd_unit,
+           test_pc_adder,
+           test_program_counter,
+           test_rfile,
+           test_shift_unit,
+           test_sign_extender,
+           test_id_ex,
+           test_id_shift_left,)
+TESTER = unittest.defaultTestLoader
 
 
 def suite():
+    """Build test suite from MODULES"""
     all_tests = unittest.TestSuite()
-    for m in modules:
-        all_tests.addTest(tester.loadTestsFromModule(m))
+    for module in MODULES:
+        all_tests.addTest(TESTER.loadTestsFromModule(module))
     return all_tests
 
 
 def main():
+    """ Run all cosimulation unit tests. """
     unittest.main(defaultTest='suite',
                   testRunner=unittest.TextTestRunner(verbosity=2))
 
