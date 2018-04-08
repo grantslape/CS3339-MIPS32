@@ -72,3 +72,13 @@ def signed_signal_set(j, value=0):
     :return:
     """
     return [Signal(signed_intbv(value)) for i in range(j)]
+
+
+def rand_signed_signal_set(j):
+    """
+    Generate many unsigned intbv signals
+    :param j: # of signals to generate
+    :param value: initial value
+    :return:
+    """
+    return [Signal(random_signed_intbv()) for i in range(j)]

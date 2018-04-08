@@ -3,7 +3,8 @@ from unittest import TestCase
 from myhdl import Simulation, StopSimulation, Signal, intbv
 # TODO: Update this to generic 32 bit mux
 from src.python.alu_mux_a import alu_mux_a, alu_mux_a_v
-from src.commons.signal_generator import random_signed_intbv, signed_signal_set
+from src.commons.signal_generator import random_signed_intbv, signed_signal_set, \
+    rand_signed_signal_set
 from src.commons.clock import half_period
 from src.commons.settings import settings as sf
 
@@ -21,11 +22,7 @@ class Test32Bit3To1Mux(TestCase):
         """Testing deasserted functionality"""
         self.ctrl_signal.next = 0
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            self.data1.next = Signal(random_signed_intbv())
-            while self.data2 == self.data1 or self.data3 == self.data1:
-                self.data2.next, self.data3.next = [
-                    Signal(random_signed_intbv())
-                    for i in range(2)]
+            self.data3.next, self.data2.next, self.data1.next = rand_signed_signal_set(3)
             yield half_period()
             self.assertEqual(output, self.data1)
             self.assertNotEquals(output, self.data2)
@@ -36,11 +33,7 @@ class Test32Bit3To1Mux(TestCase):
         """testing forward A functionality"""
         self.ctrl_signal.next = 1
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            self.data2.next = Signal(random_signed_intbv())
-            while self.data2 == self.data1 or self.data3 == self.data2:
-                self.data1.next, self.data3.next = [
-                    Signal(random_signed_intbv())
-                    for i in range(2)]
+            self.data3.next, self.data2.next, self.data1.next = rand_signed_signal_set(3)
             yield half_period()
             self.assertEqual(output, self.data2)
             self.assertNotEquals(output, self.data1)
@@ -51,11 +44,7 @@ class Test32Bit3To1Mux(TestCase):
         """testing forward B functionality"""
         self.ctrl_signal.next = 2
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            self.data3.next = Signal(random_signed_intbv())
-            while self.data3 == self.data1 or self.data3 == self.data2:
-                self.data1.next, self.data2.next = [
-                    Signal(random_signed_intbv()) for i in range(2)
-                ]
+            self.data3.next, self.data2.next, self.data1.next = rand_signed_signal_set(3)
             yield half_period()
             self.assertEqual(output, self.data3)
             self.assertNotEquals(output, self.data1)
