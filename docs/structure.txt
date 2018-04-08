@@ -67,6 +67,7 @@ cpu:
 		output alu_src: 0 for register input, 1 for immediate. to id_ex.alu_src_in
 		output reg_write: activate to write to register.  to id_ex.reg_write_in
 		output reg_dst: 0 to write to Rt ([20:16]), 1 to write to Rd ([15:11]). to id_ex.reg_dst_in
+		output reset_out: 1 to insert a 1 cycle stall in the pipeline.  to id_ex.reset_in
 	ctrl_mux: The weird gate for implementing stalls.  This may need to store signals internally to hold state
 		inputs: all the listed ctrl signals above.
 		input ex_stall_in: activate to stall.
@@ -88,6 +89,7 @@ cpu:
 		input alu_src_in: 0 for register input, 1 for immediate. from ctrl.alu_src
 		input reg_write_in: activate to write to a register. from ctrl.reg_write
 		input reg_dst_in: reg_dst ctrl signal. From ctrl.reg_dst
+		input reset_in: a ResetSignal that will clear register.
 		input [3:0] top4_in: top 4 bits of pc_nxt. From if_id
 		input [31:0] r_data1: rs data read from regs[r_addr1]
 		input [31:0] r_data2: rt data read from regs[r_addr2]

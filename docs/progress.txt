@@ -45,8 +45,8 @@ Grant Slape:
     	pc_mux_b DONE 2018-04-03
         program_counter DONE 2018-04-03
         pc_adder DONE 2018-04-03
-        sign_extender
-        id_ex
+        sign_extender DONE 2018-04-07
+        id_ex DONE 2018-04-07
         hazard_unit
         if_id
         id_shift_left
