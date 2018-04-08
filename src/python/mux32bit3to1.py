@@ -1,10 +1,8 @@
-# mux32bit3to1.py
 import os
 
 from myhdl import always_comb, Cosimulation
 
-def mux32bit3to1(ctrl, data1, mem_rd, wb_rd,output):
-    
+def mux32bit3to1(ctrl, data1, mem_rd, wb_rd, output):
     """
     3:1 Mux for forwarding results from 2 cycles ago
     :param ctrl: two bit input selector from fwd_unit
@@ -14,22 +12,22 @@ def mux32bit3to1(ctrl, data1, mem_rd, wb_rd,output):
     :param output: Output for rs/op1.  Sent to ALU
     :return: module logic
     """
-   
+
     @always_comb
     def logic():
-       if(ctrl == 2):
-           #datasrc is the ex/mem pipeline register
-           output = mem_rd;
-       elif(ctrl == 1):
-           #datasrc is mem/wb pipeline register
-           output = wb_rd;
-       else: #ctrl == 0
+        if ctrl == 2:
+           #datasrc is the mem/wb pipeline register
+            output.next = wb_rd
+        elif ctrl == 1:
+            #datasrc is ex/mem pipeline register
+            output.next = mem_rd
+        elif ctrl == 0:
            #datasrc is the id/ex pipeline register
-           output = data1;
+            output.next = data1
     return logic
-   
+
 def mux32bit3to1_v(ctrl, data1, mem_rd, wb_rd, output):
-    
+
     """
     3:1 Mux for forwarding results from 2 cycles ago Verilog
     :param forward_a: forward_a: two bit input selector from fwd_unit
