@@ -1,7 +1,7 @@
 """Test Sign Extender module"""
 import unittest
-from random import randint
 from unittest import TestCase
+from random import randint
 from myhdl import Simulation, StopSimulation, Signal, intbv
 
 from src.commons.clock import half_period

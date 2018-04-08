@@ -15,7 +15,7 @@ def id_ex(**kwargs):
     :param mem_write_in:
     :param reg_dst_in:
     :param reset_in
-    :param top4_in:
+    :param pc_value_in:
     :param r_data1:
     :param r_data2:
     :param rs:
@@ -28,7 +28,7 @@ def id_ex(**kwargs):
     :param rs_out:
     :param rt_out:
     :param rd_out:
-    :param top4_out:
+    :param pc_value_out:
     :param branch_out:
     :param alu_op_out:
     :param mem_read_out:

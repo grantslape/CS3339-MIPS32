@@ -48,9 +48,9 @@ def unsigned_intbv_set(j, value=0):
     return [unsigned_intbv(value) for i in range(j)]
 
 
-def random_unsigned_intbv():
+def random_unsigned_intbv(width=sf['WIDTH']):
     """Return random unsigned 32 bit intbv"""
-    return unsigned_intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[sf['WIDTH']:]
+    return unsigned_intbv(randint(0, sf['UNSIGNED_MAX_VALUE']))[width:]
 
 
 def unsigned_signal_set(j, value=0, width=sf['WIDTH']):

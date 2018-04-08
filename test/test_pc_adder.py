@@ -10,7 +10,7 @@ from src.commons.settings import settings as sf
 from src.commons.clock import half_period
 
 
-class TestPcAdderZero(TestCase):
+class TestPcAdder(TestCase):
     """Test PC Adder"""
     def setUp(self):
         self.cur_pc, self.nxt_pc, self.nxt_pc_v = unsigned_signal_set(3)

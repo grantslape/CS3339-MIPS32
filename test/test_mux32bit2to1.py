@@ -52,6 +52,18 @@ class TestMux32Bit2To1(TestCase):
                 self.assertEqual(output, self.input2)
         raise StopSimulation
 
+    def inst_mem(self, output):
+        """testing inst mem mux functionality"""
+        self.input2.next = 0b0
+        self.ctrl_signal.next = 1
+        for i in range(sf['DEFAULT_TEST_LENGTH']):
+            self.input1.next = random_signed_intbv()
+            yield half_period()
+            self.assertEqual(bin(output), bin(0))
+            self.assertNotEquals(bin(output), bin(self.input1))
+        raise StopSimulation
+
+
     def testHoldDeassertPython(self):
         """ Checking that input1 is outputted when deasserted Python"""
         stim = self.deassert(self.output)
@@ -105,6 +117,24 @@ class TestMux32Bit2To1(TestCase):
         stim_v = self.dynamic(self.output_v)
         dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
         Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
+
+    def testInstMemMuxPython(self):
+        """Checking special inst_mem_mux Python"""
+        stim = self.inst_mem(self.output)
+        Simulation(self.dut, stim).run(quiet=1)
+
+    def testInstMemMuxVerilog(self):
+        """Checking special inst_mem_mux Verilog"""
+        stim = self.inst_mem(self.output_v)
+        dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
+        Simulation(dut_v, stim).run(quiet=1)
+
+    def testInstMemTogether(self):
+        """Checking special inst_mem_mux Together"""
+        stim = self.inst_mem(self.output)
+        stim_v = self.inst_mem(self.output_v)
+        dut_v = mux32bit2to1_v(self.ctrl_signal, self.input1, self.input2, self.output_v)
+        Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
 
 
 if __name__ == '__main__':

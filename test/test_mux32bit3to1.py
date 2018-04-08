@@ -1,10 +1,10 @@
+"""32 bit Multiplexer 3:1 unit tests"""
 import unittest
 from unittest import TestCase
 from myhdl import Simulation, StopSimulation, Signal, intbv
 # TODO: Update this to generic 32 bit mux
 from src.python.alu_mux_a import alu_mux_a, alu_mux_a_v
-from src.commons.signal_generator import random_signed_intbv, signed_signal_set, \
-    rand_signed_signal_set
+from src.commons.signal_generator import signed_signal_set, rand_signed_signal_set
 from src.commons.clock import half_period
 from src.commons.settings import settings as sf
 
