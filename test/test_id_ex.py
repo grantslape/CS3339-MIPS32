@@ -23,9 +23,9 @@ class TestIdExRegister(TestCase):
             self.reg_dst_out_v = unsigned_signal_set(22, width=1)
         # TODO: UPDATE WHEN ALU OP CODES ARE DETERMINED
         self.alu_op_in, self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(3)
-        self.pc_value_in, self.pc_value_out, self.pc_value_out_v = unsigned_signal_set(3, width=4)
+        self.pc_value_in, self.pc_value_out, self.pc_value_out_v = unsigned_signal_set(3)
         self.r_data1, self.r_data1_out, self.r_data1_out_v, self.r_data2, self.r_data2_out, \
-            self.r_data2_out_v, self.imm, self.imm_out, self.imm_out_v = signed_signal_set(9)
+            self.r_data2_out_v, self.imm, self.imm_out, self.imm_out_v, = signed_signal_set(9)
         self.rs, self.rt, self.rd, self.rs_out, self.rs_out_v, self.rt_out, self.rt_out_v, \
             self.rd_out, self.rd_out_v = unsigned_signal_set(9, width=5)
         self.reset_in = ResetSignal(0, active=1, async=True)
