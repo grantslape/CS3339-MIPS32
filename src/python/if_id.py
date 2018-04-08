@@ -37,10 +37,10 @@ def if_id_v(nxt_pc, top4, inst_in, funct_out, rs, rt, imm, rd, top4_out):
     :return: generator logic
     """
 
-    cmd = "iverilog -o if_id.out src/verilog/if_id.v src/verilog/if_id_tb.v"
+    cmd = "iverilog -o bin/if_id.out src/verilog/if_id.v src/verilog/if_id_tb.v"
     os.system(cmd)
 
-    return Cosimulation("vvp -m ./lib/myhdl.vpi if_id.out",
+    return Cosimulation("vvp -m ./lib/myhdl.vpi bin/if_id.out",
                         nxt_pc=nxt_pc,
                         top4=top4,
                         inst_in=inst_in,

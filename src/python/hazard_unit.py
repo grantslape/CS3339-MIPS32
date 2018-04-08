@@ -43,10 +43,10 @@ def hazard_unit_v(if_id_rs, if_id_rt, id_ex_rt, mem_read, pc_write, if_id_write,
     :return: generator logic
     """
 
-    cmd = "iverilog -o hazard_unit.out src/verilog/hazard_unit.v src/verilog/hazard_unit_tb.v"
+    cmd = "iverilog -o bin/hazard_unit.out src/verilog/hazard_unit.v src/verilog/hazard_unit_tb.v"
     os.system(cmd)
 
-    return Cosimulation("vvp -m ./lib/myhdl.vpi hazard_unit.out",
+    return Cosimulation("vvp -m ./lib/myhdl.vpi bin/hazard_unit.out",
                         if_id_rs=if_id_rs,
                         if_id_rt=if_id_rt,
                         id_ex_rt=id_ex_rt,
