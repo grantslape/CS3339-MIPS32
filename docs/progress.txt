@@ -61,7 +61,7 @@ Grant Slape:
         inst_mem
         inst_mem_mux DONE 2018-04-07 under 2:1
         ex_mem
-        branch_adder
+        branch_adder 
         branch_unit
         data_mem
         mem_wb

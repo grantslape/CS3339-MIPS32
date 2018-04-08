@@ -38,7 +38,7 @@ cpu:
 		output [20:16] rt: sliced from inst_in, sent to rfile.r_addr2, id_ex, hazard_unit.if_id_rt
 		output [15:0] imm: sliced from inst_in, sent to sign_extender
 		output [15:11] rd: sliced from inst_in, sent to id_ex
-		output [3:0] top4_out: top 4 bits of nxt_pc.  to id_ex
+		output [31:0] pc_out: nxt_pc.  to id_ex
 	sign_extender: sign extend immediate value.
 		input [15:0] imm_in: from if_id state register
 		output [31:0] imm_out: sign extended imm_in to 32 bits.  send to id_ex.
@@ -90,7 +90,7 @@ cpu:
 		input reg_write_in: activate to write to a register. from ctrl.reg_write
 		input reg_dst_in: reg_dst ctrl signal. From ctrl.reg_dst
 		input reset_in: a ResetSignal that will clear register.
-		input [3:0] top4_in: top 4 bits of pc_nxt. From if_id
+		input [3:0] pc_value_in: pc+4 value. From if_id
 		input [31:0] r_data1: rs data read from regs[r_addr1]
 		input [31:0] r_data2: rt data read from regs[r_addr2]
 		input [4:0] rs: received from if_id
@@ -103,7 +103,7 @@ cpu:
 		output [4:0] rs_out: sent to fwd_unit
 		output [4:0] rt_out: sent to fwd_unit, ex_mux
 		output [4:0] rd_out: sent to ex_mux
-		output [3:0] top4_out: top 4 bits of pc_nxt. to jmp_adder
+		output [31:0] pc_value_out: full PC+4 to branch_adder
 		output branch_out: branch ctrl signal to ex_mem.branch_in
 		output [?:0] alu_op_out: ALU op code. To alu.alu_op
 		output mem_read_out: mem_read ctrl signal to ex_mem.mem_read_in
@@ -152,7 +152,7 @@ cpu:
 		input [31:0] imm_in: 32 bit immediate.  from id_ex
 		output [31:0] imm_out: input value shifted left 2 bits
 	branch_adder: calculate addresses for branches
-		input [3:0] pc_in: Top 4 bits of PC+4.  from id_ex
+		input [31:0] pc_in:  PC+4.  from id_ex
 		input [31:0] imm_in: 32 bit immediate from shift_unit
 		output [31:0] addr_out: 32 bit jump address. to ex_mem
 	ex_mem: Execution / Memory Pipeline register.
