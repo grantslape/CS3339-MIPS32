@@ -23,9 +23,9 @@ class TestIdExRegister(TestCase):
             self.reg_dst_out_v = unsigned_signal_set(22, width=1)
         # TODO: UPDATE WHEN ALU OP CODES ARE DETERMINED
         self.alu_op_in, self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(3)
-        self.top4_in, self.top4_out, self.top4_out_v = unsigned_signal_set(3, width=4)
+        self.pc_value_in, self.pc_value_out, self.pc_value_out_v = unsigned_signal_set(3)
         self.r_data1, self.r_data1_out, self.r_data1_out_v, self.r_data2, self.r_data2_out, \
-            self.r_data2_out_v, self.imm, self.imm_out, self.imm_out_v = signed_signal_set(9)
+            self.r_data2_out_v, self.imm, self.imm_out, self.imm_out_v, = signed_signal_set(9)
         self.rs, self.rt, self.rd, self.rs_out, self.rs_out_v, self.rt_out, self.rt_out_v, \
             self.rd_out, self.rd_out_v = unsigned_signal_set(9, width=5)
         self.reset_in = ResetSignal(0, active=1, async=True)
@@ -38,7 +38,7 @@ class TestIdExRegister(TestCase):
             'mem_write_in': self.mem_write_in,
             'reg_dst_in': self.reg_dst_in,
             'reset_in': self.reset_in,
-            'top4_in': self.top4_in,
+            'pc_value_in': self.pc_value_in,
             'r_data1': self.r_data1,
             'r_data2': self.r_data2,
             'rs': self.rs,
@@ -51,7 +51,7 @@ class TestIdExRegister(TestCase):
             'rs_out': self.rs_out,
             'rt_out': self.rt_out,
             'rd_out': self.rd_out,
-            'top4_out': self.top4_out,
+            'pc_value_out': self.pc_value_out,
             'branch_out': self.branch_out,
             'alu_op_out': self.alu_op_out,
             'mem_read_out': self.mem_read_out,
@@ -69,7 +69,7 @@ class TestIdExRegister(TestCase):
             'mem_write_in': self.mem_write_in,
             'reg_dst_in': self.reg_dst_in,
             'reset_in': self.reset_in,
-            'top4_in': self.top4_in,
+            'pc_value_in': self.pc_value_in,
             'r_data1': self.r_data1,
             'r_data2': self.r_data2,
             'rs': self.rs,
@@ -82,7 +82,7 @@ class TestIdExRegister(TestCase):
             'rs_out': self.rs_out_v,
             'rt_out': self.rt_out_v,
             'rd_out': self.rd_out_v,
-            'top4_out': self.top4_out_v,
+            'pc_value_out': self.pc_value_out_v,
             'branch_out': self.branch_out_v,
             'alu_op_out': self.alu_op_out_v,
             'mem_read_out': self.mem_read_out_v,
@@ -94,6 +94,7 @@ class TestIdExRegister(TestCase):
 
         self.dut = id_ex(**self.params)
 
+    # TODO: test signals pass through correctly
     def deassert(self, branch_out, mem_read_out, mem_to_reg_out, mem_write_out, alu_src_out,
                  reg_write_out, reg_dst_out):
         """test deassert functionality"""
@@ -104,7 +105,7 @@ class TestIdExRegister(TestCase):
             self.rs.next, self.rt.next, self.rd.next = [
                 Signal(intbv(randint(0, sf['WIDTH'] - 1))[5:]) for i in range(3)
             ]
-            self.top4_in.next = Signal(intbv(randint(0, 15))[4:])
+            self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
             # TODO: UPDATE WHEN ALU OP CODES ARE DETERMINED
             self.alu_op_in = Signal(intbv())
 
@@ -120,6 +121,7 @@ class TestIdExRegister(TestCase):
             self.assertEqual(0b0, bin(reg_dst_out))
         raise StopSimulation
 
+# TODO: test signals pass through correctly
     def dynamict(self, branch_out, mem_read_out, mem_to_reg_out, mem_write_out, alu_src_out,
                  reg_write_out, reg_dst_out):
         """Dynamic testing of ID/EX Pipeline Register"""
@@ -129,7 +131,7 @@ class TestIdExRegister(TestCase):
                 self.reg_dst_in.next = unsigned_signal_set(7, randint(0, 1), 1)
             # TODO: UPDATE WHEN ALU OP CODES ARE DETERMINED
             self.alu_op_in = Signal(intbv())
-            self.top4_in.next = Signal(intbv(randint(0, 15))[4:])
+            self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
             self.r_data1.next, self.r_data2.next, self.imm.next = [
                 Signal(random_signed_intbv()) for i in range(3)
             ]
@@ -191,7 +193,7 @@ class TestIdExRegister(TestCase):
                                reg_write_out=self.reg_write_out_v,
                                reg_dst_out=self.reg_dst_out_v)
 
-        dut_v = id_ex_v(self.params)
+        dut_v = id_ex_v(**self.params)
         Simulation(CLK, stim, self.dut, dut_v, stim_v).run(quiet=1)
 
     def testDynamicPython(self):
