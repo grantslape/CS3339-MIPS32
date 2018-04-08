@@ -25,7 +25,7 @@ def signed_intbv_set(j, value=0):
 
 def random_signed_intbv():
     """Return random signed 32 bit intbv"""
-    return signed_intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MIN_VALUE']))
+    return signed_intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
 
 
 def unsigned_intbv(value=0, width=sf['WIDTH']):
