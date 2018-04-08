@@ -147,7 +147,6 @@ class TestIdExRegister(TestCase):
             self.assertEqual(bin(self.alu_src_in), bin(alu_src_out))
             self.assertEqual(bin(self.reg_write_in), bin(reg_write_out))
             self.assertEqual(bin(self.reg_dst_in), bin(reg_dst_out))
-            self
         raise StopSimulation
 
     def testDeassertPython(self):
