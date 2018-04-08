@@ -191,7 +191,7 @@ class TestIdExRegister(TestCase):
                                reg_write_out=self.reg_write_out_v,
                                reg_dst_out=self.reg_dst_out_v)
 
-        dut_v = id_ex_v(self.params)
+        dut_v = id_ex_v(**self.params)
         Simulation(CLK, stim, self.dut, dut_v, stim_v).run(quiet=1)
 
     def testDynamicPython(self):
