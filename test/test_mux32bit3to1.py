@@ -2,21 +2,21 @@
 import unittest
 from unittest import TestCase
 from myhdl import Simulation, StopSimulation, Signal, intbv
+from src.python.mux32bit3to1 import mux32bit3to1, mux32bit3to1_v
+from src.commons.signal_generator import random_signed_intbv, signed_signal_set, \
+    rand_signed_signal_set
 # TODO: Update this to generic 32 bit mux
-from src.python.alu_mux_a import alu_mux_a, alu_mux_a_v
-from src.commons.signal_generator import signed_signal_set, rand_signed_signal_set
 from src.commons.clock import half_period
 from src.commons.settings import settings as sf
 
 
-@unittest.skip("ALU Mux 3:1 not implemented")
 class Test32Bit3To1Mux(TestCase):
     """Testing 3:1 Mux functionality"""
 
     def setUp(self):
         self.ctrl_signal = Signal(intbv()[2:])
         self.data1, self.data2, self.data3, self.output, self.output_v = signed_signal_set(5)
-        self.dut = alu_mux_a(self.ctrl_signal, self.data1, self.data2, self.data3, self.output)
+        self.dut = mux32bit3to1(self.ctrl_signal, self.data1, self.data2, self.data3, self.output)
 
     def deassert(self, output):
         """Testing deasserted functionality"""
@@ -60,13 +60,13 @@ class Test32Bit3To1Mux(TestCase):
     def test3To1MuxDeassertVerilog(self):
         """Testing deasserted functionality Verilog"""
         stim = self.deassert(self.output_v)
-        dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
+        dut_v = mux32bit3to1_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
 
         Simulation(dut_v, stim).run(quiet=1)
 
     def test3To1MuxDeassertTogether(self):
         """Testing deasserted functionality together"""
-        dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
+        dut_v = mux32bit3to1_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.deassert(self.output)
         stim_v = self.deassert(self.output_v)
 
@@ -80,14 +80,14 @@ class Test32Bit3To1Mux(TestCase):
 
     def test3To1MuxForwardAVerilog(self):
         """Testing ForwardA functionality Verilog"""
-        dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
+        dut_v = mux32bit3to1_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.forwardA(self.output_v)
 
         Simulation(dut_v, stim).run(quiet=1)
 
     def test3To1MuxForwardATogether(self):
         """Testing ForwardA functionality together"""
-        dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
+        dut_v = mux32bit3to1_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.forwardA(self.output)
         stim_v = self.forwardA(self.output_v)
 
@@ -101,14 +101,14 @@ class Test32Bit3To1Mux(TestCase):
 
     def test3To1MuxForwardBVerilog(self):
         """Testing ForwardB functionality Verilog"""
-        dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
+        dut_v = mux32bit3to1_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.forwardB(self.output_v)
 
         Simulation(dut_v, stim).run(quiet=1)
 
     def test3To1MuxForwardBTogether(self):
         """Testing ForwardB functionality together"""
-        dut_v = alu_mux_a_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
+        dut_v = mux32bit3to1_v(self.ctrl_signal, self.data1, self.data2, self.data3, self.output_v)
         stim = self.forwardB(self.output)
         stim_v = self.forwardB(self.output_v)
 
