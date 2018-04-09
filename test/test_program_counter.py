@@ -23,8 +23,8 @@ class TestNormalOperation(TestCase):
             self.nxt_inst.next = random_unsigned_intbv()
             # First posedge triggers program_counter to do work
             yield self.clock.posedge
-            # TODO: Is this really necessary?
-            yield self.clock.posedge
+            # negedge takes us to actual next cycle
+            yield self.clock.negedge
             self.assertEqual(cur_pc, self.nxt_inst)
         raise StopSimulation
 
