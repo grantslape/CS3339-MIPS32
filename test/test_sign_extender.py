@@ -69,3 +69,7 @@ class TestSignExtender(TestCase):
         stim_v = self.dynamic(self.imm_out_v)
         dut_v = sign_extender_v(imm_in=self.imm_in, imm_out=self.imm_out_v)
         Simulation(self.dut, stim, dut_v, stim_v).run(quiet=1)
+
+
+if __name__ == '__main__':
+    unittest.main()

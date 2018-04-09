@@ -30,7 +30,7 @@ class TestIdShiftLeft(TestCase):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.top4 = random_unsigned_intbv(width=4)
             self.target = random_unsigned_intbv(width=26)
-            expected = intbv()[sf['WIDTH']]
+            expected = intbv()[sf['WIDTH':]]
             expected[32:29] = self.top4
             expected[29:0] = self.target
             yield half_period()
@@ -70,3 +70,7 @@ class TestIdShiftLeft(TestCase):
         stim_v = self.dynamic(output=self.output_v)
         dut_v = id_shift_left_v(self.top4, self.target, self.output_v)
         Simulation(dut_v, stim_v, stim, self.dut).run(quiet=1)
+
+
+if __name__ == '__main__':
+    unittest.main()

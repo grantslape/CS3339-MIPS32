@@ -30,14 +30,15 @@ cpu:
 		"input" [31:0]: This does not actually need to be external, value 0 for nop.
 		ouput [31:0] inst_out: next instruction out to if_id.
 	if_id: IF/ID state register
+		input if_id_write: from hazard unit.  activate to stall by by keeping same outputs as last cycle
 		input [31:0] nxt_pc: next sequential instruction address
-		input [3:0] top4: top 4 bits of nxt_pc. From pc_adder
 		input [31:0] inst_in: Instruction input from inst_mem.inst_out
-		output [31:26] funct_out: Forward inst_in to id_ex, ctrl.funct_in
+		output [31:26] op_code: sliced from inst_in, Forward to ctrl.funct_in
 		output [25:21] rs: sliced from inst_in, sent to rfile.r_addr1, id_ex, hazard_unit.if_id_rs
 		output [20:16] rt: sliced from inst_in, sent to rfile.r_addr2, id_ex, hazard_unit.if_id_rt
 		output [15:0] imm: sliced from inst_in, sent to sign_extender
 		output [15:11] rd: sliced from inst_in, sent to id_ex
+		output [5:0] funct_out: function code sliced from inst_in to ctrl
 		output [31:0] pc_out: nxt_pc.  to id_ex
 	sign_extender: sign extend immediate value.
 		input [15:0] imm_in: from if_id state register
@@ -56,8 +57,9 @@ cpu:
 		input [31:28] top4: top 4 bits of PC.  from if_id
 		input [25:0] target: 26 bit immediate jump target.  from if_id
 		output [31:0] jaddr_out: jump address. to pc_mux_b 
-	ctrl: Main control unit. everything to ID_EX passes through a weird mux
+	ctrl: Main control unit. everything to ID_EX passes through ctrl_mux
 		input [5:0] funct_in: from if_id.funct_out
+		input [5:0] op_in: This is a MIPS op code from IF_ID
 		output jump: 1 for jump. to inst_mem_mux.jmp_ctrl, pc_mux_b.jmp_ctrl
 		output branch: activate branch unit, to id_ex.branch_in
 		output [?:0] alu_op: multi-bit alu op code.  see table. to id_ex.alu_op_in
@@ -68,7 +70,7 @@ cpu:
 		output reg_write: activate to write to register.  to id_ex.reg_write_in
 		output reg_dst: 0 to write to Rt ([20:16]), 1 to write to Rd ([15:11]). to id_ex.reg_dst_in
 		output reset_out: 1 to insert a 1 cycle stall in the pipeline.  to id_ex.reset_in
-	ctrl_mux: The weird gate for implementing stalls.  This may need to store signals internally to hold state
+	ctrl_mux: The mux for implementing stalls  The way this works is if the stall ctrl line is activated, output zeros instead of the ctrl signal values
 		inputs: all the listed ctrl signals above.
 		input ex_stall_in: activate to stall.
 		outputs: all ctrl signals to id_ex.  0 if ex_stall_in activated.
@@ -78,7 +80,7 @@ cpu:
 		input [4:0]: id_ex_rt: previous Rt, from id_ex.rt_out
 		input mem_read: previous mem_read ctrl signal. from id_ex.mem_read_out
 		output pc_write: activate to stall (nop). to pc_mux_c
-		output if_id_write: stall if_id stage by setting control signals to 0.
+		output if_id_write: stall if_id stage by setting control signals to 0. - this may not be necessary
 		output ex_stall: Insert bubble into pipeline by setting ctrl signals to 0. to ctrl_mux
 	id_ex: ID/EX state register
 		input branch_in: activate branch unit, from ctrl.branch

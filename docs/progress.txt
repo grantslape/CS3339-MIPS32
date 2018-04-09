@@ -47,11 +47,11 @@ Grant Slape:
         pc_adder DONE 2018-04-03
         sign_extender DONE 2018-04-07
         id_ex DONE 2018-04-07
-        hazard_unit
+        hazard_unit DON 2018-04-08
         if_id
         id_shift_left DONE 2018-04-07
         ctrl
-        ctrl_mux - might not be needed
+        ctrl_mux 
         alu
         alu_mux_a 2018-04-03
         alu_mux_b 2018-04-03
