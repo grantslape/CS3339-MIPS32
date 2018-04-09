@@ -1,8 +1,8 @@
 """IF/ID Pipeline register unit tests"""
 import unittest
 from unittest import TestCase
-from myhdl import intbv, Simulation, Signal, StopSimulation, posedge, negedge
-from src.python.fwd_unit import if_id, if_id_v
+from myhdl import Simulation, StopSimulation, posedge, negedge
+from src.python.if_id import if_id, if_id_v
 from src.commons.signal_generator import unsigned_signal_set, \
     signed_signal_set, rand_unsigned_signal_set
 from src.commons.settings import settings as sf
@@ -69,12 +69,14 @@ class TestIfIdRegister(TestCase):
 
     def testIfIdDeassertedPython(self):
         """Test normal functionality Python"""
+        clk = clock_gen(self.clock)
         stim = self.deassert(self.pc_out, self.op_code, self.funct_out, self.rs, self.rt, self.rd,
                              self.imm)
-        Simulation(stim, self.dut).run(quiet=1)
+        Simulation(stim, self.dut, clk).run(quiet=1)
 
     def testIfIdDeassertedVerilog(self):
         """Test normal functionality Verilog"""
+        clk = clock_gen(self.clock)
         stim_v = self.deassert(self.pc_out_v, self.op_code_v, self.funct_out_v, self.rs_v,
                                self.rt_v, self.rd_v, self.imm_v)
         dut_v = if_id_v(if_id_write=self.if_id_write,
@@ -87,10 +89,11 @@ class TestIfIdRegister(TestCase):
                         rt=self.rt_v,
                         rd=self.rd_v,
                         imm=self.imm_v)
-        Simulation(stim_v, dut_v).run(quiet=1)
+        Simulation(stim_v, dut_v, clk).run(quiet=1)
 
     def testIfIdDeassertedTogther(self):
         """Test normal functionality Together"""
+        clk = clock_gen(self.clock)
         stim = self.deassert(self.pc_out, self.op_code, self.funct_out, self.rs, self.rt, self.rd,
                              self.imm)
         stim_v = self.deassert(self.pc_out_v, self.op_code_v, self.funct_out_v, self.rs_v,
@@ -105,16 +108,18 @@ class TestIfIdRegister(TestCase):
                         rt=self.rt_v,
                         rd=self.rd_v,
                         imm=self.imm_v)
-        Simulation(stim_v, dut_v, stim, self.dut).run(quiet=1)
+        Simulation(stim_v, dut_v, stim, self.dut, clk).run(quiet=1)
 
     def testIfIdAssertedPython(self):
         """Test Asserted functionality Python"""
+        clk = clock_gen(self.clock)
         stim = self.asserted(self.pc_out, self.op_code, self.funct_out, self.rs, self.rt, self.rd,
                              self.imm)
-        Simulation(stim, self.dut).run(quiet=1)
+        Simulation(stim, self.dut, clk).run(quiet=1)
 
     def testIfIdAssertedVerilog(self):
         """Test Asserted functionality Verilog"""
+        clk = clock_gen(self.clock)
         stim_v = self.asserted(self.pc_out_v, self.op_code_v, self.funct_out_v, self.rs_v,
                                self.rt_v, self.rd_v, self.imm_v)
         dut_v = if_id_v(if_id_write=self.if_id_write,
@@ -127,10 +132,11 @@ class TestIfIdRegister(TestCase):
                         rt=self.rt_v,
                         rd=self.rd_v,
                         imm=self.imm_v)
-        Simulation(stim_v, dut_v).run(quiet=1)
+        Simulation(stim_v, dut_v, clk).run(quiet=1)
 
     def testIfIdAssertedTogther(self):
         """Test Asserted functionality Together"""
+        clk = clock_gen(self.clock)
         stim = self.asserted(self.pc_out, self.op_code, self.funct_out, self.rs, self.rt, self.rd,
                              self.imm)
         stim_v = self.asserted(self.pc_out_v, self.op_code_v, self.funct_out_v, self.rs_v,
@@ -145,7 +151,7 @@ class TestIfIdRegister(TestCase):
                         rt=self.rt_v,
                         rd=self.rd_v,
                         imm=self.imm_v)
-        Simulation(stim_v, dut_v, stim, self.dut).run(quiet=1)
+        Simulation(stim_v, dut_v, stim, self.dut, clk).run(quiet=1)
 
 
 if __name__ == '__main__':
