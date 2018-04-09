@@ -30,7 +30,7 @@ class TestIdShiftLeft(TestCase):
         for i in range(sf['DEFAULT_TEST_LENGTH']):
             self.top4 = random_unsigned_intbv(width=4)
             self.target = random_unsigned_intbv(width=26)
-            expected = intbv()[sf['WIDTH']]
+            expected = intbv()[sf['WIDTH':]]
             expected[32:29] = self.top4
             expected[29:0] = self.target
             yield half_period()

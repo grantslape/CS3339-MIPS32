@@ -8,7 +8,7 @@ from src.commons.clock import half_period
 
 
 # TODO: Dynamically test this module over many iterations
-class TestFwdUnitHoldValue(TestCase):
+class TestFwdUnit(TestCase):
     """Test Fwd Unit"""
     def setUp(self):
         self.rt_in, self.rs_in, self.ex_rd, self.mem_rd = [Signal(intbv(0)[5:]) for i in range(4)]
