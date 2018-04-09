@@ -24,7 +24,7 @@ class TestMux32Bit2To1(TestCase):
             self.input1.next = random_signed_intbv()
             yield half_period()
             self.assertEqual(self.ctrl_signal, 0)
-            self.assertEqual(output, self.input1)
+            self.assertEqual(bin(output), bin(self.input1))
         raise StopSimulation
 
     def asserted(self, output):
@@ -35,7 +35,7 @@ class TestMux32Bit2To1(TestCase):
             self.input1.next = random_signed_intbv()
             yield half_period()
             self.assertEqual(self.ctrl_signal, 1)
-            self.assertEqual(output, self.input2)
+            self.assertEqual(bin(output), bin(self.input2))
         raise StopSimulation
 
     def dynamic(self, output):
@@ -49,7 +49,7 @@ class TestMux32Bit2To1(TestCase):
                 self.assertEqual(output, self.input1)
             else:
                 self.assertEqual(self.ctrl_signal, 1)
-                self.assertEqual(output, self.input2)
+                self.assertEqual(bin(output), bin(self.input2))
         raise StopSimulation
 
     def inst_mem(self, output):
@@ -62,7 +62,6 @@ class TestMux32Bit2To1(TestCase):
             self.assertEqual(bin(output), bin(0))
             self.assertNotEquals(bin(output), bin(self.input1))
         raise StopSimulation
-
 
     def testHoldDeassertPython(self):
         """ Checking that input1 is outputted when deasserted Python"""

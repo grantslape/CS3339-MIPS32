@@ -25,7 +25,7 @@ def signed_intbv_set(j, value=0):
 
 def random_signed_intbv():
     """Return random signed 32 bit intbv"""
-    return signed_intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MIN_VALUE']))
+    return signed_intbv(randint(sf['SIGNED_MIN_VALUE'], sf['SIGNED_MAX_VALUE']))
 
 
 def unsigned_intbv(value=0, width=sf['WIDTH']):
@@ -86,13 +86,14 @@ def rand_signed_signal_set(j):
     return response
 
 
-def rand_unsigned_signal_set(j):
+def rand_unsigned_signal_set(j, width=sf['WIDTH']):
     """
     Generate many unsigned intbv signals
     :param j: # of signals to generate
+    :param width: width of signal
     :return: list of Signals
     """
     response = []
     for i in range(j):
-        response.append(random_unsigned_intbv())
+        response.append(random_unsigned_intbv(width))
     return response
