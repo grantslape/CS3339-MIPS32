@@ -7,7 +7,7 @@ from src.python.data_mem import data_mem, data_mem_v
 from src.commons.settings import settings as sf
 from src.commons.clock import clock_gen
 from src.commons.signal_generator import unsigned_signal_set, random_unsigned_intbv, \
-    random_signed_intbv, unsigned_intbv, signed_intbv
+    random_signed_intbv, unsigned_intbv, signed_signal_set
 
 
 @unittest.skip("Data memory not implemented")
@@ -16,8 +16,7 @@ class TestDataMem(TestCase):
     def setUp(self):
         self.clock, self.read_ctrl, self.w_ctrl = unsigned_signal_set(3, width=1)
         self.mem_addr = Signal(unsigned_intbv())
-        self.rdata, self.rdata_v = unsigned_signal_set(2)
-        self.wdata = Signal(signed_intbv())
+        self.rdata, self.rdata_v, self.wdata = signed_signal_set(3)
         self.dut = data_mem(clk=self.clock,
                             address=self.read_ctrl,
                             write_wire=self.w_ctrl,
