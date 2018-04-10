@@ -1,4 +1,4 @@
-module tb_wb_mux;
+module wb_mux_tb;
 
 reg [0:0] sel;
 wire [31:0] wb_out;

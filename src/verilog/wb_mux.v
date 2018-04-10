@@ -20,17 +20,19 @@ module wb_mux (
 // :return: module logic
 
 input [0:0] sel;
-output [31:0] wb_out;
-reg [31:0] wb_out;
+output reg [31:0] wb_out;
 input [31:0] rdata_in;
 input [31:0] result_in;
 
 
-always @(rdata_in, sel, result_in) begin: WB_MUX_LOGIC
-    if ((sel == 1)) begin
+always @(rdata_in or sel or result_in) 
+  begin: WB_MUX_LOGIC
+    if (sel == 1)
+      begin
         wb_out = rdata_in;
-    end
-    else begin
+      end
+    else 
+      begin
         wb_out = result_in;
     end
 end

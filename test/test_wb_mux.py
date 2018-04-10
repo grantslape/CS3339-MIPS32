@@ -16,27 +16,29 @@ class TestWBMux(TestCase):
         self.dut = wb_mux(self.sel, self.wb_out, self.rdata_in, self.result_in)
 
     def deassert(self, wb_out):
-        """Test deassertion"""
+        """Deassertion stimulus"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            self.sel.next = 0
+            self.sel.next = Signal(intbv(0, min=0, max=2))
             self.rdata_in.next = random_signed_intbv()
             self.result_in.next = random_signed_intbv()
-            while self.result_in == self.rdata_in:
-                self.result_in = random_signed_intbv()
+            while self.result_in.next == self.rdata_in.next:
+                self.result_in.next = random_signed_intbv()
             yield half_period()
+            #print "wb_out: {}, result_in: {}".format(wb_out, self.result_in)
             self.assertEqual(wb_out, self.result_in)
             self.assertNotEquals(wb_out, self.rdata_in)
         raise StopSimulation
 
     def asserted(self, wb_out):
-        """Test Asserted functionality"""
+        """Assertion stimulus"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            self.sel.next = 1
+            self.sel.next = Signal(intbv(1, min=0, max=2))
             self.rdata_in.next = random_signed_intbv()
             self.result_in.next = random_signed_intbv()
-            while self.result_in == self.rdata_in:
-                self.result_in = random_signed_intbv()
+            while self.result_in.next == self.rdata_in.next:
+                self.result_in.next = random_signed_intbv()
             yield half_period()
+            #print "wb_out: {}, result_in: {}".format(wb_out, self.result_in)
             self.assertEqual(wb_out, self.rdata_in)
             self.assertNotEquals(wb_out, self.result_in)
         raise StopSimulation
@@ -44,11 +46,11 @@ class TestWBMux(TestCase):
     def dynamic(self, wb_out):
         """Test Dynamic functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            self.sel.next = randint(0, 1)
+            self.sel.next = Signal(intbv(randint(0, 1))[1:])
             self.rdata_in.next = random_signed_intbv()
             self.result_in.next = random_signed_intbv()
-            while self.result_in == self.rdata_in:
-                self.result_in = random_signed_intbv()
+            while self.result_in.next == self.rdata_in.next:
+                self.result_in.next = random_signed_intbv()
             yield half_period()
             if self.sel == 0:
                 self.assertEqual(wb_out, self.result_in)
@@ -66,13 +68,13 @@ class TestWBMux(TestCase):
 
     def testWBMuxDeassertedVerilog(self):
         """Check that ALU result is returned when sel deasserted Verilog"""
-        dut_v = wb_mux_v(self.sel, self.rdata_in, self.result_in, self.wb_out_v)
+        dut_v = wb_mux_v(self.sel, self.wb_out_v, self.rdata_in, self.result_in)
         stim = self.deassert(self.wb_out_v)
         Simulation(dut_v, stim).run(quiet=1)
 
     def testWBMuxDeassertedTogether(self):
         """Check that ALU result is returned when sel deasserted Together"""
-        dut_v = wb_mux_v(self.sel, self.rdata_in, self.result_in, self.wb_out_v)
+        dut_v = wb_mux_v(self.sel, self.wb_out_v, self.rdata_in, self.result_in)
         stim = self.deassert(self.wb_out)
         stim_v = self.deassert(self.wb_out_v)
         Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
@@ -84,13 +86,13 @@ class TestWBMux(TestCase):
 
     def testWBMuxAssertedVerilog(self):
         """Check that rdata is returned when sel Asserted Verilog"""
-        dut_v = wb_mux_v(self.sel, self.rdata_in, self.result_in, self.wb_out_v)
+        dut_v = wb_mux_v(self.sel, self.wb_out_v, self.rdata_in, self.result_in)
         stim = self.asserted(self.wb_out_v)
         Simulation(dut_v, stim).run(quiet=1)
 
     def testWBMuxAssertedTogether(self):
         """Check that rdata is returned when sel Asserted Together"""
-        dut_v = wb_mux_v(self.sel, self.rdata_in, self.result_in, self.wb_out_v)
+        dut_v = wb_mux_v(self.sel, self.wb_out_v, self.rdata_in, self.result_in)
         stim = self.asserted(self.wb_out)
         stim_v = self.asserted(self.wb_out_v)
         Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
@@ -102,13 +104,13 @@ class TestWBMux(TestCase):
 
     def testWBMuxDynamicVerilog(self):
         """Check dynamic behavior Verilog"""
-        dut_v = wb_mux_v(self.sel, self.rdata_in, self.result_in, self.wb_out_v)
+        dut_v = wb_mux_v(self.sel, self.wb_out_v, self.rdata_in, self.result_in)
         stim = self.dynamic(self.wb_out_v)
         Simulation(dut_v, stim).run(quiet=1)
 
     def testWBMuxDynamicTogether(self):
         """Check dynamic behavior Together"""
-        dut_v = wb_mux_v(self.sel, self.rdata_in, self.result_in, self.wb_out_v)
+        dut_v = wb_mux_v(self.sel, self.wb_out_v, self.rdata_in, self.result_in)
         stim = self.dynamic(self.wb_out)
         stim_v = self.dynamic(self.wb_out_v)
         Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)

@@ -1,5 +1,6 @@
 from os import system
-from myhdl import always_comb, Cosimulation
+import random
+from myhdl import always_comb, Cosimulation, Simulation, toVerilog, instance, delay, Signal, intbv
 
 def wb_mux(sel, wb_out, rdata_in, result_in):
     """
@@ -14,10 +15,12 @@ def wb_mux(sel, wb_out, rdata_in, result_in):
 
     @always_comb
     def logic():
-        if sel == 1:
-            wb_out.next = rdata_in
-        else:
+        if sel == 0:
             wb_out.next = result_in
+            #print "Deassert - wb_out: {}, result_in: {}".format(wb_out.next, result_in)
+        else:
+            wb_out.next = rdata_in
+            #print "Assert - wb_out: {}, rdata_in: {}".format(wb_out.next, rdata_in)
     return logic
 
 
@@ -34,7 +37,7 @@ def wb_mux_v(sel, wb_out, rdata_in, result_in):
     cmd = "iverilog -o bin/wb_mux.out src/verilog/wb_mux.v src/verilog/wb_mux_tb.v"
     system(cmd)
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/wb_mux.out",
-                        rdata_in=rdata_in,
-                        result_in=result_in,
                         sel=sel,
-                        wb_out=wb_out)
+                        wb_out=wb_out,
+                        rdata_in=rdata_in,
+                        result_in=result_in)
