@@ -5,8 +5,7 @@ from myhdl import intbv, Simulation, Signal, StopSimulation, posedge
 from src.python.program_counter import program_counter, program_counter_v
 from src.commons.settings import settings as sf
 from src.commons.clock import clock_gen
-from src.commons.signal_generator import random_unsigned_intbv,\
-    unsigned_signal_set
+from src.commons.signal_generator import random_unsigned_intbv, unsigned_signal_set
 
 
 class TestNormalOperation(TestCase):

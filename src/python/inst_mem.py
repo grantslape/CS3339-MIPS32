@@ -1,4 +1,5 @@
-import os, array
+import os
+from array import array
 
 from myhdl import always_comb, intbv, Cosimulation
 
@@ -16,8 +17,9 @@ def inst_mem(inst_reg, inst_out):
     try:
         raw_mem = array.fromfile(f, 1000)
     except EOFError:
-        #EOF exception is thrown when there are less than n elements to read from the file
-        #the contents are still read into the array. Do nothing
+        # EOF exception is thrown when there are less than n elements to read from the file
+        # the contents are still read into the array. Do nothing
+        pass
 
     @always_comb
     def logic():

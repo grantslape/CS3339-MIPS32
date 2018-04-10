@@ -24,6 +24,15 @@ class TestHazardUnit(TestCase):
                                if_id_write=self.if_id_write,
                                ex_stall=self.ex_stall)
 
+    def getVerilog(self):
+        return hazard_unit_v(if_id_rs=self.if_id_rs,
+                             if_id_rt=self.if_id_rt,
+                             id_ex_rt=self.id_ex_rt,
+                             mem_read=self.mem_read,
+                             pc_write=self.pc_write_v,
+                             if_id_write=self.if_id_write_v,
+                             ex_stall=self.ex_stall_v)
+
     def deassert(self, pc_write, if_id_write, ex_stall):
         """test hazard unit deassert functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -65,26 +74,14 @@ class TestHazardUnit(TestCase):
     def testHazardUnitDeassertedVerilog(self):
         """Checking Hazard unit functionality when deasserted Verilog"""
         stim_v = self.deassert(self.pc_write_v, self.if_id_write_v, self.ex_stall_v)
-        dut_v = hazard_unit_v(if_id_rs=self.if_id_rs,
-                              if_id_rt=self.if_id_rt,
-                              id_ex_rt=self.id_ex_rt,
-                              mem_read=self.mem_read,
-                              pc_write=self.pc_write_v,
-                              if_id_write=self.if_id_write_v,
-                              ex_stall=self.ex_stall_v)
+        dut_v = self.getVerilog()
         Simulation(dut_v, stim_v).run(quiet=1)
 
     def testHazardUnitDeassertedTogether(self):
         """Checking Hazard unit functionality when deasserted Together"""
         stim = self.deassert(self.pc_write, self.if_id_write, self.ex_stall)
         stim_v = self.deassert(self.pc_write_v, self.if_id_write_v, self.ex_stall_v)
-        dut_v = hazard_unit_v(if_id_rs=self.if_id_rs,
-                              if_id_rt=self.if_id_rt,
-                              id_ex_rt=self.id_ex_rt,
-                              mem_read=self.mem_read,
-                              pc_write=self.pc_write_v,
-                              if_id_write=self.if_id_write_v,
-                              ex_stall=self.ex_stall_v)
+        dut_v = self.getVerilog()
         Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
 
     def testHazardUnitDynamicPython(self):
@@ -95,24 +92,12 @@ class TestHazardUnit(TestCase):
     def testHazardUnitDynamicVerilog(self):
         """Checking Hazard unit functionality when Dynamic Verilog"""
         stim_v = self.dynamic(self.pc_write_v, self.if_id_write_v, self.ex_stall_v)
-        dut_v = hazard_unit_v(if_id_rs=self.if_id_rs,
-                              if_id_rt=self.if_id_rt,
-                              id_ex_rt=self.id_ex_rt,
-                              mem_read=self.mem_read,
-                              pc_write=self.pc_write_v,
-                              if_id_write=self.if_id_write_v,
-                              ex_stall=self.ex_stall_v)
+        dut_v = self.getVerilog()
         Simulation(dut_v, stim_v).run(quiet=1)
 
     def testHazardUnitDynamicTogether(self):
         """Checking Hazard unit functionality when Dynamic Together"""
         stim = self.dynamic(self.pc_write, self.if_id_write, self.ex_stall)
         stim_v = self.dynamic(self.pc_write_v, self.if_id_write_v, self.ex_stall_v)
-        dut_v = hazard_unit_v(if_id_rs=self.if_id_rs,
-                              if_id_rt=self.if_id_rt,
-                              id_ex_rt=self.id_ex_rt,
-                              mem_read=self.mem_read,
-                              pc_write=self.pc_write_v,
-                              if_id_write=self.if_id_write_v,
-                              ex_stall=self.ex_stall_v)
+        dut_v = self.getVerilog()
         Simulation(self.dut, dut_v, stim, stim_v).run(quiet=1)
