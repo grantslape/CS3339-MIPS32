@@ -30,6 +30,18 @@ class TestIfIdRegister(TestCase):
                          rd=self.rd,
                          imm=self.imm)
 
+    def getVerilog(self):
+        return if_id_v(if_id_write=self.if_id_write,
+                       nxt_pc=self.nxt_pc,
+                       inst_in=self.inst_in,
+                       pc_out=self.pc_out_v,
+                       op_code=self.op_code_v,
+                       funct_out=self.funct_out_v,
+                       rs=self.rs_v,
+                       rt=self.rt_v,
+                       rd=self.rd_v,
+                       imm=self.imm_v)
+
     def deassert(self, pc_out, op_code, funct_out, rs, rt, rd, imm):
         self.if_id_write.next = 0
         for i in range(sf['DEFAULT_TEST_LENGTH']):
@@ -79,16 +91,7 @@ class TestIfIdRegister(TestCase):
         clk = clock_gen(self.clock)
         stim_v = self.deassert(self.pc_out_v, self.op_code_v, self.funct_out_v, self.rs_v,
                                self.rt_v, self.rd_v, self.imm_v)
-        dut_v = if_id_v(if_id_write=self.if_id_write,
-                        nxt_pc=self.nxt_pc,
-                        inst_in=self.inst_in,
-                        pc_out=self.pc_out_v,
-                        op_code=self.op_code_v,
-                        funct_out=self.funct_out_v,
-                        rs=self.rs_v,
-                        rt=self.rt_v,
-                        rd=self.rd_v,
-                        imm=self.imm_v)
+        dut_v = self.getVerilog()
         Simulation(stim_v, dut_v, clk).run(quiet=1)
 
     def testIfIdDeassertedTogther(self):
@@ -98,16 +101,7 @@ class TestIfIdRegister(TestCase):
                              self.imm)
         stim_v = self.deassert(self.pc_out_v, self.op_code_v, self.funct_out_v, self.rs_v,
                                self.rt_v, self.rd_v, self.imm_v)
-        dut_v = if_id_v(if_id_write=self.if_id_write,
-                        nxt_pc=self.nxt_pc,
-                        inst_in=self.inst_in,
-                        pc_out=self.pc_out_v,
-                        op_code=self.op_code_v,
-                        funct_out=self.funct_out_v,
-                        rs=self.rs_v,
-                        rt=self.rt_v,
-                        rd=self.rd_v,
-                        imm=self.imm_v)
+        dut_v = self.getVerilog()
         Simulation(stim_v, dut_v, stim, self.dut, clk).run(quiet=1)
 
     def testIfIdAssertedPython(self):
@@ -122,16 +116,7 @@ class TestIfIdRegister(TestCase):
         clk = clock_gen(self.clock)
         stim_v = self.asserted(self.pc_out_v, self.op_code_v, self.funct_out_v, self.rs_v,
                                self.rt_v, self.rd_v, self.imm_v)
-        dut_v = if_id_v(if_id_write=self.if_id_write,
-                        nxt_pc=self.nxt_pc,
-                        inst_in=self.inst_in,
-                        pc_out=self.pc_out_v,
-                        op_code=self.op_code_v,
-                        funct_out=self.funct_out_v,
-                        rs=self.rs_v,
-                        rt=self.rt_v,
-                        rd=self.rd_v,
-                        imm=self.imm_v)
+        dut_v = self.getVerilog()
         Simulation(stim_v, dut_v, clk).run(quiet=1)
 
     def testIfIdAssertedTogther(self):
@@ -141,16 +126,7 @@ class TestIfIdRegister(TestCase):
                              self.imm)
         stim_v = self.asserted(self.pc_out_v, self.op_code_v, self.funct_out_v, self.rs_v,
                                self.rt_v, self.rd_v, self.imm_v)
-        dut_v = if_id_v(if_id_write=self.if_id_write,
-                        nxt_pc=self.nxt_pc,
-                        inst_in=self.inst_in,
-                        pc_out=self.pc_out_v,
-                        op_code=self.op_code_v,
-                        funct_out=self.funct_out_v,
-                        rs=self.rs_v,
-                        rt=self.rt_v,
-                        rd=self.rd_v,
-                        imm=self.imm_v)
+        dut_v = self.getVerilog()
         Simulation(stim_v, dut_v, stim, self.dut, clk).run(quiet=1)
 
 
