@@ -17,17 +17,14 @@ def data_mem(clk, address, write_data, read_data, read_wire, write_wire):
     # Initialize 4KB of "RAM"
     mem = [Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))]*4096
 
-    @always(clk.negedge)
-    def write_logic():
+    @always(clk.posedge)
+    def logic():
         if write_wire == 1:
             mem[intbv(address)] = write_data.val
-
-    @always(clk.posedge)
-    def read_logic():
-        if read_wire == 1:
+        elif read_wire == 1:
             read_data.next = mem[intbv(address)]
 
-    return read_logic, write_logic
+    return logic
 
 
 def wb_mux_v(clk, address, write_data, read_data, read_wire, write_wire):
