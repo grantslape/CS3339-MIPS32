@@ -5,7 +5,7 @@ from src.commons.settings import settings as sf
 
 def data_mem(clk, address, write_data, read_data, read_wire, write_wire):
     """
-    data memory
+    main data memory
     :param clk: clock (input)
     :param address: 32-bit memory address to access
     :param write_data: data to write to address
@@ -15,13 +15,13 @@ def data_mem(clk, address, write_data, read_data, read_wire, write_wire):
     :return: module logic
     """
     # Initialize 4KB of "RAM"
-    mem = [Signal(intbv(0, min=sf['SIGNED_MIN_VALUE'], max=sf['SIGNED_MAX_VALUE']))]*4096
+    mem = [Signal(intbv(0)[31:] for x in range(4096)]
 
     @always(clk.posedge)
     def logic():
-        if write_wire == 1:
-            mem[intbv(address)] = write_data.val
-        elif read_wire == 1:
+        if write_wire:
+            mem[intbv(address)].next = write_data
+        elif read_wire:
             read_data.next = mem[intbv(address)]
 
     return logic
@@ -29,7 +29,7 @@ def data_mem(clk, address, write_data, read_data, read_wire, write_wire):
 
 def wb_mux_v(clk, address, write_data, read_data, read_wire, write_wire):
     """
-    data memory (verilog)
+    main data memory (verilog)
     :param clk: clock (input)
     :param address: 32-bit memory address to access
     :param write_data: data to write to address
