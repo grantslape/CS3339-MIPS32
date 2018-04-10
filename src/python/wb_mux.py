@@ -1,6 +1,6 @@
+"""WB stage multiplexer module"""
 from os import system
-import random
-from myhdl import always_comb, Cosimulation, Simulation, toVerilog, instance, delay, Signal, intbv
+from myhdl import always_comb, Cosimulation
 
 def wb_mux(sel, wb_out, rdata_in, result_in):
     """
