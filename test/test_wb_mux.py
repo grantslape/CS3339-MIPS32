@@ -18,7 +18,7 @@ class TestWBMux(TestCase):
     def deassert(self, wb_out):
         """Deassertion stimulus"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            self.sel.next = Signal(intbv(0, min=0, max=2))
+            self.sel.next = 0
             self.rdata_in.next = random_signed_intbv()
             self.result_in.next = random_signed_intbv()
             while self.result_in.next == self.rdata_in.next:
@@ -32,7 +32,7 @@ class TestWBMux(TestCase):
     def asserted(self, wb_out):
         """Assertion stimulus"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            self.sel.next = Signal(intbv(1, min=0, max=2))
+            self.sel.next = 1
             self.rdata_in.next = random_signed_intbv()
             self.result_in.next = random_signed_intbv()
             while self.result_in.next == self.rdata_in.next:
@@ -46,7 +46,7 @@ class TestWBMux(TestCase):
     def dynamic(self, wb_out):
         """Test Dynamic functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            self.sel.next = Signal(intbv(randint(0, 1))[1:])
+            self.sel.next = randint(0, 1)
             self.rdata_in.next = random_signed_intbv()
             self.result_in.next = random_signed_intbv()
             while self.result_in.next == self.rdata_in.next:
