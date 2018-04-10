@@ -2,7 +2,7 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import Simulation, StopSimulation, intbv, Signal, posedge, ResetSignal
+from myhdl import Simulation, StopSimulation, intbv, Signal, posedge
 
 from src.python.id_ex import id_ex, id_ex_v
 from src.commons.clock import clock_gen
@@ -28,7 +28,6 @@ class TestIdExRegister(TestCase):
             self.r_data2_out_v, self.imm, self.imm_out, self.imm_out_v, = signed_signal_set(9)
         self.rs, self.rt, self.rd, self.rs_out, self.rs_out_v, self.rt_out, self.rt_out_v, \
             self.rd_out, self.rd_out_v = unsigned_signal_set(9, width=5)
-        self.reset_in = ResetSignal(0, active=1, async=True)
         # TODO: break these out into a signal generator function with a switch b/c shared input
         self.params = {
             'clock': self.clock,
@@ -38,7 +37,6 @@ class TestIdExRegister(TestCase):
             'mem_to_reg_in': self.mem_to_reg_in,
             'mem_write_in': self.mem_write_in,
             'reg_dst_in': self.reg_dst_in,
-            'reset_in': self.reset_in,
             'pc_value_in': self.pc_value_in,
             'r_data1': self.r_data1,
             'r_data2': self.r_data2,
@@ -69,7 +67,6 @@ class TestIdExRegister(TestCase):
             'mem_to_reg_in': self.mem_to_reg_in,
             'mem_write_in': self.mem_write_in,
             'reg_dst_in': self.reg_dst_in,
-            'reset_in': self.reset_in,
             'pc_value_in': self.pc_value_in,
             'r_data1': self.r_data1,
             'r_data2': self.r_data2,
@@ -111,7 +108,12 @@ class TestIdExRegister(TestCase):
             self.alu_op_in = Signal(intbv())
 
             yield posedge(self.clock)
-            self.reset_in = 1
+            self.branch_in.next, \
+                self.mem_read_in.next, \
+                self.mem_to_reg_in.next, \
+                self.mem_write_in.next, \
+                self.reg_write_in.next, \
+                self.reg_dst_in.next = [0 for i in range(6)]
             yield posedge(self.clock)
             self.assertEqual(bin(branch_out), 0b0)
             self.assertEqual(0b0, bin(mem_read_out))
