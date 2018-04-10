@@ -1,7 +1,7 @@
 """Data memory module"""
 from os import system
-from myhdl import Signal, always, intbv, Cosimulation
-from src.commons.settings import settings as sf
+from myhdl import always, intbv, Cosimulation
+from src.commons.signal_generator import signed_signal_set
 
 def data_mem(clk, address, write_data, read_data, read_wire, write_wire):
     """
@@ -14,8 +14,8 @@ def data_mem(clk, address, write_data, read_data, read_wire, write_wire):
     :param write_wire: activate write to mem
     :return: module logic
     """
-    # Initialize 4KB of "RAM"
-    mem = [Signal(intbv(0)[31:] for x in range(4096)]
+    # Initialize 4KB of RAM
+    mem = [signed_signal_set(4096)]
 
     @always(clk.posedge)
     def logic():
