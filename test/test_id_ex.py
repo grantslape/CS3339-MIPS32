@@ -29,6 +29,7 @@ class TestIdExRegister(TestCase):
         self.rs, self.rt, self.rd, self.rs_out, self.rs_out_v, self.rt_out, self.rt_out_v, \
             self.rd_out, self.rd_out_v = unsigned_signal_set(9, width=5)
         self.reset_in = ResetSignal(0, active=1, async=True)
+        # TODO: break these out into a signal generator function with a switch b/c shared input
         self.params = {
             'clock': self.clock,
             'branch_in': self.branch_in,
