@@ -32,7 +32,7 @@ def unsigned_intbv(value=0, width=sf['WIDTH']):
     """
     Generate an unsigned intbv
     :param value: initial value
-    :param width: width of intbv
+    :param width: bit width of intbv
     :return: intbv
     """
     return intbv(value)[width:]
@@ -58,7 +58,7 @@ def unsigned_signal_set(j, value=0, width=sf['WIDTH']):
     Generate many unsigned intbv signals
     :param j: # of signals to generate
     :param value: initial value
-    :param width: width of intbv
+    :param width: bit width of intbv
     :return:
     """
     return [Signal(unsigned_intbv(value, width)) for i in range(j)]
@@ -86,13 +86,14 @@ def rand_signed_signal_set(j):
     return response
 
 
-def rand_unsigned_signal_set(j):
+def rand_unsigned_signal_set(j, width=sf['WIDTH']):
     """
     Generate many unsigned intbv signals
     :param j: # of signals to generate
+    :param width: bit width of signal
     :return: list of Signals
     """
     response = []
     for i in range(j):
-        response.append(random_unsigned_intbv())
+        response.append(random_unsigned_intbv(width))
     return response

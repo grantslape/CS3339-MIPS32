@@ -5,8 +5,7 @@ from myhdl import intbv, Simulation, Signal, StopSimulation, posedge
 from src.python.program_counter import program_counter, program_counter_v
 from src.commons.settings import settings as sf
 from src.commons.clock import clock_gen
-from src.commons.signal_generator import random_unsigned_intbv,\
-    unsigned_signal_set
+from src.commons.signal_generator import random_unsigned_intbv, unsigned_signal_set
 
 
 class TestNormalOperation(TestCase):
@@ -23,8 +22,8 @@ class TestNormalOperation(TestCase):
             self.nxt_inst.next = random_unsigned_intbv()
             # First posedge triggers program_counter to do work
             yield self.clock.posedge
-            # TODO: Is this really necessary?
-            yield self.clock.posedge
+            # negedge takes us to actual next cycle
+            yield self.clock.negedge
             self.assertEqual(cur_pc, self.nxt_inst)
         raise StopSimulation
 

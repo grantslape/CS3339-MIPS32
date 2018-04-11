@@ -127,7 +127,8 @@ disable=print-statement,
         dict-items-not-iterating,
         dict-keys-not-iterating,
         dict-values-not-iterating,
-        E1111
+        E1111,
+        unbalanced-tuple-unpacking
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -307,7 +308,7 @@ redefining-builtins-modules=six.moves,past.builtins,future.builtins
 expected-line-ending-format=
 
 # Regexp for a line that is allowed to be longer than the limit.
-ignore-long-lines=^\s*(# )?<?https?://\S+>?$
+ignore-long-lines=^\s*((# )?<?https?:\/\/\S+>?)|(\s*cmd =\s*)$
 
 # Number of spaces of indent required inside a hanging  or continued line.
 indent-after-paren=4

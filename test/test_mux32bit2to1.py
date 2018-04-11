@@ -63,7 +63,6 @@ class TestMux32Bit2To1(TestCase):
             self.assertNotEquals(bin(output), bin(self.input1))
         raise StopSimulation
 
-
     def testHoldDeassertPython(self):
         """ Checking that input1 is outputted when deasserted Python"""
         stim = self.deassert(self.output)
