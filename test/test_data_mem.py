@@ -52,13 +52,13 @@ class TestDataMem(TestCase):
             self.assertEqual(bin(expected_data), bin(rdata))
         raise StopSimulation
 
-    def estDataMemDynamicPython(self):
+    def testDataMemDynamicPython(self):
         """test data memory reads and writes correctly Python"""
         CLK = clock_gen(self.clock)
         stim = self.dynamic(self.rdata)
         Simulation(CLK, self.dut, stim).run(quiet=1)
 
-    def estDataMemDynamicVerilog(self):
+    def testDataMemDynamicVerilog(self):
         """test data memory reads and writes correctly Verilog"""
         CLK = clock_gen(self.clock)
         stim_v = self.dynamic(self.rdata_v)
