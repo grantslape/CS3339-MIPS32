@@ -23,20 +23,16 @@ def data_mem(clk, address, write_wire, read_wire, write_data, read_data):
         pass
     mem_file.close()
 
-
-    @always(clk.negedge)
-    def write():
-        mem_addr = address.next
-        if write_wire == 1:
-            mem_array[mem_addr] = write_data
-
     @always(clk.posedge)
     def read():
-        mem_addr = address.next
+        # mem_addr = address.next
         if read_wire == 1:
-            read_data.next = mem_array[mem_addr]
+            read_data.next = mem_array[address]
+            print("read data: {}".format(mem_array[address]))
+        elif write_wire == 1:
+            mem_array[address] = write_data
 
-    return read, write
+    return read
 
 
 def data_mem_v(clk, address, write_wire, read_wire, write_data, read_data):

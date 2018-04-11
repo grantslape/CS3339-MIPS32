@@ -29,25 +29,22 @@ input [0:0] read_wire;
 input signed [31:0] write_data;
 output reg signed [31:0] read_data;
 
-reg [31:0] mem_array [0:1048576];
+reg signed [31:0] mem_array [0:1048576];
 
 //load the buffer with data from the memory file
 initial
   $readmemb("memory_file", mem_array);
-
-always @(negedge clk)
-begin
-  if ( write_wire == 1 )
-  begin
-    mem_array[address] = write_data;
-  end
-end
 
 always @(posedge clk)
 begin
   if (read_wire == 1)
   begin
     read_data = mem_array[address];
+    $display("Verilog read %d", read_data);
+  end
+  else if (write_wire == 1)
+  begin
+    mem_array[address] = write_data;
   end
 end
 endmodule
