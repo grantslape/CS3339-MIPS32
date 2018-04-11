@@ -35,42 +35,42 @@ class TestDataMem(TestCase):
                           read_data=self.rdata_v)
 
     # TODO: Find a way to test read and write separately
-    def dynamic(self):
+    def dynamic(self, python=False, verilog=False):
         """test read/write functionality"""
         for i in range(sf['DEFAULT_TEST_LENGTH']):
-            # yield posedge(self.clock)
             self.read_ctrl.next = 0
             self.write_ctrl.next = 1
-            expected_addr = random_unsigned_intbv(width=sf['MEMORY_WIDTH'])
             expected_data = random_signed_intbv()
-            self.mem_addr.next = expected_addr
+            self.mem_addr.next = random_unsigned_intbv(width=sf['MEMORY_WIDTH'])
             self.wdata.next = expected_data
             yield posedge(self.clock)
             self.read_ctrl.next = 1
             self.write_ctrl.next = 0
             yield posedge(self.clock)
             yield negedge(self.clock)
-            self.assertEqual(bin(expected_data), bin(self.rdata))
-            self.assertEqual(bin(expected_data), bin(self.rdata_v))
+            if python:
+                self.assertEqual(bin(expected_data), bin(self.rdata))
+            if verilog:
+                self.assertEqual(bin(expected_data), bin(self.rdata_v))
         raise StopSimulation
 
-    # def testDataMemDynamicPython(self):
-    #     """test data memory reads and writes correctly Python"""
-    #     CLK = clock_gen(self.clock)
-    #     stim = self.dynamic(self.rdata)
-    #     Simulation(CLK, self.dut, stim).run(quiet=1)
-    #
-    # def testDataMemDynamicVerilog(self):
-    #     """test data memory reads and writes correctly Verilog"""
-    #     CLK = clock_gen(self.clock)
-    #     stim_v = self.dynamic(self.rdata_v)
-    #     dut_v = self.getVerilog()
-    #     Simulation(CLK, stim_v, dut_v).run(quiet=1)
+    def testDataMemDynamicPython(self):
+        """test data memory reads and writes correctly Python"""
+        CLK = clock_gen(self.clock)
+        stim = self.dynamic(python=True)
+        Simulation(CLK, self.dut, stim).run(quiet=1)
 
-    def testDataMemDynamicTogether(self):
+    def testDataMemDynamicVerilog(self):
         """test data memory reads and writes correctly Verilog"""
         CLK = clock_gen(self.clock)
-        stim = self.dynamic()
+        stim_v = self.dynamic(verilog=True)
+        dut_v = self.getVerilog()
+        Simulation(CLK, stim_v, dut_v).run(quiet=1)
+
+    def testDataMemDynamicTogether(self):
+        """test data memory reads and writes correctly Together"""
+        CLK = clock_gen(self.clock)
+        stim = self.dynamic(python=True, verilog=True)
         dut_v = self.getVerilog()
         Simulation(CLK, dut_v, self.dut, stim).run()
 

@@ -40,7 +40,6 @@ begin
   if (read_wire == 1)
   begin
     read_data = mem_array[address];
-    $display("Verilog read %d", read_data);
   end
   else if (write_wire == 1)
   begin

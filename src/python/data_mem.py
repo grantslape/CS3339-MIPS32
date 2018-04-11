@@ -24,15 +24,13 @@ def data_mem(clk, address, write_wire, read_wire, write_data, read_data):
     mem_file.close()
 
     @always(clk.posedge)
-    def read():
-        # mem_addr = address.next
+    def logic():
         if read_wire == 1:
             read_data.next = mem_array[address]
-            print("read data: {}".format(mem_array[address]))
         elif write_wire == 1:
             mem_array[address] = write_data
 
-    return read
+    return logic
 
 
 def data_mem_v(clk, address, write_wire, read_wire, write_data, read_data):
