@@ -11,9 +11,6 @@ def id_shift_left(top4, target, jaddr_out):
     :return: module logic
     """
 
-    # jump address 5 bit set to 0
-    jaddr_out = intbv(0)[5:]
-
     @always_comb
     def logic():
         # top four bits of jump address from top4

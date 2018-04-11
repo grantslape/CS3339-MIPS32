@@ -14,10 +14,6 @@ def hazard_unit(if_id_rs, if_id_rt, id_ex_rt, mem_read, pc_write, if_id_write, e
     :return: generator logic
     """
 
-    pc_write = False
-    if_id_write = False
-    ex_stall = False
-
     # check for load instruction and check to see if the destination
     # register is the source register of the previous stage
     # if so then set all flags to true
