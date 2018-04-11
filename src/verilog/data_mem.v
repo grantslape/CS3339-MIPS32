@@ -35,7 +35,6 @@ module data_mem(
   begin
     if ( write_wire == 1 )
     begin
-      $display("saving %d to %d", write_data, address);
       mem_array[address] = write_data;
     end
   end
