@@ -1,6 +1,6 @@
 """ID/EX Pipeline register"""
 import os
-from myhdl import always_seq, Cosimulation
+from myhdl import always, Cosimulation
 
 
 # YOU NEED TO INSTANTIATE WITH KEYWORD ARGUMENTS
@@ -14,7 +14,6 @@ def id_ex(**kwargs):
     :param mem_to_reg_in:
     :param mem_write_in:
     :param reg_dst_in:
-    :param reset_in
     :param pc_value_in:
     :param r_data1:
     :param r_data2:
