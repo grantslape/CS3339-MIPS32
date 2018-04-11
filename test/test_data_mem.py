@@ -37,7 +37,7 @@ class TestDataMem(TestCase):
     # TODO: Find a way to test read and write separately
     def dynamic(self, rdata):
         """test read/write functionality"""
-        for i in range(sf['DEFAULT_TEST_LENGTH']):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.read_ctrl.next = 0
             self.write_ctrl.next = 1
             expected_addr = random_unsigned_intbv(width=sf['MEMORY_WIDTH'])

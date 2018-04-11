@@ -1,6 +1,5 @@
 """Data memory module"""
 from os import system
-from array import array
 from myhdl import always, Cosimulation, intbv
 
 def data_mem(clk, address, write_wire, read_wire, write_data, read_data):
@@ -16,14 +15,14 @@ def data_mem(clk, address, write_wire, read_wire, write_data, read_data):
     """
 
     # Initialize RAM from memory_file
-    f = open('memory_file')
+    mem_file = open('memory_file')
     mem_array = []
     try:
-        mem_array = [intbv(line) for line in f]    
+        mem_array = [intbv(line) for line in mem_file]
     except IOError:
         pass
-    f.close()
-        
+    mem_file.close()
+
 
     @always(clk.negedge)
     def write():
