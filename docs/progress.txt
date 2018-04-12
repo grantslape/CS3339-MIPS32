@@ -4,6 +4,7 @@ Mark Gitthens:
     pc_mux_a DONE 2018-04-02, genericized 2018-04-05
     pc_mux_b genericized 2018-04-05
     wb_mux genericized 2018-04-05
+    inst_mem_mux genericized 2018-04-05
     pc_adder DON 2018-04-05
 Huan Wu:
     sign_extender
@@ -19,22 +20,22 @@ Serena Gutierrez:
     alu
     alu_mux_a
     alu_mux_b
-Ruben Hidalgo:
-    rfile
-    ex_mux
 Jihan Roujiel:
+    branch_unit
+Isaac Jaimes:
     inst_mem
-    inst_mem_mux
-    Isaac Jaimes:
     fwd_unit DONE 2018-04-03
     shift_unit DONE 2018-04-03
+    instruction generator:
 Robert Tomlinson:
     ex_mem
     branch_adder
-    branch_unit
 Patrick Vinas:
     data_mem
     mem_wb
+TBD:
+    rfile
+    ex_mux
 Grant Slape:
     Main Driver
     Unit Tests:
@@ -47,21 +48,21 @@ Grant Slape:
         pc_adder DONE 2018-04-03
         sign_extender DONE 2018-04-07
         id_ex DONE 2018-04-07
-        hazard_unit DON 2018-04-08
-        if_id
+        hazard_unit DONE 2018-04-08
+        if_id DONE
         id_shift_left DONE 2018-04-07
         ctrl
         ctrl_mux 
         alu
         alu_mux_a 2018-04-03
         alu_mux_b 2018-04-03
-        alu_mux_imm
+        alu_mux_imm genericized
         rfile DONE 2018-04-03
         ex_mux DONE 2018-04-03
         inst_mem
         inst_mem_mux DONE 2018-04-07 under 2:1
         ex_mem
-        branch_adder 
+        branch_adder DONE 2018-04-11
         branch_unit
-        data_mem
-        mem_wb
+        data_mem DONE 2018-04-11
+        mem_wb DONE 2018-04-11
