@@ -71,10 +71,9 @@ class TestIdExRegister(TestCase):
         }
 
     # TODO: test signals pass through correctly
-    def deassert(self, branch_out, mem_read_out, mem_to_reg_out, mem_write_out, alu_src_out,
-                 reg_write_out, reg_dst_out):
+    def deassert(self, python=False, verilog=False):
         """test deassert functionality"""
-        for i in range(sf['DEFAULT_TEST_LENGTH'] / 2):
+        for _ in range(sf['DEFAULT_TEST_LENGTH'] / 2):
             self.r_data1.next, self.r_data2.next, self.imm.next = [
                 Signal(random_signed_intbv()) for i in range(3)
             ]
@@ -84,29 +83,37 @@ class TestIdExRegister(TestCase):
             self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
             # TODO: UPDATE WHEN ALU OP CODES ARE DETERMINED
             self.alu_op_in = Signal(intbv())
-
-            yield posedge(self.clock)
+            yield self.clock.posedge
             self.branch_in.next, \
                 self.mem_read_in.next, \
                 self.mem_to_reg_in.next, \
                 self.mem_write_in.next, \
                 self.reg_write_in.next, \
-                self.reg_dst_in.next = [0 for i in range(6)]
-            yield posedge(self.clock)
-            self.assertEqual(bin(branch_out), 0b0)
-            self.assertEqual(0b0, bin(mem_read_out))
-            self.assertEqual(0b0, bin(mem_to_reg_out))
-            self.assertEqual(0b0, bin(mem_write_out))
-            self.assertEqual(0b0, bin(alu_src_out))
-            self.assertEqual(0b0, bin(reg_write_out))
-            self.assertEqual(0b0, bin(reg_dst_out))
+                self.reg_dst_in.next = [0 for _ in range(6)]
+            yield self.clock.posedge
+            yield self.clock.negedge
+            if python:
+                self.assertEqual(bin(self.branch_out), 0b0)
+                self.assertEqual(0b0, bin(self.mem_read_out))
+                self.assertEqual(0b0, bin(self.mem_to_reg_out))
+                self.assertEqual(0b0, bin(self.mem_write_out))
+                self.assertEqual(0b0, bin(self.alu_src_out))
+                self.assertEqual(0b0, bin(self.reg_write_out))
+                self.assertEqual(0b0, bin(self.reg_dst_out))
+            if verilog:
+                self.assertEqual(bin(self.branch_out_v), 0b0)
+                self.assertEqual(0b0, bin(self.mem_read_out_v))
+                self.assertEqual(0b0, bin(self.mem_to_reg_out_v))
+                self.assertEqual(0b0, bin(self.mem_write_out_v))
+                self.assertEqual(0b0, bin(self.alu_src_out_v))
+                self.assertEqual(0b0, bin(self.reg_write_out_v))
+                self.assertEqual(0b0, bin(self.reg_dst_out_v))
         raise StopSimulation
 
 # TODO: test signals pass through correctly
-    def dynamict(self, branch_out, mem_read_out, mem_to_reg_out, mem_write_out, alu_src_out,
-                 reg_write_out, reg_dst_out):
+    def dynamic(self, python=False, verilog=False):
         """Dynamic testing of ID/EX Pipeline Register"""
-        for i in range(sf['DEFAULT_TEST_LENGTH']):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.branch_in.next, self.mem_read_in.next, self.mem_to_reg_in.next,\
                 self.mem_write_in.next, self.alu_src_in.next, self.reg_write_in.next,\
                 self.reg_dst_in.next = unsigned_signal_set(7, randint(0, 1), 1)
@@ -114,46 +121,43 @@ class TestIdExRegister(TestCase):
             self.alu_op_in = Signal(intbv())
             self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
             self.r_data1.next, self.r_data2.next, self.imm.next = [
-                Signal(random_signed_intbv()) for i in range(3)
+                Signal(random_signed_intbv()) for _ in range(3)
             ]
             self.rs.next, self.rt.next, self.rd.next = [
-                Signal(intbv(randint(0, sf['WIDTH'] - 1))[5:]) for i in range(3)
+                Signal(intbv(randint(0, sf['WIDTH'] - 1))[5:]) for _ in range(3)
             ]
             yield posedge(self.clock)
             # possibly yield another pos or neg edge
-            self.assertEqual(bin(branch_out), bin(self.branch_in))
-            self.assertEqual(bin(self.mem_read_in), bin(mem_read_out))
-            self.assertEqual(bin(self.mem_to_reg_in), bin(mem_to_reg_out))
-            self.assertEqual(bin(self.mem_write_in), bin(mem_write_out))
-            self.assertEqual(bin(self.alu_src_in), bin(alu_src_out))
-            self.assertEqual(bin(self.reg_write_in), bin(reg_write_out))
-            self.assertEqual(bin(self.reg_dst_in), bin(reg_dst_out))
+            if python:
+                self.assertEqual(bin(self.branch_out), bin(self.branch_in))
+                self.assertEqual(bin(self.mem_read_in), bin(self.mem_read_out))
+                self.assertEqual(bin(self.mem_to_reg_in), bin(self.mem_to_reg_out))
+                self.assertEqual(bin(self.mem_write_in), bin(self.mem_write_out))
+                self.assertEqual(bin(self.alu_src_in), bin(self.alu_src_out))
+                self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out))
+                self.assertEqual(bin(self.reg_dst_in), bin(self.reg_dst_out))
+            if verilog:
+                self.assertEqual(bin(self.branch_out_v), bin(self.branch_in))
+                self.assertEqual(bin(self.mem_read_in), bin(self.mem_read_out_v))
+                self.assertEqual(bin(self.mem_to_reg_in), bin(self.mem_to_reg_out_v))
+                self.assertEqual(bin(self.mem_write_in), bin(self.mem_write_out_v))
+                self.assertEqual(bin(self.alu_src_in), bin(self.alu_src_out_v))
+                self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out_v))
+                self.assertEqual(bin(self.reg_dst_in), bin(self.reg_dst_out_v))
         raise StopSimulation
 
     def testDeassertPython(self):
         """Checking stalling Python"""
         dut = self.get_module()
         CLK = clock_gen(self.clock)
-        stim = self.deassert(branch_out=self.branch_out,
-                             mem_read_out=self.mem_read_out,
-                             mem_to_reg_out=self.mem_to_reg_out,
-                             mem_write_out=self.mem_write_out,
-                             alu_src_out=self.alu_src_out,
-                             reg_write_out=self.reg_write_out,
-                             reg_dst_out=self.reg_dst_out)
+        stim = self.deassert(python=True)
         Simulation(CLK, stim, dut).run(quiet=1)
 
     def testDeassertVerilog(self):
         """Checking stalling Verilog"""
         dut_v = self.get_module("verilog")
         CLK = clock_gen(self.clock)
-        stim_v = self.deassert(branch_out=self.branch_out_v,
-                               mem_read_out=self.mem_read_out_v,
-                               mem_to_reg_out=self.mem_to_reg_out_v,
-                               mem_write_out=self.mem_write_out_v,
-                               alu_src_out=self.alu_src_out_v,
-                               reg_write_out=self.reg_write_out_v,
-                               reg_dst_out=self.reg_dst_out_v)
+        stim_v = self.deassert(verilog=True)
         Simulation(CLK, stim_v, dut_v).run(quiet=1)
 
     def testDeassertTogether(self):
@@ -161,49 +165,21 @@ class TestIdExRegister(TestCase):
         dut = self.get_module()
         dut_v = self.get_module("verilog")
         CLK = clock_gen(self.clock)
-        stim = self.deassert(branch_out=self.branch_out,
-                             mem_read_out=self.mem_read_out,
-                             mem_to_reg_out=self.mem_to_reg_out,
-                             mem_write_out=self.mem_write_out,
-                             alu_src_out=self.alu_src_out,
-                             reg_write_out=self.reg_write_out,
-                             reg_dst_out=self.reg_dst_out)
-        stim_v = self.deassert(branch_out=self.branch_out_v,
-                               mem_read_out=self.mem_read_out_v,
-                               mem_to_reg_out=self.mem_to_reg_out_v,
-                               mem_write_out=self.mem_write_out_v,
-                               alu_src_out=self.alu_src_out_v,
-                               reg_write_out=self.reg_write_out_v,
-                               reg_dst_out=self.reg_dst_out_v)
-
-        Simulation(CLK, stim, dut, dut_v, stim_v).run(quiet=1)
+        stim = self.deassert(python=True, verilog=True)
+        Simulation(CLK, stim, dut, dut_v).run(quiet=1)
 
     def testDynamicPython(self):
         """Checking stalling Python"""
         dut = self.get_module()
         CLK = clock_gen(self.clock)
-        stim = self.dynamict(branch_out=self.branch_out,
-                             mem_read_out=self.mem_read_out,
-                             mem_to_reg_out=self.mem_to_reg_out,
-                             mem_write_out=self.mem_write_out,
-                             alu_src_out=self.alu_src_out,
-                             reg_write_out=self.reg_write_out,
-                             reg_dst_out=self.reg_dst_out)
-
+        stim = self.dynamic(python=True)
         Simulation(CLK, stim, dut).run(quiet=1)
 
     def testDynamicVerilog(self):
         """Checking stalling Verilog"""
         dut_v = self.get_module("verilog")
         CLK = clock_gen(self.clock)
-        stim = self.dynamict(branch_out=self.branch_out_v,
-                             mem_read_out=self.mem_read_out_v,
-                             mem_to_reg_out=self.mem_to_reg_out_v,
-                             mem_write_out=self.mem_write_out_v,
-                             alu_src_out=self.alu_src_out_v,
-                             reg_write_out=self.reg_write_out_v,
-                             reg_dst_out=self.reg_dst_out_v)
-
+        stim = self.dynamic(verilog=True)
         Simulation(CLK, stim, dut_v).run(quiet=1)
 
     def testDynamicTogether(self):
@@ -211,22 +187,8 @@ class TestIdExRegister(TestCase):
         dut = self.get_module()
         dut_v = self.get_module("verilog")
         CLK = clock_gen(self.clock)
-        stim = self.dynamict(branch_out=self.branch_out,
-                             mem_read_out=self.mem_read_out,
-                             mem_to_reg_out=self.mem_to_reg_out,
-                             mem_write_out=self.mem_write_out,
-                             alu_src_out=self.alu_src_out,
-                             reg_write_out=self.reg_write_out,
-                             reg_dst_out=self.reg_dst_out)
-        stim_v = self.dynamict(branch_out=self.branch_out_v,
-                               mem_read_out=self.mem_read_out_v,
-                               mem_to_reg_out=self.mem_to_reg_out_v,
-                               mem_write_out=self.mem_write_out_v,
-                               alu_src_out=self.alu_src_out_v,
-                               reg_write_out=self.reg_write_out_v,
-                               reg_dst_out=self.reg_dst_out_v)
-
-        Simulation(CLK, stim, dut, dut_v, stim_v).run(quiet=1)
+        stim = self.dynamic(python=True, verilog=True)
+        Simulation(CLK, stim, dut, dut_v).run(quiet=1)
 
 
 if __name__ == '__main__':

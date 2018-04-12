@@ -38,17 +38,17 @@ class TestDataMem(TestCase):
     # TODO: Find a way to test read and write separately
     def dynamic(self, python=False, verilog=False):
         """test read/write functionality"""
-        for i in range(sf['DEFAULT_TEST_LENGTH']):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.read_ctrl.next = 0
-            self.write_ctrl.next = 1
+            self.w_ctrl.next = 1
             expected_data = random_signed_intbv()
             self.mem_addr.next = random_unsigned_intbv(width=sf['MEMORY_WIDTH'])
             self.wdata.next = expected_data
-            yield posedge(self.clock)
+            yield self.clock.posedge
             self.read_ctrl.next = 1
             self.w_ctrl.next = 0
-            yield posedge(self.clock)
-            yield negedge(self.clock)
+            yield self.clock.posedge
+            yield self.clock.negedge
             if python:
                 self.assertEqual(bin(expected_data), bin(self.rdata))
             if verilog:
