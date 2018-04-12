@@ -49,14 +49,14 @@ Grant Slape:
         sign_extender DONE 2018-04-07
         id_ex DONE 2018-04-07
         hazard_unit DONE 2018-04-08
-        if_id
+        if_id DONE
         id_shift_left DONE 2018-04-07
         ctrl
         ctrl_mux 
         alu
         alu_mux_a 2018-04-03
         alu_mux_b 2018-04-03
-        alu_mux_imm
+        alu_mux_imm genericized
         rfile DONE 2018-04-03
         ex_mux DONE 2018-04-03
         inst_mem
@@ -64,5 +64,5 @@ Grant Slape:
         ex_mem
         branch_adder 
         branch_unit
-        data_mem
+        data_mem DONE 2018-04-11
         mem_wb

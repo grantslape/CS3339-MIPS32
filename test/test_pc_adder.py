@@ -19,7 +19,7 @@ class TestPcAdder(TestCase):
     def zeroTest(self):
         """Test when value held at zero"""
         self.cur_pc.next = intbv()[32:]
-        for i in range(sf['DEFAULT_TEST_LENGTH']):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             yield half_period()
             self.assertEqual(bin(self.nxt_pc), bin(intbv()[32:]))
             self.assertEqual(bin(self.nxt_pc_v), bin(intbv()[32:]))
@@ -27,7 +27,7 @@ class TestPcAdder(TestCase):
 
     def dynamic(self, python=False, verilog=False):
         """Test dynamic values"""
-        for i in range(sf['DEFAULT_TEST_LENGTH']):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.cur_pc.next = intbv(randint(0, sf['UNSIGNED_MAX_VALUE'] - 4))[32:]
             yield half_period()
             if python:
