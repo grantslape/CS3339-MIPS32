@@ -26,7 +26,7 @@ def mem_wb(clock, reg_write_in, rdata_in, result_in, rt_in, rdata_out, result_ou
 
 
 def mem_wb_v(clock, reg_write_in, rdata_in, result_in, rt_in, rdata_out, result_out, rt_out,
-           reg_write_out):
+             reg_write_out):
     """
     Memory/Writeback pipeline register
     see above for docs
