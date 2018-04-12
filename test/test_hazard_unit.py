@@ -1,8 +1,8 @@
 """Unit tests for Hazard unit module"""
 import unittest
-from random import randint
 from unittest import TestCase
-from myhdl import intbv, Simulation, Signal, StopSimulation
+from random import randint
+from myhdl import Simulation, StopSimulation
 from src.python.hazard_unit import hazard_unit, hazard_unit_v
 from src.commons.clock import half_period
 from src.commons.signal_generator import unsigned_signal_set, random_unsigned_intbv, rand_unsigned_signal_set
@@ -25,6 +25,7 @@ class TestHazardUnit(TestCase):
                                ex_stall=self.ex_stall)
 
     def getVerilog(self):
+        """Return Verilog design under test"""
         return hazard_unit_v(if_id_rs=self.if_id_rs,
                              if_id_rt=self.if_id_rt,
                              id_ex_rt=self.id_ex_rt,

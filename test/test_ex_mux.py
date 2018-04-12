@@ -13,12 +13,12 @@ class TestExMuxDeasserted(TestCase):
     """Test Ex mux"""
     def setUp(self):
         self.reg_dst = Signal(intbv(0)[1:])
-        self.rt_in, self.rd_in, self.dest, self.dest_v = [Signal(intbv(0)[5:]) for i in range(4)]
+        self.rt_in, self.rd_in, self.dest, self.dest_v = [Signal(intbv()[5:]) for _ in range(4)]
         self.dut = ex_mux(self.reg_dst, self.rt_in, self.rd_in, self.dest)
 
     def deassert(self, python=False, verilog=False):
         """Test Deasserted functionality"""
-        for i in range(sf['DEFAULT_TEST_LENGTH']):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = 0
             self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
             self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]

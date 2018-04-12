@@ -75,10 +75,10 @@ class TestIdExRegister(TestCase):
         """test deassert functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH'] / 2):
             self.r_data1.next, self.r_data2.next, self.imm.next = [
-                Signal(random_signed_intbv()) for i in range(3)
+                Signal(random_signed_intbv()) for _ in range(3)
             ]
             self.rs.next, self.rt.next, self.rd.next = [
-                Signal(intbv(randint(0, sf['WIDTH'] - 1))[5:]) for i in range(3)
+                Signal(intbv(randint(0, sf['WIDTH'] - 1))[5:]) for _ in range(3)
             ]
             self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
             # TODO: UPDATE WHEN ALU OP CODES ARE DETERMINED

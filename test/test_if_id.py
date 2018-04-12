@@ -31,6 +31,7 @@ class TestIfIdRegister(TestCase):
                          imm=self.imm)
 
     def getVerilog(self):
+        """Return Verilog design under test"""
         return if_id_v(if_id_write=self.if_id_write,
                        nxt_pc=self.nxt_pc,
                        inst_in=self.inst_in,
@@ -43,6 +44,7 @@ class TestIfIdRegister(TestCase):
                        imm=self.imm_v)
 
     def deassert(self, python=False, verilog=False):
+        """Test when stall line is off (normal op)"""
         self.if_id_write.next = 0
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.nxt_pc.next, self.inst_in.next = rand_unsigned_signal_set(2)
@@ -67,6 +69,7 @@ class TestIfIdRegister(TestCase):
         raise StopSimulation
 
     def asserted(self, python=False, verilog=False):
+        """Test when stall line is on"""
         self.if_id_write.next = 0
         self.nxt_pc.next, self.inst_in.next = rand_unsigned_signal_set(2)
         old_inst = self.inst_in
