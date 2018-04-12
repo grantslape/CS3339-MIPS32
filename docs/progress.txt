@@ -65,4 +65,4 @@ Grant Slape:
         branch_adder DONE 2018-04-11
         branch_unit
         data_mem DONE 2018-04-11
-        mem_wb
+        mem_wb DONE 2018-04-11
