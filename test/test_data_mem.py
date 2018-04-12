@@ -1,7 +1,7 @@
 """Data Memory Unit Tests"""
 import unittest
 from unittest import TestCase
-from myhdl import Simulation, StopSimulation, posedge, Signal
+from myhdl import Simulation, StopSimulation, Signal
 
 from src.python.data_mem import data_mem, data_mem_v
 from src.commons.settings import settings as sf

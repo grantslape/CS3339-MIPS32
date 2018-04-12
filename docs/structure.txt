@@ -3,7 +3,7 @@
 cpu:
 	reg clock: System Clock
 	program_counter: This is a simple module that is always set by pc_mux_a:
-		input clock: system clock
+	 	input clock: system clock
 		input pc_write: 1 to stall (repeat instruction), from hazard_unit.pc_write
 		input [31:0] nxt_inst: next instruction address from pc_mux_b
 		output [31:0] cur_pc: next instruction address goes to inst_mem, pc_mux_c
@@ -186,6 +186,7 @@ cpu:
 		input [31:0] wdata: write data. from ex_mem.rt_out
 		output [31:0] rdata: read data. to mem_wb.rdata_in
 	mem_wb: Memory/Writeback pipeline register
+		input clock: system clock
 		input reg_write_in: activate to write to the regster on rt_in. from ex_mem.reg_write_out
 		input [31:0] rdata_in: read data.  from data_mem
 		input [31:0] result_in: ALU result. from ex_mem.result_out.
