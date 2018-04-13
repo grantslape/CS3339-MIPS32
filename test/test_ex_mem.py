@@ -87,10 +87,11 @@ class TestExMemRegister(TestCase):
     def dynamic(self, python=False, verilog=False):
         """Testing dynamic functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            self.branch_in, self.mem_read_in, self.reg_write_in, self.z_in = randint(0, 1)
-            self.rt_in, self.result_in = random_signed_intbv()
-            self.jmp_addr_in = random_unsigned_intbv()
-            self.reg_dst_in = random_unsigned_intbv(width=5)
+            self.branch_in.next, self.mem_read_in.next, self.reg_write_in.next, \
+                self.z_in.next = randint(0, 1)
+            self.rt_in.next, self.result_in.next = random_signed_intbv()
+            self.jmp_addr_in.next = random_unsigned_intbv()
+            self.reg_dst_in.next = random_unsigned_intbv(width=5)
             yield self.clock.posedge
             yield self.clock.negedge
             if python:
