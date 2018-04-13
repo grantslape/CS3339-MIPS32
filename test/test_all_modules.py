@@ -6,7 +6,7 @@ import unittest
 
 from test import test_fwd_unit, test_shift_unit, test_mux32bit2to1, test_pc_adder, \
     test_mux32bit3to1, test_ex_mux, test_program_counter, test_rfile, test_sign_extender, \
-    test_id_ex, test_id_shift_left, test_branch_adder, test_mem_wb
+    test_id_ex, test_id_shift_left, test_branch_adder, test_mem_wb, test_ex_mem
 #   test_data_mem, test_if_id, test_hazard_unit
 
 MODULES = (test_mux32bit2to1,
@@ -21,7 +21,8 @@ MODULES = (test_mux32bit2to1,
            test_id_ex,
            test_id_shift_left,
            test_branch_adder,
-           test_mem_wb,)
+           test_mem_wb,
+           test_ex_mem,)
 TESTER = unittest.defaultTestLoader
 
 
