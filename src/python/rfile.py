@@ -1,7 +1,8 @@
-import os
+from os import system
 
-from myhdl import always_seq, posedge, negedge, Cosimulation
+from myhdl import always, posedge, negedge, Cosimulation, intbv, always_seq, Signal
 
+from src.commons.settings import settings as sf
 
 def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     """
@@ -17,12 +18,17 @@ def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_
     :param r_data2: data read from regs[r_addr2].  sent to id_ex
     :return: module logic
     """
+    reg_file = [Signal(intbv(0, min=-(2**31), max=2**31-1)) for i in range(sf['WIDTH'])]
+
     @always_seq(clock.negedge, reset=reset)
     def logic():
-        # NOT IMPLEMENTED
-        pass
-    return logic
+        if reg_write == 1:
+            reg_file[w_addr] = w_data
+        r_data1.next = reg_file[r_addr1]
+        r_data2.next = reg_file[r_addr2]
 
+
+    return logic
 
 def rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     """
@@ -38,4 +44,15 @@ def rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, 
     :param r_data2: data read from regs[r_addr2].  sent to id_ex
     :return: module logic
     """
-    return Cosimulation()
+    cmd = "iverilog -o bin/rfile.out src/verilog/rfile.v src/verilog/rfile_tb.v"
+    system(cmd)
+    return Cosimulation("vvp -m ./lib/myhdl.vpi bin/rfile.out",
+                        clock=clock,
+                        reset=reset,
+                        reg_write=reg_write, 
+                        r_addr1=r_addr1, 
+                        r_addr2=r_addr2, 
+                        w_addr=w_addr, 
+                        w_data=w_data, 
+                        r_data1=r_data1, 
+                        r_data2=r_data2)
