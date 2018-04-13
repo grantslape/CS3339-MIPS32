@@ -142,20 +142,20 @@ class TestRfile(TestCase):
         dut_v = self.getVerilog()
         Simulation(CLK, self.dut, dut_v, stim_1).run(quiet=1)
 
-    def estResetPython(self):
+    def testResetPython(self):
         """Test Reset works as expected Python """
         CLK = clock_gen(self.clock)
         stim_1 = self.reset_test(python=True)
         Simulation(CLK, self.dut, stim_1).run(quiet=1)
 
-    def estResetVerilog(self):
+    def testResetVerilog(self):
         """Test Reset works as expected Verilog """
         CLK = clock_gen(self.clock)
         stim_1 = self.reset_test(verilog=True)
         dut_v = self.getVerilog()
         Simulation(CLK, dut_v, stim_1).run(quiet=1)
 
-    def estResetTogether(self):
+    def testResetTogether(self):
         """Test Reset works as expected Together """
         CLK = clock_gen(self.clock)
         stim_1 = self.reset_test(python=True, verilog=True)
