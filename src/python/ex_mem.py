@@ -7,6 +7,7 @@ from myhdl import always, Cosimulation
 def ex_mem(**kwargs):
     """
     EX/MEM Pipeline register
+    :param clock: system clock
     :param branch_in: branch ctrl signal from id_ex.branch_out
     :param mem_read_in: mem_read ctrl signal. from id_ex.mem_read_out
     :param mem_write_in: mem_write ctrl signal. from id_ex.mem_write_out
@@ -24,6 +25,7 @@ def ex_mem(**kwargs):
     :param mem_read_out: mem_read ctrl signal to data_mem.read_ctrl
     :param mem_write_out: mem_write ctrl signal to data_mem.w_ctrl
     :param reg_write_out: reg_write ctrl signal to mem_wb.reg_write_in
+    :param reg_dst_out: Destination Register for write back to mem_wb
     :return:
     """
     def logic():
