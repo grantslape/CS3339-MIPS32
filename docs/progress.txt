@@ -60,8 +60,8 @@ Grant Slape:
         ex_mux DONE 2018-04-03
         inst_mem
         inst_mem_mux DONE 2018-04-07 under 2:1
-        ex_mem
+        ex_mem DONE 2018-04-13
         branch_adder DONE 2018-04-11
-        branch_unit
+        branch_unit DONE 2018-04-13
         data_mem DONE 2018-04-11
         mem_wb DONE 2018-04-11
