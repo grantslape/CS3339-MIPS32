@@ -18,17 +18,20 @@ def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_
     :param r_data2: data read from regs[r_addr2].  sent to id_ex
     :return: module logic
     """
-    reg_file = [Signal(intbv(0, min=-(2**31), max=2**31-1)) for i in range(sf['WIDTH'])]
+    reg_file = [Signal(intbv(0, min=-(2**31), max=2**31-1)) for _ in range(sf['WIDTH'])]
 
     @always_seq(clock.negedge, reset=reset)
-    def logic():
-        if reg_write == 1:
-            reg_file[w_addr] = w_data
+    def read_logic():
         r_data1.next = reg_file[r_addr1]
         r_data2.next = reg_file[r_addr2]
 
+    @always_seq(clock.posedge, reset=reset)
+    def write_logic():
+        if reg_write == 1:
+            reg_file[w_addr].next = w_data
 
-    return logic
+    return read_logic, write_logic
+
 
 def rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     """

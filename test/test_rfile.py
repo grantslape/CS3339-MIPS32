@@ -47,7 +47,7 @@ class TestRfile(TestCase):
     def write_test(self, python=False, verilog=False):
         """Stim for testing write and single-register read tests"""
         register = randint(0, 31)
-        value = random_signed_intbv()
+        value = Signal(random_signed_intbv())
         prev_reg = register
         prev_data = value
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
@@ -56,11 +56,11 @@ class TestRfile(TestCase):
             self.reg_write.next = 1
             self.r_addr1.next = register
             self.r_addr2.next = prev_reg
+            # yield self.clock.posedge
             yield self.clock.negedge
             self.reg_write.next = 0
-            yield self.clock.posedge
+            yield self.clock.negedge
             if python:
-                print "python: register: {}, prev_reg: {}".format(register, prev_reg)
                 self.assertEqual(self.r_data1, value)
                 self.assertEqual(self.r_data2, prev_data)
             if verilog:
@@ -71,7 +71,7 @@ class TestRfile(TestCase):
             while register == prev_reg:
                 register = randint(0, 31)
             while value == prev_data:
-                value = random_signed_intbv()
+                value = Signal(random_signed_intbv())
         raise StopSimulation
 
     def reset_test(self, python=False, verilog=False):
@@ -108,7 +108,6 @@ class TestRfile(TestCase):
             count = count + 1
             yield self.clock.negedge
             self.reg_write.next = 0
-            yield self.clock.posedge
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.r_addr1.next = random_unsigned_intbv(width=5)
             self.r_addr2.next = random_unsigned_intbv(width=5)
@@ -126,7 +125,6 @@ class TestRfile(TestCase):
         CLK = clock_gen(self.clock)
         stim_1 = self.write_test(python=True)
         Simulation(CLK, self.dut, stim_1).run(quiet=1)
-        print ""
 
     def testRfileWriteVerilog(self):
         """Test rfile writes correctly and reads back Verilog """
@@ -135,7 +133,7 @@ class TestRfile(TestCase):
         dut_v = self.getVerilog()
         Simulation(CLK, dut_v, stim_1).run(quiet=1)
 
-    def estRfileWriteTogether(self):
+    def testRfileWriteTogether(self):
         """Test rfile writes correctly and reads back together """
         CLK = clock_gen(self.clock)
         stim_1 = self.write_test(python=True, verilog=True)
@@ -162,23 +160,23 @@ class TestRfile(TestCase):
         dut_v = self.getVerilog()
         Simulation(CLK, self.dut, dut_v, stim_1).run(quiet=1)
 
-    def estSimultaneousReadPython(self):
+    def testSimultaneousReadPython(self):
         """Test correct values are read from register Python"""
         CLK = clock_gen(self.clock)
         stim = self.simultaneous_read_test(python=True)
         Simulation(CLK, stim, self.dut).run(quiet=1)
 
-    def estSimultaneousReadVerilog(self):
+    def testSimultaneousReadVerilog(self):
         """Test correct values are read from register Verilog"""
         CLK = clock_gen(self.clock)
-        stim = self.read_test(verilog=True)
+        stim = self.simultaneous_read_test(verilog=True)
         dut_v = self.getVerilog()
         Simulation(CLK, stim, dut_v).run(quiet=1)
 
-    def estSimultaneousReadTogether(self):
+    def testSimultaneousReadTogether(self):
         """Test correct values are read from register together"""
         CLK = clock_gen(self.clock)
-        stim = self.read_test(python=True, verilog=True)
+        stim = self.simultaneous_read_test(python=True, verilog=True)
         dut_v = self.getVerilog()
         Simulation(CLK, stim, self.dut, dut_v).run(quiet=1)
 
