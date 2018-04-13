@@ -10,17 +10,16 @@ from src.commons.signal_generator import unsigned_signal_set, random_unsigned_in
     random_signed_intbv, unsigned_intbv, signed_signal_set
 
 
-@unittest.skip("Data memory not implemented")
 class TestDataMem(TestCase):
     """test data memory"""
     def setUp(self):
-        self.clock, self.read_ctrl, self.w_ctrl = unsigned_signal_set(3, width=1)
-        self.mem_addr = Signal(unsigned_intbv())
+        self.clock, self.read_ctrl, self.write_ctrl = unsigned_signal_set(3, width=1)
+        self.mem_addr = Signal(unsigned_intbv(width=sf['MEMORY_WIDTH']))
         self.rdata, self.rdata_v, self.wdata = signed_signal_set(3)
         self.dut = data_mem(clk=self.clock,
-                            address=self.read_ctrl,
-                            write_wire=self.w_ctrl,
-                            read_wire=self.mem_addr,
+                            address=self.mem_addr,
+                            write_wire=self.write_ctrl,
+                            read_wire=self.read_ctrl,
                             write_data=self.wdata,
                             read_data=self.rdata)
 
@@ -30,7 +29,7 @@ class TestDataMem(TestCase):
         """
         return data_mem_v(clk=self.clock,
                           read_wire=self.read_ctrl,
-                          write_wire=self.w_ctrl,
+                          write_wire=self.write_ctrl,
                           address=self.mem_addr,
                           write_data=self.wdata,
                           read_data=self.rdata_v)
@@ -40,15 +39,16 @@ class TestDataMem(TestCase):
         """test read/write functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.read_ctrl.next = 0
-            self.w_ctrl.next = 1
+            self.write_ctrl.next = 1
             expected_data = random_signed_intbv()
             self.mem_addr.next = random_unsigned_intbv(width=sf['MEMORY_WIDTH'])
             self.wdata.next = expected_data
             yield self.clock.posedge
             self.read_ctrl.next = 1
-            self.w_ctrl.next = 0
+            self.write_ctrl.next = 0
             yield self.clock.posedge
             yield self.clock.negedge
+
             if python:
                 self.assertEqual(bin(expected_data), bin(self.rdata))
             if verilog:
