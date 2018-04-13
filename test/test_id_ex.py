@@ -34,7 +34,7 @@ class TestIdExRegister(TestCase):
         if which == "python":
             module = id_ex(**self.get_args())
         else:
-            module = id_ex_v(**self.get_args())
+            module = id_ex_v(**self.get_args(which="verilog"))
         return module
 
     def get_args(self, which="python"):
@@ -74,40 +74,40 @@ class TestIdExRegister(TestCase):
     def deassert(self, python=False, verilog=False):
         """test deassert functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH'] / 2):
-            self.r_data1.next, self.r_data2.next, self.imm.next = [
-                Signal(random_signed_intbv()) for _ in range(3)
-            ]
-            self.rs.next, self.rt.next, self.rd.next = [
-                Signal(intbv(randint(0, sf['WIDTH'] - 1))[5:]) for _ in range(3)
-            ]
-            self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
-            # TODO: UPDATE WHEN ALU OP CODES ARE DETERMINED
-            self.alu_op_in = Signal(intbv())
-            yield self.clock.posedge
-            self.branch_in.next, \
-                self.mem_read_in.next, \
-                self.mem_to_reg_in.next, \
-                self.mem_write_in.next, \
-                self.reg_write_in.next, \
-                self.reg_dst_in.next = [0 for _ in range(6)]
             yield self.clock.posedge
             yield self.clock.negedge
             if python:
                 self.assertEqual(bin(self.branch_out), 0b0)
-                self.assertEqual(0b0, bin(self.mem_read_out))
-                self.assertEqual(0b0, bin(self.mem_to_reg_out))
-                self.assertEqual(0b0, bin(self.mem_write_out))
-                self.assertEqual(0b0, bin(self.alu_src_out))
-                self.assertEqual(0b0, bin(self.reg_write_out))
-                self.assertEqual(0b0, bin(self.reg_dst_out))
+                self.assertEqual(bin(0b0), bin(self.mem_read_out))
+                self.assertEqual(bin(0b0), bin(self.mem_to_reg_out))
+                self.assertEqual(bin(0b0), bin(self.mem_write_out))
+                self.assertEqual(bin(0b0), bin(self.alu_src_out))
+                self.assertEqual(bin(0b0), bin(self.reg_write_out))
+                self.assertEqual(bin(0b0), bin(self.reg_dst_out))
+                self.assertEqual(bin(0b0), bin(self.alu_op_out))
+                self.assertEqual(bin(0b0), bin(self.pc_value_out))
+                self.assertEqual(bin(0b0), bin(self.r_data1_out))
+                self.assertEqual(bin(0b0), bin(self.r_data2_out))
+                self.assertEqual(bin(0b0), bin(self.imm_out))
+                self.assertEqual(bin(0b0), bin(self.rs_out))
+                self.assertEqual(bin(0b0), bin(self.rt_out))
+                self.assertEqual(bin(0b0), bin(self.rd_out))
             if verilog:
                 self.assertEqual(bin(self.branch_out_v), 0b0)
-                self.assertEqual(0b0, bin(self.mem_read_out_v))
-                self.assertEqual(0b0, bin(self.mem_to_reg_out_v))
-                self.assertEqual(0b0, bin(self.mem_write_out_v))
-                self.assertEqual(0b0, bin(self.alu_src_out_v))
-                self.assertEqual(0b0, bin(self.reg_write_out_v))
-                self.assertEqual(0b0, bin(self.reg_dst_out_v))
+                self.assertEqual(bin(0b0), bin(self.mem_read_out_v))
+                self.assertEqual(bin(0b0), bin(self.mem_to_reg_out_v))
+                self.assertEqual(bin(0b0), bin(self.mem_write_out_v))
+                self.assertEqual(bin(0b0), bin(self.alu_src_out_v))
+                self.assertEqual(bin(0b0), bin(self.reg_write_out_v))
+                self.assertEqual(bin(0b0), bin(self.reg_dst_out_v))
+                self.assertEqual(bin(0b0), bin(self.alu_op_out_v))
+                self.assertEqual(bin(0b0), bin(self.pc_value_out_v))
+                self.assertEqual(bin(0b0), bin(self.r_data1_out_v))
+                self.assertEqual(bin(0b0), bin(self.r_data2_out_v))
+                self.assertEqual(bin(0b0), bin(self.imm_out_v))
+                self.assertEqual(bin(0b0), bin(self.rs_out_v))
+                self.assertEqual(bin(0b0), bin(self.rt_out_v))
+                self.assertEqual(bin(0b0), bin(self.rd_out_v))
         raise StopSimulation
 
 # TODO: test signals pass through correctly
@@ -126,8 +126,8 @@ class TestIdExRegister(TestCase):
             self.rs.next, self.rt.next, self.rd.next = [
                 Signal(intbv(randint(0, sf['WIDTH'] - 1))[5:]) for _ in range(3)
             ]
-            yield posedge(self.clock)
-            # possibly yield another pos or neg edge
+            yield self.clock.posedge
+            yield self.clock.negedge
             if python:
                 self.assertEqual(bin(self.branch_out), bin(self.branch_in))
                 self.assertEqual(bin(self.mem_read_in), bin(self.mem_read_out))
@@ -136,6 +136,14 @@ class TestIdExRegister(TestCase):
                 self.assertEqual(bin(self.alu_src_in), bin(self.alu_src_out))
                 self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out))
                 self.assertEqual(bin(self.reg_dst_in), bin(self.reg_dst_out))
+                self.assertEqual(bin(self.alu_op_in), bin(self.alu_op_out))
+                self.assertEqual(bin(self.pc_value_in), bin(self.pc_value_out))
+                self.assertEqual(bin(self.r_data1), bin(self.r_data1_out))
+                self.assertEqual(bin(self.r_data2), bin(self.r_data2_out))
+                self.assertEqual(bin(self.imm), bin(self.imm_out))
+                self.assertEqual(bin(self.rs), bin(self.rs_out))
+                self.assertEqual(bin(self.rt), bin(self.rt_out))
+                self.assertEqual(bin(self.rd), bin(self.rd_out))
             if verilog:
                 self.assertEqual(bin(self.branch_out_v), bin(self.branch_in))
                 self.assertEqual(bin(self.mem_read_in), bin(self.mem_read_out_v))
@@ -144,6 +152,14 @@ class TestIdExRegister(TestCase):
                 self.assertEqual(bin(self.alu_src_in), bin(self.alu_src_out_v))
                 self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out_v))
                 self.assertEqual(bin(self.reg_dst_in), bin(self.reg_dst_out_v))
+                self.assertEqual(bin(self.alu_op_in), bin(self.alu_op_out_v))
+                self.assertEqual(bin(self.pc_value_in), bin(self.pc_value_out_v))
+                self.assertEqual(bin(self.r_data1), bin(self.r_data1_out_v))
+                self.assertEqual(bin(self.r_data2), bin(self.r_data2_out_v))
+                self.assertEqual(bin(self.imm), bin(self.imm_out_v))
+                self.assertEqual(bin(self.rs), bin(self.rs_out_v))
+                self.assertEqual(bin(self.rt), bin(self.rt_out_v))
+                self.assertEqual(bin(self.rd), bin(self.rd_out_v))
         raise StopSimulation
 
     def testDeassertPython(self):
