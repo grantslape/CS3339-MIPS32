@@ -22,6 +22,7 @@ MODULES = (test_mux32bit2to1,
            test_id_shift_left,
            test_branch_adder,
            test_mem_wb,)
+
 TESTER = unittest.defaultTestLoader
 
 
