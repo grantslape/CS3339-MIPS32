@@ -2,11 +2,12 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import Simulation, StopSimulation, intbv, Signal, posedge
+from myhdl import Simulation, StopSimulation
 
 from src.python.id_ex import id_ex, id_ex_v
 from src.commons.clock import clock_gen
-from src.commons.signal_generator import unsigned_signal_set, signed_signal_set, random_signed_intbv
+from src.commons.signal_generator import unsigned_signal_set, signed_signal_set, \
+    random_signed_intbv, random_unsigned_intbv
 from src.commons.settings import settings as sf
 
 
@@ -22,7 +23,7 @@ class TestExMemRegister(TestCase):
         self.rt_in, self.result_in,  self.rt_out, self.rt_out_v, self.result_out, \
             self.result_out_v = signed_signal_set(6)
         self.jmp_addr_in, self.jmp_addr_out, self.jmp_addr_out_v = unsigned_signal_set(3)
-        self.reg_dst, self.reg_dst_out, self.reg_dst_out_v = unsigned_signal_set(3, width=5)
+        self.reg_dst_in, self.reg_dst_out, self.reg_dst_out_v = unsigned_signal_set(3, width=5)
 
     def get_module(self, which="python"):
         """Return module under test"""
@@ -44,7 +45,7 @@ class TestExMemRegister(TestCase):
             'z_in': self.z_in,
             'result_in': self.result_in,
             'rt_in': self.rt_in,
-            'reg_dst': self.reg_dst,
+            'reg_dst': self.reg_dst_in,
             'jmp_addr_out': self.jmp_addr_out_v if verilog else self.jmp_addr_out,
             'z_out': self.z_out_v if verilog else self.z_out,
             'result_out': self.result_out_v if verilog else self.result_out,
@@ -70,3 +71,94 @@ class TestExMemRegister(TestCase):
                 self.assertEqual(bin(0), bin(self.mem_read_out))
                 self.assertEqual(bin(0), bin(self.mem_write_out))
                 self.assertEqual(bin(0), bin(self.reg_write_out))
+                self.assertEqual(bin(0), bin(self.reg_dst_out))
+            if verilog:
+                self.assertEqual(bin(0), bin(self.jmp_addr_out_v))
+                self.assertEqual(bin(0), bin(self.z_out_v))
+                self.assertEqual(bin(0), bin(self.result_out_v))
+                self.assertEqual(bin(0), bin(self.rt_out_v))
+                self.assertEqual(bin(0), bin(self.branch_out_v))
+                self.assertEqual(bin(0), bin(self.mem_read_out_v))
+                self.assertEqual(bin(0), bin(self.mem_write_out_v))
+                self.assertEqual(bin(0), bin(self.reg_write_out_v))
+                self.assertEqual(bin(0), bin(self.reg_dst_out_v))
+        raise StopSimulation
+
+    def dynamic(self, python=False, verilog=False):
+        """Testing dynamic functionality"""
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
+            self.branch_in, self.mem_read_in, self.reg_write_in, self.z_in = randint(0, 1)
+            self.rt_in, self.result_in = random_signed_intbv()
+            self.jmp_addr_in = random_unsigned_intbv()
+            self.reg_dst_in = random_unsigned_intbv(width=5)
+            yield self.clock.posedge
+            yield self.clock.negedge
+            if python:
+                self.assertEqual(bin(self.jmp_addr_in), bin(self.jmp_addr_out))
+                self.assertEqual(bin(self.z_in), bin(self.z_out))
+                self.assertEqual(bin(self.result_in), bin(self.result_out))
+                self.assertEqual(bin(self.rt_in), bin(self.rt_out))
+                self.assertEqual(bin(self.branch_in), bin(self.branch_out))
+                self.assertEqual(bin(self.mem_read_in), bin(self.mem_read_out))
+                self.assertEqual(bin(self.mem_write_in), bin(self.mem_write_out))
+                self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out))
+                self.assertEqual(bin(self.reg_dst_in), bin(self.reg_dst_out))
+            if verilog:
+                self.assertEqual(bin(self.jmp_addr_in), bin(self.jmp_addr_out_v))
+                self.assertEqual(bin(self.z_in), bin(self.z_out_v))
+                self.assertEqual(bin(self.result_in), bin(self.result_out_v))
+                self.assertEqual(bin(self.rt_in), bin(self.rt_out_v))
+                self.assertEqual(bin(self.branch_in), bin(self.branch_out_v))
+                self.assertEqual(bin(self.mem_read_in), bin(self.mem_read_out_v))
+                self.assertEqual(bin(self.mem_write_in), bin(self.mem_write_out_v))
+                self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out_v))
+                self.assertEqual(bin(self.reg_dst_in), bin(self.reg_dst_out_v))
+        raise StopSimulation
+
+    def testDeassertPython(self):
+        """Check when there is no input Python"""
+        clk = clock_gen(self.clock)
+        dut = self.get_module()
+        stim = self.deassert(python=True)
+        Simulation(clk, dut, stim).run(quiet=1)
+
+    def testDeassertVerilog(self):
+        """Check when there is no input Verilog"""
+        clk = clock_gen(self.clock)
+        dut = self.get_module(which="verilog")
+        stim = self.deassert(verilog=True)
+        Simulation(clk, dut, stim).run(quiet=1)
+
+    def testDeassertTogether(self):
+        """Check when there is no input Together"""
+        clk = clock_gen(self.clock)
+        dut = self.get_module()
+        dut_v = self.get_module(which="verilog")
+        stim = self.deassert(python=True, verilog=True)
+        Simulation(clk, dut, dut_v, stim).run(quiet=1)
+
+    def testDynamicPython(self):
+        """Check normal operation Python"""
+        clk = clock_gen(self.clock)
+        dut = self.get_module()
+        stim = self.dynamic(python=True)
+        Simulation(clk, dut, stim).run(quiet=1)
+
+    def testDynamicVerilog(self):
+        """Check normal operation Verilog"""
+        clk = clock_gen(self.clock)
+        dut = self.get_module(which="verilog")
+        stim = self.dynamic(verilog=True)
+        Simulation(clk, dut, stim).run(quiet=1)
+
+    def testDynamicTogether(self):
+        """Check normal operation Together"""
+        clk = clock_gen(self.clock)
+        dut = self.get_module()
+        dut_v = self.get_module(which="verilog")
+        stim = self.dynamic(python=True, verilog=True)
+        Simulation(clk, dut, dut_v, stim).run(quiet=1)
+
+
+if __name__ == '__main__':
+    unittest.main()
