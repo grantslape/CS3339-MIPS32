@@ -158,6 +158,7 @@ cpu:
 		input [31:0] imm_in: 32 bit immediate from shift_unit
 		output [31:0] addr_out: 32 bit jump address. to ex_mem
 	ex_mem: Execution / Memory Pipeline register.
+		input clock: system clock
 		input branch_in: branch ctrl signal from id_ex.branch_out
 		input mem_read_in: mem_read ctrl signal. from id_ex.mem_read_out
 		input mem_write_in: mem_write ctrl signal. from id_ex.mem_write_out
@@ -165,7 +166,7 @@ cpu:
 		input [31:0] jmp_addr: jump address.  from branch_adder.addr_out
 		input z_in: zero flag.  from alu.
 		input [31:0] result_in: result input. from ALU
-		input [31:0] rt_in: special rt input, for sw. from alu_mux_b
+		input [31:0] rt_in: special rt input, for sw. from alu_mux_b.output
 		input [4:0] reg_dst: destination reg address. from ex_mux
 		output  [31:0] jmp_addr_out: jump address. to pc_mux_a
 		output z_out: zero flag. to branch_unit
