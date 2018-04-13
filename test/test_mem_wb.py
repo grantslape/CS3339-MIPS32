@@ -2,7 +2,7 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import StopSimulation, Simulation
+from myhdl import StopSimulation, Simulation, ResetSignal
 from src.commons.clock import clock_gen
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import unsigned_signal_set, signed_signal_set, \
@@ -10,36 +10,40 @@ from src.commons.signal_generator import unsigned_signal_set, signed_signal_set,
 from src.python.mem_wb import mem_wb, mem_wb_v
 
 
-@unittest.skip('MEM/WB Register not implemented')
 class TestMemWb(TestCase):
     """Test MEM/WB Pipeline register"""
     def setUp(self):
-        self.clock, self.reg_write_in, self.reg_write_out, self.reg_write_out_v = \
-            unsigned_signal_set(4, width=1)
+        self.clock, self.reset, self.reg_write_in, self.reg_write_out, self.reg_write_out_v, \
+            self.mux_ctl_in, self.mux_ctl_out = unsigned_signal_set(7, width=1)
         self.rdata_in, self.result_in, self.rdata_out, self.rdata_out_v, self.result_out, \
             self.result_out_v = signed_signal_set(6)
         self.rt_in, self.rt_out, self.rt_out_v = unsigned_signal_set(3, width=5)
-        self.dut = mem_wb(clock=self.clock,
-                          reg_write_in=self.reg_write_in,
-                          rdata_in=self.rdata_in,
-                          result_in=self.result_in,
-                          rt_in=self.rt_in,
-                          rdata_out=self.rdata_out,
-                          result_out=self.result_out,
-                          rt_out=self.rt_out,
-                          reg_write_out=self.reg_write_out)
+        self.dut = mem_wb(self.clock, self.reset,
+                          w_reg_ctl_in=self.reg_write_in,
+                          mem_data_in=self.rdata_in,
+                          alu_result_in=self.result_in,
+                          w_reg_addr_in=self.rt_in,
+                          mem_data_out=self.rdata_out,
+                          alu_result_out=self.result_out,
+                          w_reg_addr_out=self.rt_out,
+                          w_reg_ctl_out=self.reg_write_out,
+                          mux_ctl_in=self.mux_ctl_in,
+                          mux_ctl_out=self.mux_ctl_out)
 
     def getVerilog(self):
         """Return verilog design under test"""
-        return mem_wb_v(clock=self.clock,
-                        reg_write_in=self.reg_write_in,
-                        rdata_in=self.rdata_in,
-                        result_in=self.result_in,
-                        rt_in=self.rt_in,
-                        rdata_out=self.rdata_out_v,
-                        result_out=self.result_out_v,
-                        rt_out=self.rt_out_v,
-                        reg_write_out=self.reg_write_out_v)
+        return mem_wb_v(self.clock, self.reset,
+                        w_reg_ctl_in=self.reg_write_in,
+                        mem_data_in=self.rdata_in,
+                        alu_result_in=self.result_in,
+                        w_reg_addr_in=self.rt_in,
+                        mem_data_out=self.rdata_out_v,
+                        alu_result_out=self.result_out_v,
+                        w_reg_addr_out=self.rt_out_v,
+                        w_reg_ctl_out=self.reg_write_out_v,
+                        mux_ctl_in=self.mux_ctl_in,
+                        mux_ctl_out=self.mux_ctl_out)
+
 
     def hold_zero(self, python=False, verilog=False):
         """Test when inputs are held zero"""
