@@ -96,30 +96,6 @@ class TestRfile(TestCase):
                 self.assertEqual(self.r_data2_v, intbv(0))
         raise StopSimulation
 
-    def simultaneous_read_test(self, python=False, verilog=False):
-        """Stim to test simultaneously reading both registers """
-        count = 0
-        expected = [random_signed_intbv() for i in range(sf['WIDTH'])]
-        self.reg_write.next = 1
-        self.w_addr.next = unsigned_intbv(width=5)
-        for value in expected:
-            self.w_addr.next = count
-            self.w_data.next = value
-            count = count + 1
-            yield self.clock.negedge
-            self.reg_write.next = 0
-        for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            self.r_addr1.next = random_unsigned_intbv(width=5)
-            self.r_addr2.next = random_unsigned_intbv(width=5)
-            yield self.clock.negedge
-            if python:
-                self.assertEqual(bin(self.r_data1), bin(expected[self.r_addr1]))
-                self.assertEqual(bin(self.r_data2), bin(expected[self.r_addr2]))
-            if verilog:
-                self.assertEqual(bin(self.r_data1_v), bin(expected[self.r_addr1]))
-                self.assertEqual(bin(self.r_data2_v), bin(expected[self.r_addr2]))
-        raise StopSimulation
-
     def testRfileWritePython(self):
         """Test rfile writes correctly and reads back Python """
         CLK = clock_gen(self.clock)
@@ -159,26 +135,6 @@ class TestRfile(TestCase):
         stim_1 = self.reset_test(python=True, verilog=True)
         dut_v = self.getVerilog()
         Simulation(CLK, self.dut, dut_v, stim_1).run(quiet=1)
-
-    def testSimultaneousReadPython(self):
-        """Test correct values are read from register Python"""
-        CLK = clock_gen(self.clock)
-        stim = self.simultaneous_read_test(python=True)
-        Simulation(CLK, stim, self.dut).run(quiet=1)
-
-    def testSimultaneousReadVerilog(self):
-        """Test correct values are read from register Verilog"""
-        CLK = clock_gen(self.clock)
-        stim = self.simultaneous_read_test(verilog=True)
-        dut_v = self.getVerilog()
-        Simulation(CLK, stim, dut_v).run(quiet=1)
-
-    def testSimultaneousReadTogether(self):
-        """Test correct values are read from register together"""
-        CLK = clock_gen(self.clock)
-        stim = self.simultaneous_read_test(python=True, verilog=True)
-        dut_v = self.getVerilog()
-        Simulation(CLK, stim, self.dut, dut_v).run(quiet=1)
 
 
 if __name__ == '__main__':
