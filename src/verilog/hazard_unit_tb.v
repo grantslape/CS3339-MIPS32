@@ -1,8 +1,8 @@
 module tb_hazard_unit;
 
-reg [3:0] if_id_rs;
-reg [3:0] if_id_rt;
-reg [3:0] id_ex_rt;
+reg [4:0] if_id_rs;
+reg [4:0] if_id_rt;
+reg [4:0] id_ex_rt;
 reg mem_read;
 wire pc_write;
 wire if_id_write;

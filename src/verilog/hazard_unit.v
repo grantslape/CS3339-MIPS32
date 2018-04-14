@@ -24,9 +24,9 @@ module hazard_unit (
 // :param ex_stall: Insert bubble into pipeline by setting ctrl signals to 0. to ctrl_mux
 // :return: generator logic
 
-input [3:0] if_id_rs;
-input [3:0] if_id_rt;
-input [3:0] id_ex_rt;
+input [4:0] if_id_rs;
+input [4:0] if_id_rt;
+input [4:0] id_ex_rt;
 input mem_read;
 output pc_write;
 reg pc_write;
