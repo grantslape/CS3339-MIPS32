@@ -43,8 +43,6 @@ class TestHazardUnit(TestCase):
                 self.if_id_rt.next = random_unsigned_intbv(width=5)
             while self.id_ex_rt.next == self.if_id_rs.next:
                 self.if_id_rs.next = random_unsigned_intbv(width=5)
-            while self.id_ex_rt == self.if_id_rt or self.id_ex_rt == self.if_id_rs:
-                self.if_id_rt.next, self.if_id_rs.next = rand_unsigned_signal_set(2, width=5)
             yield half_period()
             if python:
                 self.assertNotEquals(bin(self.id_ex_rt), bin(self.if_id_rt))
@@ -68,7 +66,8 @@ class TestHazardUnit(TestCase):
             self.mem_read.next = randint(0, 1)
             yield half_period()
             if self.mem_read == 1:
-                if self.id_ex_rt == self.if_id_rs or self.id_ex_rt == self.if_id_rt:
+                if self.id_ex_rt.next == self.if_id_rs.next or \
+                        self.id_ex_rt.next == self.if_id_rt.next:
                     if python:
                         self.assertEqual(bin(1), bin(self.pc_write))
                         self.assertEqual(bin(1), bin(self.if_id_write))
