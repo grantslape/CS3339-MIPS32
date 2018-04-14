@@ -33,7 +33,7 @@ reg signed [31:0] mem_array [0:1048576];
 
 //load the buffer with data from the memory file
 initial
-  $readmemb("memory_file", mem_array);
+  $readmemb("lib/memory_file", mem_array);
 
 always @(posedge clk)
 begin

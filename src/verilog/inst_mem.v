@@ -11,19 +11,16 @@ module inst_mem(
 // :return: inst_out: instruction output to inst_mem_mux
 
 input [31:0] inst_reg;
-reg [31:0] reg_inst_reg; //address to raw_mem array
-output [31:0] inst_out;
-reg [31:0] inst_out; 
+output reg [31:0] inst_out;
 
-reg [31:0] raw_mem [0:1000];
+reg [31:0] raw_mem [0:1048576];
 
 //load the buffer with data from the .bin file
 initial
-    $readmemb("instructions.bin", raw_mem);
+    $readmemb("lib/instructions", raw_mem);
 
 always @(inst_reg)
     begin
-        reg_inst_reg = inst_reg;
-        inst_out = raw_mem[reg_inst_reg];
+        inst_out <= raw_mem[inst_reg];
     end
 endmodule

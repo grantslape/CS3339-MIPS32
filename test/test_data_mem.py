@@ -10,7 +10,7 @@ from src.commons.signal_generator import unsigned_signal_set, random_unsigned_in
     random_signed_intbv, unsigned_intbv, signed_signal_set
 
 
-class TestDataMem(TestCase):
+class TestDataMemory(TestCase):
     """test data memory"""
     def setUp(self):
         self.clock, self.read_ctrl, self.write_ctrl = unsigned_signal_set(3, width=1)
