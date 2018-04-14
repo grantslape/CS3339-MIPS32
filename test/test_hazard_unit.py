@@ -9,7 +9,7 @@ from src.commons.signal_generator import unsigned_signal_set, random_unsigned_in
 from src.commons.settings import settings as sf
 
 
-@unittest.skip("Hazard unit not implemented yet")
+# @unittest.skip("Hazard unit not implemented yet")
 class TestHazardUnit(TestCase):
     """Test Hazard Unit functionality"""
     def setUp(self):
