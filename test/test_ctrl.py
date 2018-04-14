@@ -48,6 +48,8 @@ class TestControlUnit(TestCase):
         }
 
     def deassert(self):
+        """Test deasserted functionality"""
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
 
 
 if __name__ == '__main__':
