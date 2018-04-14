@@ -1,7 +1,7 @@
 """Control Unit Module Unit Tests"""
 import unittest
 from unittest import TestCase
-from myhdl import Simulation, StopSimulation, ResetSignal
+from myhdl import Simulation, StopSimulation, ResetSignal, intbv
 
 from src.python.ctrl import ctrl, ctrl_v
 from src.commons.clock import half_period
@@ -61,6 +61,59 @@ class TestControlUnit(TestCase):
                 self.assertEqual(bin(0), bin(self.reg_dst))
                 self.assertEqual(bin(0), bin(self.alu_op))
                 self.assertEqual(self.reset_out, sf['INACTIVE_HIGH'])
+            if verilog:
+                self.assertEqual(bin(0), bin(self.branch_v))
+                self.assertEqual(bin(0), bin(self.mem_read_v))
+                self.assertEqual(bin(0), bin(self.mem_to_reg_v))
+                self.assertEqual(bin(0), bin(self.mem_write_v))
+                self.assertEqual(bin(0), bin(self.alu_src_v))
+                self.assertEqual(bin(0), bin(self.reg_write_v))
+                self.assertEqual(bin(0), bin(self.reg_dst_v))
+                self.assertEqual(bin(0), bin(self.alu_op_v))
+                self.assertEqual(self.reset_out_v, sf['INACTIVE_HIGH'])
+        raise StopSimulation
+
+    def test_mem_inst(self, python=False, verilog=False):
+        """Test LW and SW instructions"""
+        self.op_in.next = intbv(35)[5:]
+        yield half_period()
+        if python:
+            self.assertEqual(0, self.jump)
+            self.assertEqual(0, self.branch)
+
+
+    def branch_test(self, python=False, verilog=False):
+        """Test branch instructions"""
+
+    def jump_test(self, python=False, verilog=False):
+        """Test jump style instructions"""
+
+    def add_test(self, python=False, verilog=False):
+        """Test R style addition"""
+
+    def sub_test(self, python=False, verilog=False):
+        """Test R style subtraction"""
+
+    def xor_test(self, python=False, verilog=False):
+        """Test R style xor"""
+
+    def or_test(self, python=False, verilog=False):
+        """Test R style or"""
+
+    def and_test(self, python=False, verilog=False):
+        """Test R style and"""
+
+    def sll_test(self, python=False, verilog=False):
+        """Test R style shift left logical"""
+
+    def srl_test(self, python=False, verilog=False):
+        """Test R style shift right logical"""
+
+    def nor_test(self, python=False, verilog=False):
+        """Test R style not or"""
+
+    def slt_test(self, python=False, verilog=False):
+        """Test R style slt"""
 
 
 if __name__ == '__main__':
