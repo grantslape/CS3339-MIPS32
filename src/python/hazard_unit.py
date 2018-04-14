@@ -20,7 +20,11 @@ def hazard_unit(if_id_rs, if_id_rt, id_ex_rt, mem_read, pc_write, if_id_write, e
     @always_comb
     def logic():
         if(mem_read):
-            if((id_ex_rt == if_id_rs) or (id_ex_rt == if_id_rt)):
+            if(id_ex_rt == if_id_rs):
+                pc_write.next = 1
+                if_id_write.next = 1
+                ex_stall.next = 1
+            if(id_ex_rt == if_id_rt):
                 pc_write.next = 1
                 if_id_write.next = 1
                 ex_stall.next = 1
