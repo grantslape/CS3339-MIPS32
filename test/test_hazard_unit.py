@@ -67,7 +67,7 @@ class TestHazardUnit(TestCase):
             yield half_period()
             if self.mem_read == 1:
                 if self.id_ex_rt.next == self.if_id_rs.next or \
-                        self.id_ex_rt.next == self.if_id_rt.next:
++                        self.id_ex_rt.next == self.if_id_rt.next:
                     if python:
                         self.assertEqual(bin(1), bin(self.pc_write))
                         self.assertEqual(bin(1), bin(self.if_id_write))
