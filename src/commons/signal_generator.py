@@ -20,7 +20,7 @@ def signed_intbv_set(j, value=0):
     :param value: initial value of all
     :return: list of j intbv's
     """
-    return [signed_intbv(value) for i in range(j)]
+    return [signed_intbv(value) for _ in range(j)]
 
 
 def random_signed_intbv():
@@ -45,7 +45,7 @@ def unsigned_intbv_set(j, value=0):
     :param value: initial value
     :return: list of j intbvs
     """
-    return [unsigned_intbv(value) for i in range(j)]
+    return [unsigned_intbv(value) for _ in range(j)]
 
 
 def random_unsigned_intbv(width=sf['WIDTH']):
@@ -61,7 +61,7 @@ def unsigned_signal_set(j, value=0, width=sf['WIDTH']):
     :param width: bit width of intbv
     :return:
     """
-    return [Signal(unsigned_intbv(value, width)) for i in range(j)]
+    return [Signal(unsigned_intbv(value, width)) for _ in range(j)]
 
 
 def signed_signal_set(j, value=0):
@@ -71,7 +71,7 @@ def signed_signal_set(j, value=0):
     :param value: initial value
     :return:
     """
-    return [Signal(signed_intbv(value)) for i in range(j)]
+    return [Signal(signed_intbv(value)) for _ in range(j)]
 
 
 def rand_signed_signal_set(j):
@@ -82,7 +82,7 @@ def rand_signed_signal_set(j):
     """
     response = []
     for i in range(j):
-        response.append(random_signed_intbv())
+        response.append(Signal(random_signed_intbv()))
     return response
 
 
@@ -95,5 +95,5 @@ def rand_unsigned_signal_set(j, width=sf['WIDTH']):
     """
     response = []
     for i in range(j):
-        response.append(random_unsigned_intbv(width))
+        response.append(Signal(random_unsigned_intbv(width)))
     return response

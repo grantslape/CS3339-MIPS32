@@ -2,6 +2,7 @@ import os
 
 from myhdl import always_comb, Cosimulation
 
+
 def mux32bit3to1(ctrl_line, data1, mem_rd, wb_rd, out):
     """
     3:1 Mux for forwarding results from 2 cycles ago
@@ -15,16 +16,17 @@ def mux32bit3to1(ctrl_line, data1, mem_rd, wb_rd, out):
     @always_comb
     def logic():
         if ctrl_line == 2:
-           #datasrc is the mem/wb pipeline register
+           # datasrc is the mem/wb pipeline register
             out.next = wb_rd
         elif ctrl_line == 1:
-            #datasrc is ex/mem pipeline register
+            # datasrc is ex/mem pipeline register
             out.next = mem_rd
         elif ctrl_line == 0:
-           #datasrc is the id/ex pipeline register
+           # datasrc is the id/ex pipeline register
             out.next = data1
     return logic
-    
+
+
 def mux32bit3to1_v(ctrl_line, data1, mem_rd, wb_rd, out):
 
     """
