@@ -47,9 +47,20 @@ class TestControlUnit(TestCase):
             'reset_out': self.reset_out if which == "python" else self.reset_out_v
         }
 
-    def deassert(self):
+    def deassert(self, python=False, verilog=False):
         """Test deasserted functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
+            yield half_period()
+            if python:
+                self.assertEqual(bin(0), bin(self.branch))
+                self.assertEqual(bin(0), bin(self.mem_read))
+                self.assertEqual(bin(0), bin(self.mem_to_reg))
+                self.assertEqual(bin(0), bin(self.mem_write))
+                self.assertEqual(bin(0), bin(self.alu_src))
+                self.assertEqual(bin(0), bin(self.reg_write))
+                self.assertEqual(bin(0), bin(self.reg_dst))
+                self.assertEqual(bin(0), bin(self.alu_op))
+                self.assertEqual(self.reset_out, sf['INACTIVE_HIGH'])
 
 
 if __name__ == '__main__':
