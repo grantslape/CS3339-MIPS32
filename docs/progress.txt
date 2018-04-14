@@ -58,7 +58,7 @@ Grant Slape:
         alu_mux_imm genericized
         rfile DONE 2018-04-03
         ex_mux DONE 2018-04-03
-        inst_mem IN PROGRESS
+        inst_mem DONE =
         inst_mem_mux DONE 2018-04-07 under 2:1
         ex_mem DONE 2018-04-13
         branch_adder DONE 2018-04-11
