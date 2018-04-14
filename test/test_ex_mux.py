@@ -6,24 +6,24 @@ from myhdl import intbv, Simulation, Signal, StopSimulation
 from src.python.ex_mux import ex_mux, ex_mux_v
 from src.commons.settings import settings as sf
 from src.commons.clock import half_period
+from src.commons.signal_generator import random_unsigned_intbv, unsigned_signal_set
 
 
-@unittest.skip("Ex Mux not implemented")
 class TestExMuxDeasserted(TestCase):
     """Test Ex mux"""
     def setUp(self):
         self.reg_dst = Signal(intbv(0)[1:])
-        self.rt_in, self.rd_in, self.dest, self.dest_v = [Signal(intbv()[5:]) for _ in range(4)]
+        self.rt_in, self.rd_in, self.dest, self.dest_v = unsigned_signal_set(4, width=5)
         self.dut = ex_mux(self.reg_dst, self.rt_in, self.rd_in, self.dest)
 
     def deassert(self, python=False, verilog=False):
         """Test Deasserted functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = 0
-            self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
-            self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
-            while self.rd_in == self.rt_in:
-                self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
+            self.rt_in.next = random_unsigned_intbv(5)
+            self.rd_in.next = random_unsigned_intbv(5)
+            while self.rd_in.next == self.rt_in.next:
+                self.rd_in.next = random_unsigned_intbv(5)
             yield half_period()
             if python:
                 self.assertEqual(self.dest, self.rt_in)
@@ -37,10 +37,10 @@ class TestExMuxDeasserted(TestCase):
         """Test Asserted functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = 1
-            self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
-            self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
-            while self.rd_in == self.rt_in:
-                self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
+            self.rt_in.next = random_unsigned_intbv(5)
+            self.rd_in.next = random_unsigned_intbv(5)
+            while self.rd_in.next == self.rt_in.next:
+                self.rd_in.next = random_unsigned_intbv(5)
             yield half_period()
             if python:
                 self.assertEqual(self.dest, self.rd_in)
@@ -54,10 +54,10 @@ class TestExMuxDeasserted(TestCase):
         """Test Dynamic functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_dst.next = randint(0, 1)
-            self.rt_in.next = intbv(randint(0, sf['WIDTH']))[5:]
-            self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
-            while self.rd_in == self.rt_in:
-                self.rd_in.next = intbv(randint(0, sf['WIDTH']))[5:]
+            self.rt_in.next = random_unsigned_intbv(5)
+            self.rd_in.next = random_unsigned_intbv(5)
+            while self.rd_in.next == self.rt_in.next or self.rd_in.next == self.rt_in:
+                self.rd_in.next = random_unsigned_intbv(5)
             yield half_period()
             if self.reg_dst == 0:
                 if python:
