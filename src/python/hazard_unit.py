@@ -19,7 +19,7 @@ def hazard_unit(if_id_rs, if_id_rt, id_ex_rt, mem_read, pc_write, if_id_write, e
     # if so then set all flags to true
     @always_comb
     def logic():
-        if(mem_read and ((id_ex_rt == if_id_rs) or (id_ex_rt == if_id_rt)))
+        if(mem_read and ((id_ex_rt == if_id_rs) or (id_ex_rt == if_id_rt))):
             pc_write.next = True
             if_id_write.next = True
             ex_stall.next = True
