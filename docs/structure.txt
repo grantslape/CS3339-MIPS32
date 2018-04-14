@@ -62,7 +62,7 @@ cpu:
 		input [5:0] op_in: This is a MIPS op code from IF_ID
 		output jump: 1 for jump. to inst_mem_mux.jmp_ctrl, pc_mux_b.jmp_ctrl
 		output branch: activate branch unit, to id_ex.branch_in
-		output [?:0] alu_op: multi-bit alu op code.  see table. to id_ex.alu_op_in
+		output [4:0] alu_op: multi-bit alu op code.  see table. to id_ex.alu_op_in
 		output mem_read: activate read from memory, to id_ex.mem_read_in
 		output mem_to_reg: 0 for Alu result writeback, 1 for data writeback. to id_ex.mem_to_reg
 		output mem_write: activate to write to memory. to id_ex
@@ -84,7 +84,7 @@ cpu:
 		output ex_stall: Insert bubble into pipeline by setting ctrl signals to 0. to ctrl_mux
 	id_ex: ID/EX state register
 		input branch_in: activate branch unit, from ctrl.branch
-		input [?:0] alu_op_in: multi-bit alu op code. from ctrl.alu_op
+		input [4:0] alu_op_in: multi-bit alu op code. from ctrl.alu_op
 		input mem_read_in: activate read from memory, from ctrl.mem_read
 		input mem_to_reg_in: 0 for Alu result writeback, 1 for data writeback. from ctrl.mem_to_reg
 		input mem_write_in: activate to write to memory. from ctrl.mem_write
@@ -107,7 +107,7 @@ cpu:
 		output [4:0] rd_out: sent to ex_mux
 		output [31:0] pc_value_out: full PC+4 to branch_adder
 		output branch_out: branch ctrl signal to ex_mem.branch_in
-		output [?:0] alu_op_out: ALU op code. To alu.alu_op
+		output [4:0] alu_op_out: ALU op code. To alu.alu_op
 		output mem_read_out: mem_read ctrl signal to ex_mem.mem_read_in
 		output mem_write_out: mem_write ctrl signal to ex_mem.mem_write_in
 		output alu_src_out: 0 for register input, 1 for immediate. To alu_mux_imm.alu_src

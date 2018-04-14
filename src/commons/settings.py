@@ -9,5 +9,6 @@ settings = {
     'MEMORY_WIDTH': 20,
     'WIDTH': 32,
     'ACTIVE_LOW': 0,
-    'INACTIVE_HIGH': 1
+    'INACTIVE_HIGH': 1,
+    'ALU_CODE_SIZE': 4
 }
