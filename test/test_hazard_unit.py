@@ -39,6 +39,10 @@ class TestHazardUnit(TestCase):
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.id_ex_rt.next = random_unsigned_intbv(width=5)
             self.mem_read.next = 0
+            while self.id_ex_rt.next == self.if_id_rt.next:
+                self.if_id_rt.next = random_unsigned_intbv(width=5)
+            while self.id_ex_rt.next == self.if_id_rs.next:
+                self.if_id_rs.next = random_unsigned_intbv(width=5)
             while self.id_ex_rt == self.if_id_rt or self.id_ex_rt == self.if_id_rs:
                 self.if_id_rt.next, self.if_id_rs.next = rand_unsigned_signal_set(2, width=5)
             yield half_period()
