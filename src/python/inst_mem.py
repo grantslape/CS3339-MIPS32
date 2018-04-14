@@ -1,5 +1,4 @@
-import os
-from array import array
+from os import system
 
 from myhdl import always_comb, intbv, Cosimulation
 
@@ -37,7 +36,7 @@ def inst_mem_v(inst_reg, inst_out):
     :return Cosimulation
     """
     cmd = "iverilog -o bin/inst_mem.out src/verilog/inst_mem.v src/verilog/inst_mem_tb.v"
-    os.system(cmd)
+    system(cmd)
 
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/inst_mem.out",
                         inst_reg=inst_reg,
