@@ -1,5 +1,5 @@
 import os
-from myhdl import Cosimulation, always_comb, intbv
+from myhdl import Cosimulation, always_comb, intbv, ConcatSignal, concat
 
 
 def id_shift_left(top4, target, jaddr_out):
@@ -13,11 +13,7 @@ def id_shift_left(top4, target, jaddr_out):
 
     @always_comb
     def logic():
-        # top four bits of jump address from top4
-        jaddr_out[:28].next = top4
-        # shift target over 2 bits and replace jump address with target
-        jaddr_out[28:2].next = target
-        jaddr_out[2:0] = 0b00
+        jaddr_out.next = concat(top4, target, intbv()[2:])
 
     return logic
 
