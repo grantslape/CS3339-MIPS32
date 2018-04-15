@@ -1,7 +1,7 @@
 import os
 from myhdl import always_comb, Cosimulation
 
-def if_id(if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4, target_out):
+def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4, target_out):
     """
     IF/ID state register
     :param if_id_write: from hazard unit.  activate to stall by by keeping same outputs as last cycle
@@ -84,7 +84,7 @@ def if_id(if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_
     return PC_logic, INSTR_logic
 
 
-def if_id_v(if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4, target_out):
+def if_id_v(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4, target_out):
     """
     IF/ID state register
     :param if_id_write: from hazard unit.  activate to stall by by keeping same outputs as last cycle
@@ -116,4 +116,5 @@ def if_id_v(if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, p
                         funct_out=funct_out,
                         pc_out=pc_out,
                         top4=top4,
-                        target_out=target_out)
+                        target_out=target_out,
+                        clock=clock)

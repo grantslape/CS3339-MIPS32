@@ -22,7 +22,8 @@ class TestIfIdRegister(TestCase):
         ]
         self.top4, self.top4_v = unsigned_signal_set(2, width=4)
         self.target_out, self.target_out_v = unsigned_signal_set(2, width=26)
-        self.dut = if_id(if_id_write=self.if_id_write,
+        self.dut = if_id(clock=self.clock,
+                         if_id_write=self.if_id_write,
                          nxt_pc=self.nxt_pc,
                          inst_in=self.inst_in,
                          pc_out=self.pc_out,
@@ -37,7 +38,8 @@ class TestIfIdRegister(TestCase):
 
     def getVerilog(self):
         """Return Verilog design under test"""
-        return if_id_v(if_id_write=self.if_id_write,
+        return if_id_v(clock=self.clock,
+                       if_id_write=self.if_id_write,
                        nxt_pc=self.nxt_pc,
                        inst_in=self.inst_in,
                        pc_out=self.pc_out_v,
