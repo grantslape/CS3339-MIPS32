@@ -2,13 +2,13 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import Simulation, StopSimulation, ResetSignal, negedge, posedge, Signal, intbv
+from myhdl import Simulation, StopSimulation, ResetSignal, Signal, intbv
 
 from src.python.rfile import rfile, rfile_v
 from src.commons.settings import settings as sf
 from src.commons.clock import clock_gen
 from src.commons.signal_generator import random_signed_intbv, unsigned_signal_set, \
-    signed_signal_set, random_unsigned_intbv, unsigned_intbv, signed_intbv
+    signed_signal_set
 
 
 class TestRfile(TestCase):
@@ -79,14 +79,14 @@ class TestRfile(TestCase):
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             value = random_signed_intbv()
             register = randint(0, 31)
-            self.reset.next = Signal(signed_intbv(0))  # activate reset
+            self.reset.next = sf['ACTIVE_LOW']  # activate reset
             self.w_data.next = value
             self.w_addr.next = register
             self.reg_write.next = 1
             self.r_addr1.next = register
             yield self.clock.negedge
             self.reg_write.next = 0
-            self.reset.next = Signal(signed_intbv(1))  # deactivate reset
+            self.reset.next = sf['INACTIVE_HIGH']  # deactivate reset
             yield self.clock.posedge
             if python:
                 self.assertEqual(self.r_data1, intbv(0))
