@@ -14,10 +14,11 @@ class TestControlUnit(TestCase):
 
     def setUp(self):
         self.funct_in, self.op_in = unsigned_signal_set(2, width=5)
-        self.jump, self.jump_v, self.branch, self.branch_v, self.mem_read, self.mem_read_v, \
-            self.mem_to_reg, self.mem_to_reg_v, self.mem_write, self.mem_write_v, self.alu_src, \
-            self.alu_src_v, self.reg_write, self.reg_write_v, self.reg_dst, self.reg_dst_v = \
-            unsigned_signal_set(16, width=1)
+        self.jump, self.jump_v = unsigned_signal_set(2, width=2)
+        self.branch, self.branch_v, self.mem_read, self.mem_read_v, self.mem_to_reg, \
+        self.mem_to_reg_v, self.mem_write, self.mem_write_v, self.alu_src, self.alu_src_v, \
+            self.reg_write, self.reg_write_v, self.reg_dst, self.reg_dst_v = \
+            unsigned_signal_set(14, width=1)
         self.alu_op, self.alu_op_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
         self.reset_out, self.reset_out_v = ResetSignal(sf['INACTIVE_HIGH'],
                                                        active=sf['ACTIVE_LOW'],
@@ -128,7 +129,7 @@ class TestControlUnit(TestCase):
     def branch_test(self, python=False, verilog=False):
         """Test branch instructions"""
         # 4 is op code for beq
-        self.op_in = intbv(4)[5:]
+        self.op_in.next = intbv(4)[5:]
         yield half_period()
         if python:
             self.assertEqual(bin(0b0010), bin(self.alu_op))
@@ -150,11 +151,25 @@ class TestControlUnit(TestCase):
             self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
         raise StopSimulation
 
-    def j_test(self, python=False, verilog=False):
-        """Test J style instruction"""
+    def j_lbl_test(self, python=False, verilog=False):
+        """Test j lbl style instruction"""
+        # 2 is op code for j
+        self.op_in.next = intbv(2)[5:]
+        yield half_period()
+        if python:
+            self.assertEqual(1, self.jump)
+            self.assertEqual(0, self.branch)
+            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out)
+            self.assertEqual(0, self.mem_write)
+            self.assertEqual(0, self.reg_write)
+        if verilog:
+            self.assertEqual(1, self.jump_v)
+            self.assertEqual(0, self.branch_v)
+            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
+            self.assertEqual(0, self.mem_write_v)
+            self.assertEqual(0, self.reg_write_v)
 
-
-    @unittest.TestCase("Might not be necessary")
+    @unittest.TestCase("Not sure what we expect here")
     def jal_test(self, python=False, verilog=False):
         """Test jump and link instruction"""
         pass
