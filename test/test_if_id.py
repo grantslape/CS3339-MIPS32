@@ -8,7 +8,6 @@ from src.commons.settings import settings as sf
 from src.commons.clock import clock_gen
 
 
-@unittest.skip("IF/ID Register not implemented")
 class TestIfIdRegister(TestCase):
     """Test IF/ID Register"""
     def setUp(self):
@@ -33,7 +32,8 @@ class TestIfIdRegister(TestCase):
                          rt=self.rt,
                          rd=self.rd,
                          imm=self.imm,
-                         top4=self.top4)
+                         top4=self.top4,
+                         target_out=self.target_out)
 
     def getVerilog(self):
         """Return Verilog design under test"""
@@ -47,7 +47,8 @@ class TestIfIdRegister(TestCase):
                        rt=self.rt_v,
                        rd=self.rd_v,
                        imm=self.imm_v,
-                       top4=self.top4_v)
+                       top4=self.top4_v,
+                       target_out=self.target_out_v)
 
     def deassert(self, python=False, verilog=False):
         """Test when stall line is off (normal op)"""
