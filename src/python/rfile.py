@@ -1,7 +1,10 @@
-import os
+""" Register file """
+from os import system
 
-from myhdl import always_seq, posedge, negedge, Cosimulation
+from myhdl import Cosimulation, always_seq
 
+from src.commons.settings import settings as sf
+from src.commons.signal_generator import signed_signal_set
 
 def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     """
@@ -17,11 +20,21 @@ def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_
     :param r_data2: data read from regs[r_addr2].  sent to id_ex
     :return: module logic
     """
+    reg_file = signed_signal_set(sf['WIDTH'], value=0)
+
     @always_seq(clock.negedge, reset=reset)
-    def logic():
-        # NOT IMPLEMENTED
-        pass
-    return logic
+    def read_logic():
+        """ Read logic triggered on negative edge of clock """
+        r_data1.next = reg_file[r_addr1]
+        r_data2.next = reg_file[r_addr2]
+
+    @always_seq(clock.posedge, reset=reset)
+    def write_logic():
+        """ Write logic triggered on positive edge of clock """
+        if reg_write == 1:
+            reg_file[w_addr].next = w_data
+
+    return read_logic, write_logic
 
 
 def rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
@@ -38,4 +51,15 @@ def rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, 
     :param r_data2: data read from regs[r_addr2].  sent to id_ex
     :return: module logic
     """
-    return Cosimulation()
+    cmd = "iverilog -o bin/rfile.out src/verilog/rfile.v src/verilog/rfile_tb.v"
+    system(cmd)
+    return Cosimulation("vvp -m ./lib/myhdl.vpi bin/rfile.out",
+                        clock=clock,
+                        reset=reset,
+                        reg_write=reg_write,
+                        r_addr1=r_addr1,
+                        r_addr2=r_addr2,
+                        w_addr=w_addr,
+                        w_data=w_data,
+                        r_data1=r_data1,
+                        r_data2=r_data2)
