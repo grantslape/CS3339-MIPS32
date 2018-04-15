@@ -36,6 +36,7 @@ class TestControlUnit(TestCase):
         return {
             'funct_in': self.funct_in,
             'op_in': self.op_in,
+            'jump': self.jump if which == "python" else self.jump_v,
             'branch': self.branch if which == "python" else self.branch_v,
             'mem_read': self.mem_read if which == "python" else self.mem_read_v,
             'mem_to_reg': self.mem_to_reg if which == "python" else self.mem_to_reg_v,
@@ -75,18 +76,92 @@ class TestControlUnit(TestCase):
 
     def test_mem_inst(self, python=False, verilog=False):
         """Test LW and SW instructions"""
+        # 35 is op code for lw
         self.op_in.next = intbv(35)[5:]
         yield half_period()
         if python:
             self.assertEqual(0, self.jump)
             self.assertEqual(0, self.branch)
+            self.assertEqual(1, self.mem_read)
+            self.assertEqual(1, self.mem_to_reg)
+            self.assertEqual(0, self.mem_write)
+            self.assertEqual(1, self.alu_src)
+            self.assertEqual(1, self.reg_write)
+            self.assertEqual(0, self.reg_dst)
+            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out)
+            self.assertEqual(1, self.alu_op)
+        if verilog:
+            self.assertEqual(0, self.jump_v)
+            self.assertEqual(0, self.branch_v)
+            self.assertEqual(1, self.mem_read_v)
+            self.assertEqual(1, self.mem_to_reg_v)
+            self.assertEqual(0, self.mem_write_v)
+            self.assertEqual(1, self.alu_src_v)
+            self.assertEqual(1, self.reg_write_v)
+            self.assertEqual(0, self.reg_dst_v)
+            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
+            self.assertEqual(1, self.alu_op_v)
+        # 43 is op code for sw
+        self.op_in.next = intbv(45)[5:]
+        yield half_period()
+        if python:
+            self.assertEqual(0, self.jump)
+            self.assertEqual(0, self.branch)
+            self.assertEqual(0, self.mem_read)
+            self.assertEqual(1, self.mem_write)
+            self.assertEqual(1, self.alu_src)
+            self.assertEqual(0, self.reg_write)
+            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out)
+            self.assertEqual(1, self.alu_op)
+        if verilog:
+            self.assertEqual(0, self.jump_v)
+            self.assertEqual(0, self.branch_v)
+            self.assertEqual(0, self.mem_read_v)
+            self.assertEqual(1, self.mem_write_v)
+            self.assertEqual(1, self.alu_src_v)
+            self.assertEqual(0, self.reg_write_v)
+            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
+            self.assertEqual(1, self.alu_op_v)
+        raise StopSimulation
 
 
     def branch_test(self, python=False, verilog=False):
         """Test branch instructions"""
+        # 4 is op code for beq
+        self.op_in = intbv(4)[5:]
+        yield half_period()
+        if python:
+            self.assertEqual(bin(0b0010), bin(self.alu_op))
+            self.assertEqual(0, self.jump)
+            self.assertEqual(1, self.branch)
+            self.assertEqual(0, self.mem_read)
+            self.assertEqual(0, self.mem_write)
+            self.assertEqual(0, self.alu_src)
+            self.assertEqual(0, self.reg_write)
+            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out)
+        if verilog:
+            self.assertEqual(bin(0b0010), bin(self.alu_op_v))
+            self.assertEqual(0, self.jump_v)
+            self.assertEqual(1, self.branch_v)
+            self.assertEqual(0, self.mem_read_v)
+            self.assertEqual(0, self.mem_write_v)
+            self.assertEqual(0, self.alu_src_v)
+            self.assertEqual(0, self.reg_write_v)
+            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
+        raise StopSimulation
 
-    def jump_test(self, python=False, verilog=False):
-        """Test jump style instructions"""
+    def j_test(self, python=False, verilog=False):
+        """Test J style instruction"""
+
+
+    @unittest.TestCase("Might not be necessary")
+    def jal_test(self, python=False, verilog=False):
+        """Test jump and link instruction"""
+        pass
+
+    def jra_test(self, python=False, verilog=False):
+        """Test j $ra instructiosn"""
+
 
     def add_test(self, python=False, verilog=False):
         """Test R style addition"""
