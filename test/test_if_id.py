@@ -3,8 +3,7 @@ import unittest
 from unittest import TestCase
 from myhdl import Simulation, StopSimulation, posedge, negedge, Signal, intbv
 from src.python.if_id import if_id, if_id_v
-from src.commons.signal_generator import unsigned_signal_set, \
-    signed_signal_set, rand_unsigned_signal_set
+from src.commons.signal_generator import unsigned_signal_set, rand_unsigned_signal_set
 from src.commons.settings import settings as sf
 from src.commons.clock import clock_gen
 
