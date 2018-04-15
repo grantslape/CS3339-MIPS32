@@ -9,7 +9,7 @@ from src.commons.signal_generator import unsigned_signal_set, unsigned_intbv, ra
 from src.python.id_shift_left import id_shift_left, id_shift_left_v
 
 
-@unittest.skip('ID Shift not implemented')
+# @unittest.skip('ID Shift not implemented')
 class TestIdShiftLeft(TestCase):
     """Test ID Shift Left Module"""
     def setUp(self):
@@ -36,6 +36,8 @@ class TestIdShiftLeft(TestCase):
             expected = intbv()[sf['WIDTH']:]
             expected[32:29] = self.top4
             expected[29:0] = self.target
+            # expected[31:28] = self.top4
+            # expected[28:2] = self.target
             yield half_period()
             if python:
                 self.assertEqual(bin(expected), bin(self.output))
