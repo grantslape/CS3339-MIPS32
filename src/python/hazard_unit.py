@@ -1,5 +1,5 @@
 import os
-from myhdl import always_comb,Cosimulation
+from myhdl import always_comb, Cosimulation
 
 def hazard_unit(if_id_rs, if_id_rt, id_ex_rt, mem_read, pc_write, if_id_write, ex_stall):
     """
@@ -19,12 +19,12 @@ def hazard_unit(if_id_rs, if_id_rt, id_ex_rt, mem_read, pc_write, if_id_write, e
     # if so then set all flags to true
     @always_comb
     def logic():
-        if(mem_read == 1):
-            if(id_ex_rt == if_id_rs):
+        if mem_read == 1:
+            if id_ex_rt == if_id_rs:
                 pc_write.next = 1
                 if_id_write.next = 1
                 ex_stall.next = 1
-            elif(id_ex_rt == if_id_rt):
+            elif id_ex_rt == if_id_rt:
                 pc_write.next = 1
                 if_id_write.next = 1
                 ex_stall.next = 1
