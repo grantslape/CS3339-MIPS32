@@ -19,6 +19,7 @@ class TestIfIdRegister(TestCase):
             unsigned_signal_set(4, width=5)
         self.rs, self.rs_v, self.rt, self.rt_v, self.rd, self.rd_v = unsigned_signal_set(6, width=5)
         self.imm, self.imm_v = signed_signal_set(2)
+        self.target_out, self.target_out_v = unsigned_signal_set(2, width=26)
         self.dut = if_id(if_id_write=self.if_id_write,
                          nxt_pc=self.nxt_pc,
                          inst_in=self.inst_in,
@@ -58,6 +59,7 @@ class TestIfIdRegister(TestCase):
                 self.assertEqual(bin(self.inst_in[16:11]), bin(self.rd))
                 self.assertEqual(bin(self.inst_in[16:0]), bin(self.imm))
                 self.assertEqual(bin(self.inst_in[6:0]), bin(self.funct_out))
+                self.assertEqual(bin(self.inst_in[26:0]), bin(self.target_out))
             if verilog:
                 self.assertEqual(bin(self.nxt_pc), bin(self.pc_out_v))
                 self.assertEqual(bin(self.inst_in[32:26]), bin(self.op_code_v))
@@ -66,6 +68,7 @@ class TestIfIdRegister(TestCase):
                 self.assertEqual(bin(self.inst_in[16:11]), bin(self.rd_v))
                 self.assertEqual(bin(self.inst_in[16:0]), bin(self.imm_v))
                 self.assertEqual(bin(self.inst_in[6:0]), bin(self.funct_out_v))
+                self.assertEqual(bin(self.inst_in[26:0]), bin(self.target_out_v))
         raise StopSimulation
 
     def asserted(self, python=False, verilog=False):
@@ -91,6 +94,7 @@ class TestIfIdRegister(TestCase):
                 self.assertEqual(bin(old_inst[16:11]), bin(self.rd))
                 self.assertEqual(bin(old_inst[16:0]), bin(self.imm))
                 self.assertEqual(bin(old_inst[6:0]), bin(self.funct_out))
+                self.assertEqual(bin(old_inst[26:0]), bin(self.target_out))
             if verilog:
                 self.assertNotEquals(bin(self.nxt_pc), bin(self.pc_out_v))
                 self.assertEqual(bin(old_inst[32:26]), bin(self.op_code_v))
@@ -99,6 +103,7 @@ class TestIfIdRegister(TestCase):
                 self.assertEqual(bin(old_inst[16:11]), bin(self.rd_v))
                 self.assertEqual(bin(old_inst[16:0]), bin(self.imm_v))
                 self.assertEqual(bin(old_inst[6:0]), bin(self.funct_out_v))
+                self.assertEqual(bin(old_inst[26:0]), bin(self.target_out_v))
 
     def testIfIdDeassertedPython(self):
         """Test normal functionality Python"""
