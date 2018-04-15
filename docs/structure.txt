@@ -12,11 +12,12 @@ cpu:
 		input [31:0] imm_jmp_addr: a new PC value from the EX/MEM register
 		input [31:0] nxt_pc: sequential next PC from pc_adder
 		output [31:0] nxt_inst: actual next instruction address to pc_mux_b
-	pc_mux_b: 2:1 Mux to avoid jump stalls instance of 32 bit 2:1 mux
-		input jmp_ctrl: source signal.  from ctrl
+	pc_mux_b: 3:1 Mux to avoid jump stalls / handle j $ra instance of 32 bit 3:1 mux
+		input [1:0] jmp_ctrl: source signal.  from ctrl.  0 for next_inst, 1 for jmp_addr, 10 for jmp_reg
 		input [31:0] nxt_inst_in: actual next instruction address from pc_mux_a
 		input [31:0] jmp_addr_in: jump address from id_shift_left
-		output [31:0] next_address.  to pc_mux_c
+		input [31:0] jmp_reg: value of rs in j $ra style instruction from rfile.rdata_1
+		output [31:0] next_address.  to pc
 	pc_adder: Increments to next sequential instruction address:
 		input [31:0] cur_pc: current instruction address. from program_counter
 		output [31:0] nxt_pc: next sequential instruction address to pc_mux_a and if_id
@@ -50,7 +51,7 @@ cpu:
 		input [4:0] r_addr2: read address of rt. from if_id
 		input [4:0] w_addr: write address of rd. from mem_wb
 		input [31:0] w_data: write data.  From write_mux
-		output [31:0] r_data1: rs data read from regs[r_addr1].  sent to id_ex
+		output [31:0] r_data1: rs data read from regs[r_addr1].  sent to id_ex, pc_mux_b
 		output [31:0] r_data2: data read from regs[r_addr2].  sent to id_ex
 		[31:0] regs [31:0]: an array of 32, 32-bit registers.
 	id_shift_left: early jump support shift target left 2, then concat with top4
@@ -60,7 +61,7 @@ cpu:
 	ctrl: Main control unit. everything to ID_EX passes through ctrl_mux
 		input [5:0] funct_in: from if_id.funct_out
 		input [5:0] op_in: This is a MIPS op code from IF_ID
-		output jump: 1 for jump. to inst_mem_mux.jmp_ctrl, pc_mux_b.jmp_ctrl
+		output [1:0] jump: 1 for jmp lbl, 10 for j $ra. to inst_mem_mux.jmp_ctrl, pc_mux_b.jmp_ctrl
 		output branch: activate branch unit, to id_ex.branch_in
 		output [4:0] alu_op: multi-bit alu op code.  see table. to id_ex.alu_op_in
 		output mem_read: activate read from memory, to id_ex.mem_read_in
