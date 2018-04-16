@@ -64,7 +64,7 @@ def ctrl_mux_v(ex_stall, jump, branch, mem_read, mem_to_reg, mem_write, alu_src,
     :param kwargs: See structure.txt :: ctrl_mux
     :return: module logic
     """
-    cmd = "iverilog -o bin/ctrl_mux.out src/verilog/ctrl_mux.v src/verilog/ctrL_mux_tb.v"
+    cmd = "iverilog -o bin/ctrl_mux.out src/verilog/ctrl_mux.v src/verilog/ctrl_mux_tb.v"
     system(cmd)
 
     return Cosimulation("vvp -m lib/myhdl.vpi bin/ctrl_mux.out",
