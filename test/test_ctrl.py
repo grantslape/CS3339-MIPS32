@@ -48,7 +48,7 @@ class TestControlUnit(TestCase):
             'reset_out': self.reset_out if which == "python" else self.reset_out_v
         }
 
-    def test_mem_inst(self, python=False, verilog=False):
+    def mem_inst_test(self, python=False, verilog=False):
         """Test LW and SW instructions"""
         # 35 is op code for lw
         self.op_in.next = intbv(35)[6:]
@@ -356,21 +356,21 @@ class TestControlUnit(TestCase):
 
     def testMemInstructionPython(self):
         """Testing memory instructions python"""
-        stim = self.test_mem_inst(python=True)
+        stim = self.mem_inst_test(python=True)
         dut = self.get_module()
         clk = clock_gen(self.clock)
         Simulation(stim, dut, clk).run(quiet=1)
 
     def testMemInstructionVerilog(self):
         """Testing memory instructions Verilog"""
-        stim = self.test_mem_inst(verilog=True)
+        stim = self.mem_inst_test(verilog=True)
         dut_v = self.get_module(which="verilog")
         clk = clock_gen(self.clock)
         Simulation(stim, dut_v, clk).run(quiet=1)
 
     def testMemInstructionTogether(self):
         """Testing memory instructions Together"""
-        stim = self.test_mem_inst(verilog=True, python=True)
+        stim = self.mem_inst_test(verilog=True, python=True)
         dut = self.get_module()
         dut_v = self.get_module(which="verilog")
         clk = clock_gen(self.clock)
