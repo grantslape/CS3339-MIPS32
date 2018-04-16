@@ -58,13 +58,13 @@ def ctrl_mux(ex_stall, jump, branch, mem_read, mem_to_reg, mem_write, alu_src, r
 
 def ctrl_mux_v(ex_stall, jump, branch, mem_read, mem_to_reg, mem_write, alu_src, reg_write, reg_dst,
                     alu_op, jump_out, branch_out, mem_read_out, mem_to_reg_out, mem_write_out,
-                    alu_src_out, reg_write_out, reg_dst_out, alu_op_out):
+                    alu_src_out, reg_write_out, reg_dst_out, alu_op_out):c
     """
     Ctrl Mux module verilog
     :param kwargs: See structure.txt :: ctrl_mux
     :return: module logic
     """
-    cmd = "iverilog -o bin/ctrl_mux.out src/verilog/ctrl_mux.v src/verilog/tb_ctrL_mux.v"
+    cmd = "iverilog -o bin/ctrl_mux.out src/verilog/ctrl_mux.v src/verilog/ctrL_mux_tb.v"
     system(cmd)
 
     return Cosimulation("vvp -m lib/myhdl.vpi bin/ctrl_mux.out",

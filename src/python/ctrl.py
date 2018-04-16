@@ -126,7 +126,7 @@ def ctrl_v(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write
     :param kwargs: See above.
     :return: module logic
     """
-    cmd = "iverilog -o bin/ctrl.out src/verilog/ctrl.v src/verilog/tb_ctrl.v"
+    cmd = "iverilog -o bin/ctrl.out src/verilog/ctrl.v src/verilog/ctrl_tb.v"
     system(cmd)
 
     return Cosimulation("vvp -m lib/myhdl.vpi bin/ctrl.out",
