@@ -40,6 +40,8 @@ cpu:
 		output [15:11] rd: sliced from inst_in, sent to id_ex
 		output [5:0] funct_out: function code sliced from inst_in to ctrl
 		output [31:0] pc_out: nxt_pc.  to id_ex
+		output [3:0] top4: top 4 bits of nxt_pc
+		output [25:0] target_out: 26 bit jump immediate
 	sign_extender: sign extend immediate value.
 		input [15:0] imm_in: from if_id state register
 		output [31:0] imm_out: sign extended imm_in to 32 bits.  send to id_ex.
