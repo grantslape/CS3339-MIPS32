@@ -17,7 +17,7 @@ class TestControlUnit(TestCase):
         self.funct_in, self.op_in = unsigned_signal_set(2, width=6)
         self.jump, self.jump_v = unsigned_signal_set(2, width=2)
         self.branch, self.branch_v, self.mem_read, self.mem_read_v, self.mem_to_reg, \
-        self.mem_to_reg_v, self.mem_write, self.mem_write_v, self.alu_src, self.alu_src_v, \
+            self.mem_to_reg_v, self.mem_write, self.mem_write_v, self.alu_src, self.alu_src_v, \
             self.reg_write, self.reg_write_v, self.reg_dst, self.reg_dst_v, self.clock = \
             unsigned_signal_set(15, width=1)
         self.alu_op, self.alu_op_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
@@ -185,7 +185,7 @@ class TestControlUnit(TestCase):
     def jr_ra_test(self, python=False, verilog=False):
         """Test jr $ra instructions"""
         # We are using 25 for op code for jr
-        self.op_in = intbv(25)[6:]
+        self.op_in.next = intbv(25)[6:]
         yield self.clock.negedge
         if python:
             # might need to do some massaging here with special flow
@@ -233,8 +233,8 @@ class TestControlUnit(TestCase):
     def add_test(self, python=False, verilog=False):
         """Test R style addition"""
         # 0/20 for add
-        self.op_in = intbv()[6:]
-        self.funct_in = intbv(8)[6:]
+        self.op_in.next = intbv()[6:]
+        self.funct_in.next = intbv(8)[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()
@@ -247,8 +247,8 @@ class TestControlUnit(TestCase):
     def sub_test(self, python=False, verilog=False):
         """Test R style subtraction"""
         # 0/22 for sub
-        self.op_in = intbv()[6:]
-        self.funct_in = intbv(22)[6:]
+        self.op_in.next = intbv()[6:]
+        self.funct_in.next = intbv(22)[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()
@@ -261,8 +261,8 @@ class TestControlUnit(TestCase):
     def xor_test(self, python=False, verilog=False):
         """Test R style xor"""
         # 0/38 for xor
-        self.op_in = intbv()[6:]
-        self.funct_in = intbv(38)[6:]
+        self.op_in.next = intbv()[6:]
+        self.funct_in.next = intbv(38)[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()
@@ -275,8 +275,8 @@ class TestControlUnit(TestCase):
     def or_test(self, python=False, verilog=False):
         """Test R style or"""
         # 0/37 for or
-        self.op_in = intbv()[6:]
-        self.funct_in = intbv(37)[6:]
+        self.op_in.next = intbv()[6:]
+        self.funct_in.next = intbv(37)[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()
@@ -289,8 +289,8 @@ class TestControlUnit(TestCase):
     def and_test(self, python=False, verilog=False):
         """Test R style and"""
         # 0/36 for and
-        self.op_in = intbv()[6:]
-        self.funct_in = intbv(36)[6:]
+        self.op_in.next = intbv()[6:]
+        self.funct_in.next = intbv(36)[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()
@@ -303,8 +303,8 @@ class TestControlUnit(TestCase):
     def sll_test(self, python=False, verilog=False):
         """Test R style shift left logical"""
         # 0/0 for sll
-        self.op_in = intbv()[6:]
-        self.funct_in = intbv()[6:]
+        self.op_in.next = intbv()[6:]
+        self.funct_in.next = intbv()[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()
@@ -317,8 +317,8 @@ class TestControlUnit(TestCase):
     def srl_test(self, python=False, verilog=False):
         """Test R style shift right logical"""
         # 0/2 for srl
-        self.op_in = intbv()[6:]
-        self.funct_in = intbv(2)[6:]
+        self.op_in.next = intbv()[6:]
+        self.funct_in.next = intbv(2)[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()
@@ -331,8 +331,8 @@ class TestControlUnit(TestCase):
     def nor_test(self, python=False, verilog=False):
         """Test R style not or"""
         # 0/39 for nor
-        self.op_in = intbv()[6:]
-        self.funct_in = intbv(39)[6:]
+        self.op_in.next = intbv()[6:]
+        self.funct_in.next = intbv(39)[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()
@@ -345,8 +345,8 @@ class TestControlUnit(TestCase):
     def slt_test(self, python=False, verilog=False):
         """Test R style slt"""
         # 0/42 for slt
-        self.op_in = intbv()[6:]
-        self.funct_in = intbv(42)[6:]
+        self.op_in.next = intbv()[6:]
+        self.funct_in.next = intbv(42)[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()
@@ -663,6 +663,7 @@ class TestControlUnit(TestCase):
         dut_v = self.get_module(which="verilog")
         clk = clock_gen(self.clock)
         Simulation(stim, dut_v, dut, clk).run(quiet=1)
+
 
 if __name__ == '__main__':
     unittest.main()
