@@ -22,10 +22,10 @@ class TestControlMux(TestCase):
 
         # OUTPUTS
         self.jump_out, self.jump_out_v = unsigned_signal_set(2, width=2)
-        self.branch_out, self.branch_out_v, self.mem_read_out, self.mem_read_out_v, self.mem_to_reg_out, \
-        self.mem_to_reg_out_v, self.mem_write_out, self.mem_write_out_v, self.alu_src_out, self.alu_src_out_v, \
-        self.reg_write_out, self.reg_write_out_v, self.reg_dst_out, self.reg_dst_out_v = \
-            unsigned_signal_set(15, width=1)
+        self.branch_out, self.branch_out_v, self.mem_read_out, self.mem_read_out_v, \
+            self.mem_to_reg_out, self.mem_to_reg_out_v, self.mem_write_out, self.mem_write_out_v, \
+            self.alu_src_out, self.alu_src_out_v, self.reg_write_out, self.reg_write_out_v, \
+            self.reg_dst_out, self.reg_dst_out_v = unsigned_signal_set(15, width=1)
         self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
 
     def get_args(self, which="python"):
@@ -56,8 +56,7 @@ class TestControlMux(TestCase):
         """return module under test"""
         if which == "python":
             return ctrl_mux(**self.get_args())
-        else:
-            return ctrl_mux_v(**self.get_args(which="verilog"))
+        return ctrl_mux_v(**self.get_args(which="verilog"))
 
     def random_input(self):
         """Randomize input signals for test cases"""
@@ -120,7 +119,6 @@ class TestControlMux(TestCase):
                 self.assertEqual(0, self.reg_write_out_v)
                 self.assertEqual(0, self.reg_dst_out_v)
                 self.assertEqual(0, self.alu_op_out_v)
-                pass
         raise StopSimulation
 
     def testNormalOperationPython(self):
