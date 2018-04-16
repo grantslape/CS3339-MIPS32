@@ -32,6 +32,7 @@ cpu:
 		ouput [31:0] inst_out: next instruction out to if_id.
 	if_id: IF/ID state register
 		input if_id_write: from hazard unit.  activate to stall by by keeping same outputs as last cycle
+		input reset_in: ResetSignal, activate to flush
 		input [31:0] nxt_pc: next sequential instruction address
 		input [31:0] inst_in: Instruction input from inst_mem.inst_out
 		output [31:26] op_code: sliced from inst_in, Forward to ctrl.funct_in
@@ -59,6 +60,7 @@ cpu:
 		input [25:0] target: 26 bit immediate jump target.  from if_id
 		output [31:0] jaddr_out: jump address. to pc_mux_b 
 	ctrl: Main control unit. everything to ID_EX passes through ctrl_mux
+	    input clock: system clock
 		input [5:0] funct_in: from if_id.funct_out
 		input [5:0] op_in: This is a MIPS op code from IF_ID
 		output [1:0] jump: 1 for jmp lbl, 10 for j $ra. to inst_mem_mux.jmp_ctrl, pc_mux_b.jmp_ctrl
@@ -70,7 +72,9 @@ cpu:
 		output alu_src: 0 for register input, 1 for immediate. to id_ex.alu_src_in
 		output reg_write: activate to write to register.  to id_ex.reg_write_in
 		output reg_dst: 0 to write to Rt ([20:16]), 1 to write to Rd ([15:11]). to id_ex.reg_dst_in
-		output reset_out: 1 to insert a 1 cycle stall in the pipeline.  to id_ex.reset_in
+		# This needs to "click off" at the beginning of each cycle, so this module must be clocked.
+		# I'm unsure about this though, we'll need to be careful around the jump instructions and massage a bit.
+		output reset_out: 1 to insert a 1 cycle stall in the pipeline.  to if_id.reset_in
 	ctrl_mux: The mux for implementing stalls  The way this works is if the stall ctrl line is activated, output zeros instead of the ctrl signal values
 		inputs: all the listed ctrl signals above.
 		input ex_stall_in: activate to stall.

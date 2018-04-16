@@ -17,8 +17,8 @@ class TestControlUnit(TestCase):
         self.jump, self.jump_v = unsigned_signal_set(2, width=2)
         self.branch, self.branch_v, self.mem_read, self.mem_read_v, self.mem_to_reg, \
         self.mem_to_reg_v, self.mem_write, self.mem_write_v, self.alu_src, self.alu_src_v, \
-            self.reg_write, self.reg_write_v, self.reg_dst, self.reg_dst_v = \
-            unsigned_signal_set(14, width=1)
+            self.reg_write, self.reg_write_v, self.reg_dst, self.reg_dst_v, self.clock = \
+            unsigned_signal_set(15, width=1)
         self.alu_op, self.alu_op_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
         self.reset_out, self.reset_out_v = ResetSignal(sf['INACTIVE_HIGH'],
                                                        active=sf['ACTIVE_LOW'],
@@ -35,6 +35,7 @@ class TestControlUnit(TestCase):
     def get_args(self, which="python"):
         """Set parameter dictionary appropriately"""
         return {
+            'clock': self.clock,
             'funct_in': self.funct_in,
             'op_in': self.op_in,
             'jump': self.jump if which == "python" else self.jump_v,
@@ -156,26 +157,83 @@ class TestControlUnit(TestCase):
         # 2 is op code for j
         self.op_in.next = intbv(2)[5:]
         yield half_period()
+        # These control signals I am unsure about
         if python:
             self.assertEqual(1, self.jump)
             self.assertEqual(0, self.branch)
-            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out)
+            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out)
             self.assertEqual(0, self.mem_write)
             self.assertEqual(0, self.reg_write)
+            self.assertEqual(0, self.mem_read)
+            self.assertEqual(0, self.alu_src)
+            self.assertEqual(0, self.alu_op)
         if verilog:
             self.assertEqual(1, self.jump_v)
             self.assertEqual(0, self.branch_v)
-            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
+            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out_v)
             self.assertEqual(0, self.mem_write_v)
             self.assertEqual(0, self.reg_write_v)
+            self.assertEqual(0, self.mem_read_v)
+            self.assertEqual(0, self.alu_src_v)
+            self.assertEqual(0, self.alu_op_v)
+        raise StopSimulation
 
-    @unittest.TestCase("Not sure what we expect here")
     def jal_test(self, python=False, verilog=False):
         """Test jump and link instruction"""
-        pass
+        # 3 is op code for jal
+        self.op_in.next = intbv(3)[5:]
+        yield half_period()
+        if python:
+            self.assertEqual(1, self.jump)
+            self.assertEqual(0, self.branch)
+            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out)
+            # we may want to "write" here and drop PC+4 value into the flow.
+            self.assertEqual(0, self.reg_write)
+            self.assertEqual(0, self.mem_read)
+            self.assertEqual(0, self.alu_src)
+            # Unsure about this, we may way to add here
+            self.assertEqual(0, self.alu_op)
+            self.assertEqual(0, self.mem_write)
+        if verilog:
+            self.assertEqual(1, self.jump)
+            self.assertEqual(0, self.branch)
+            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out)
+            # we may want to "write" here and drop PC+4 value into the flow.
+            self.assertEqual(0, self.reg_write)
+            self.assertEqual(0, self.mem_read)
+            self.assertEqual(0, self.alu_src)
+            # Unsure about this, we may way to add here
+            self.assertEqual(0, self.alu_op)
+            self.assertEqual(0, self.mem_write)
+        raise StopSimulation
 
-    def jra_test(self, python=False, verilog=False):
-        """Test j $ra instructiosn"""
+    def jr_ra_test(self, python=False, verilog=False):
+        """Test jr $ra instructions"""
+        # How do we get the result back to PC?
+        # op: 0, funct: 8 for jr $ra
+        self.op_in = intbv()[5:]
+        self.funct_in = intbv(8)[5:]
+        yield half_period()
+        if python:
+            # might need to do some massaging here with special flow
+            self.assertEqual(1, self.jump)
+            self.assertEqual(0, self.branch)
+            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out)
+            self.assertEqual(bin(0b0001), self.alu_op)
+            self.assertEqual(0, self.mem_read)
+            self.assertEqual(0, self.alu_src)
+            self.assertEqual(0, self.reg_write)
+            self.assertEqual(0, self.mem_write)
+        if verilog:
+            self.assertEqual(1, self.jump_v)
+            self.assertEqual(0, self.branch_v)
+            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out_v)
+            self.assertEqual(bin(0b0001), self.alu_op_v)
+            self.assertEqual(0, self.mem_read_v)
+            self.assertEqual(0, self.alu_src_v)
+            self.assertEqual(0, self.reg_write_v)
+            self.assertEqual(0, self.mem_write_v)
+        raise StopSimulation
 
 
     def add_test(self, python=False, verilog=False):

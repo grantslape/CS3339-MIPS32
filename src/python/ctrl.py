@@ -6,6 +6,7 @@ from myhdl import Cosimulation
 
 def ctrl(**kwargs):
     """
+    :param clock: system clock maybe
     :param funct_in: from if_id.funct_out
     :param op_in: This is a MIPS op code from IF_ID
     :param jump: 1 for jump. to inst_mem_mux.jmp_ctrl, pc_mux_b.jmp_ctrl

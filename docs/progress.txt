@@ -24,14 +24,14 @@ Isaac Jaimes:
     fwd_unit DONE 2018-04-03
     shift_unit DONE 2018-04-03
     instruction generator: Basically Done
+Robert Tomlinson:
+    ex_mem
+    branch_adder
 Patrick Vinas:
     data_mem DONE 2018-04-13
     mem_wb DONE 2018-04-13
     rfile DONE 2018-04-14
     ex_mux DONE 2018-04-14
-TBD:
-    ex_mem
-    branch_adder
     ctrl
     ctrl_mux
 Grant Slape:
