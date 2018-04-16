@@ -12,7 +12,7 @@ cpu:
 		input [31:0] imm_jmp_addr: a new PC value from the EX/MEM register
 		input [31:0] nxt_pc: sequential next PC from pc_adder
 		output [31:0] nxt_inst: actual next instruction address to pc_mux_b
-	pc_mux_b: 3:1 Mux to avoid jump stalls / handle j $ra instance of 32 bit 3:1 mux
+	pc_mux_b: 3:1 Mux to avoid jump stalls / handle jr $ra instance of 32 bit 3:1 mux
 		input [1:0] jmp_ctrl: source signal.  from ctrl.  0 for next_inst, 1 for jmp_addr, 10 for jmp_reg
 		input [31:0] nxt_inst_in: actual next instruction address from pc_mux_a
 		input [31:0] jmp_addr_in: jump address from id_shift_left
