@@ -1,7 +1,7 @@
 """Control Unit Module Unit Tests"""
 import unittest
 from unittest import TestCase
-from myhdl import Simulation, StopSimulation, ResetSignal, intbv
+from myhdl import Simulation, StopSimulation, intbv
 
 from src.python.ctrl import ctrl, ctrl_v
 from src.commons.clock import clock_gen
@@ -9,7 +9,6 @@ from src.commons.settings import settings as sf
 from src.commons.signal_generator import unsigned_signal_set
 
 
-@unittest.skip("Ctrl unit not implemented")
 class TestControlUnit(TestCase):
     """Testing Control unit functionality"""
 
@@ -21,9 +20,7 @@ class TestControlUnit(TestCase):
             self.reg_write, self.reg_write_v, self.reg_dst, self.reg_dst_v, self.clock = \
             unsigned_signal_set(15, width=1)
         self.alu_op, self.alu_op_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
-        self.reset_out, self.reset_out_v = ResetSignal(sf['INACTIVE_HIGH'],
-                                                       active=sf['ACTIVE_LOW'],
-                                                       async=True)
+        self.reset_out, self.reset_out_v = unsigned_signal_set(2, width=1)
 
     def get_module(self, which="python"):
         """Return module under test"""
@@ -65,7 +62,7 @@ class TestControlUnit(TestCase):
             self.assertEqual(1, self.alu_src)
             self.assertEqual(1, self.reg_write)
             self.assertEqual(0, self.reg_dst)
-            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out)
+            self.assertEqual(0, self.reset_out)
             self.assertEqual(1, self.alu_op)
         if verilog:
             self.assertEqual(0, self.jump_v)
@@ -76,10 +73,10 @@ class TestControlUnit(TestCase):
             self.assertEqual(1, self.alu_src_v)
             self.assertEqual(1, self.reg_write_v)
             self.assertEqual(0, self.reg_dst_v)
-            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
+            self.assertEqual(0, self.reset_out_v)
             self.assertEqual(1, self.alu_op_v)
         # 43 is op code for sw
-        self.op_in.next = intbv(45)[6:]
+        self.op_in.next = intbv(43)[6:]
         yield self.clock.negedge
         if python:
             self.assertEqual(0, self.jump)
@@ -88,7 +85,7 @@ class TestControlUnit(TestCase):
             self.assertEqual(1, self.mem_write)
             self.assertEqual(1, self.alu_src)
             self.assertEqual(0, self.reg_write)
-            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out)
+            self.assertEqual(0, self.reset_out)
             self.assertEqual(1, self.alu_op)
         if verilog:
             self.assertEqual(0, self.jump_v)
@@ -97,10 +94,9 @@ class TestControlUnit(TestCase):
             self.assertEqual(1, self.mem_write_v)
             self.assertEqual(1, self.alu_src_v)
             self.assertEqual(0, self.reg_write_v)
-            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
+            self.assertEqual(0, self.reset_out_v)
             self.assertEqual(1, self.alu_op_v)
         raise StopSimulation
-
 
     def branch_test(self, python=False, verilog=False):
         """Test branch instructions"""
@@ -115,7 +111,7 @@ class TestControlUnit(TestCase):
             self.assertEqual(0, self.mem_write)
             self.assertEqual(0, self.alu_src)
             self.assertEqual(0, self.reg_write)
-            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out)
+            self.assertEqual(0, self.reset_out)
         if verilog:
             self.assertEqual(bin(0b0010), bin(self.alu_op_v))
             self.assertEqual(0, self.jump_v)
@@ -124,7 +120,7 @@ class TestControlUnit(TestCase):
             self.assertEqual(0, self.mem_write_v)
             self.assertEqual(0, self.alu_src_v)
             self.assertEqual(0, self.reg_write_v)
-            self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
+            self.assertEqual(0, self.reset_out_v)
         raise StopSimulation
 
     def j_lbl_test(self, python=False, verilog=False):
@@ -136,7 +132,7 @@ class TestControlUnit(TestCase):
         if python:
             self.assertEqual(1, self.jump)
             self.assertEqual(0, self.branch)
-            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out)
+            self.assertEqual(1, self.reset_out)
             self.assertEqual(0, self.mem_write)
             self.assertEqual(0, self.reg_write)
             self.assertEqual(0, self.mem_read)
@@ -145,7 +141,7 @@ class TestControlUnit(TestCase):
         if verilog:
             self.assertEqual(1, self.jump_v)
             self.assertEqual(0, self.branch_v)
-            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out_v)
+            self.assertEqual(1, self.reset_out_v)
             self.assertEqual(0, self.mem_write_v)
             self.assertEqual(0, self.reg_write_v)
             self.assertEqual(0, self.mem_read_v)
@@ -161,7 +157,7 @@ class TestControlUnit(TestCase):
         if python:
             self.assertEqual(1, self.jump)
             self.assertEqual(0, self.branch)
-            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out)
+            self.assertEqual(1, self.reset_out)
             # we may want to "write" here and drop PC+4 value into the flow.
             self.assertEqual(0, self.reg_write)
             self.assertEqual(0, self.mem_read)
@@ -170,16 +166,16 @@ class TestControlUnit(TestCase):
             self.assertEqual(0, self.alu_op)
             self.assertEqual(0, self.mem_write)
         if verilog:
-            self.assertEqual(1, self.jump)
-            self.assertEqual(0, self.branch)
-            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out)
+            self.assertEqual(1, self.jump_v)
+            self.assertEqual(0, self.branch_v)
+            self.assertEqual(1, self.reset_out_v)
             # we may want to "write" here and drop PC+4 value into the flow.
-            self.assertEqual(0, self.reg_write)
-            self.assertEqual(0, self.mem_read)
-            self.assertEqual(0, self.alu_src)
+            self.assertEqual(0, self.reg_write_v)
+            self.assertEqual(0, self.mem_read_v)
+            self.assertEqual(0, self.alu_src_v)
             # Unsure about this, we may way to add here
-            self.assertEqual(0, self.alu_op)
-            self.assertEqual(0, self.mem_write)
+            self.assertEqual(0, self.alu_op_v)
+            self.assertEqual(0, self.mem_write_v)
         raise StopSimulation
 
     def jr_ra_test(self, python=False, verilog=False):
@@ -191,19 +187,21 @@ class TestControlUnit(TestCase):
             # might need to do some massaging here with special flow
             self.assertEqual(bin(0b10), bin(self.jump))
             self.assertEqual(0, self.branch)
-            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out)
+            self.assertEqual(1, self.reset_out)
             self.assertEqual(0, self.mem_read)
             self.assertEqual(0, self.alu_src)
             self.assertEqual(0, self.reg_write)
             self.assertEqual(0, self.mem_write)
+            self.assertEqual(0, self.alu_op)
         if verilog:
             self.assertEqual(bin(0b10), bin(self.jump_v))
             self.assertEqual(0, self.branch_v)
-            self.assertEqual(sf['ACTIVE_LOW'], self.reset_out_v)
+            self.assertEqual(1, self.reset_out_v)
             self.assertEqual(0, self.mem_read_v)
             self.assertEqual(0, self.alu_src_v)
             self.assertEqual(0, self.reg_write_v)
             self.assertEqual(0, self.mem_write_v)
+            self.assertEqual(0, self.alu_op_v)
         raise StopSimulation
 
     def r_type_python(self):
@@ -216,7 +214,7 @@ class TestControlUnit(TestCase):
         self.assertEqual(0, self.alu_src)
         self.assertEqual(1, self.reg_write)
         self.assertEqual(1, self.reg_dst)
-        self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out)
+        self.assertEqual(0, self.reset_out)
 
     def r_type_verilog(self):
         """Common R-type assertions verilog"""
@@ -228,13 +226,13 @@ class TestControlUnit(TestCase):
         self.assertEqual(0, self.alu_src_v)
         self.assertEqual(1, self.reg_write_v)
         self.assertEqual(1, self.reg_dst_v)
-        self.assertEqual(sf['INACTIVE_HIGH'], self.reset_out_v)
+        self.assertEqual(0, self.reset_out_v)
 
     def add_test(self, python=False, verilog=False):
         """Test R style addition"""
         # 0/20 for add
         self.op_in.next = intbv()[6:]
-        self.funct_in.next = intbv(8)[6:]
+        self.funct_in.next = intbv(20)[6:]
         yield self.clock.negedge
         if python:
             self.r_type_python()

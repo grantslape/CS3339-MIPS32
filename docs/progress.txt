@@ -33,7 +33,7 @@ Patrick Vinas:
     rfile DONE 2018-04-14
     ex_mux DONE 2018-04-14
 Grant Slape:
-    ctrl
+    ctrl DONE 2018-04-16
     ctrl_mux DONE 2018-04-16
     Main Driver
     Unit Tests:
@@ -51,7 +51,7 @@ Grant Slape:
         id_shift_left DONE 2018-04-07
         ctrl DONE 2018-04-16
         ctrl_mux DONE 2018-04-16
-        alu
+        alu IN PROGRESS
         alu_mux_a 2018-04-03
         alu_mux_b 2018-04-03
         alu_mux_imm genericized
