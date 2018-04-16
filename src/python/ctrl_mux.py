@@ -58,7 +58,7 @@ def ctrl_mux(ex_stall, jump, branch, mem_read, mem_to_reg, mem_write, alu_src, r
 
 def ctrl_mux_v(ex_stall, jump, branch, mem_read, mem_to_reg, mem_write, alu_src, reg_write, reg_dst,
                     alu_op, jump_out, branch_out, mem_read_out, mem_to_reg_out, mem_write_out,
-                    alu_src_out, reg_write_out, reg_dst_out, alu_op_out):c
+                    alu_src_out, reg_write_out, reg_dst_out, alu_op_out):
     """
     Ctrl Mux module verilog
     :param kwargs: See structure.txt :: ctrl_mux
