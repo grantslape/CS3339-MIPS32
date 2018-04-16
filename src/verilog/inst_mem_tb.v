@@ -1,7 +1,9 @@
 module inst_mem_tb;
+parameter TB_SIZE = 0;
 
 reg [31:0] inst_reg;
 wire [31:0] inst_out;
+
 
 initial begin
     $from_myhdl(
@@ -12,9 +14,9 @@ initial begin
 	);
 end
 
-inst_mem dut(
+inst_mem #(TB_SIZE) dut(
     inst_reg,
-	inst_out
+    inst_out
 );
 
 endmodule
