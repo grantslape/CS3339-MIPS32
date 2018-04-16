@@ -22,32 +22,32 @@ def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_o
         # if if_id_write is true then do not update the state Register
         if if_id_write == 1:
             # program counter logic
-            pc_out[:].next = pc_out
-            top4[:].next = top4
+            pc_out.next = pc_out
+            top4.next = top4
 
             # instruction logic
-            op_code[:].next = op_code
-            rs[:].next = rs
-            rt[:].next = rt
-            rd[:].next = rd
-            funct_out[:].next = funct_out
-            imm[:].next = imm
-            target_out[:].next = target_out
+            op_code.next = op_code
+            rs.next = rs
+            rt.next = rt
+            rd.next = rd
+            funct_out.next = funct_out
+            imm.next = imm
+            target_out.next = target_out
 
         # else update the register with the appropriate inputs
         else:
             # program counter logic
-            pc_out[:].next = nxt_pc
-            top4[:].next = nxt_pc[:28]
+            pc_out.next = nxt_pc
+            top4.next = nxt_pc[:28]
 
             # instruction logic
-            op_code[:].next = op_code[:26]
-            rs[:].next = inst_in[26:21]
-            rt[:].next = inst_in[21:16]
-            rd[:].next = inst_in[16:11]
-            funct_out[:].next = inst_in[6:0]
-            imm[:].next = inst_in[16:0]
-            target_out[:].next = inst_in[26:0]
+            op_code.next = op_code[:26]
+            rs.next = inst_in[26:21]
+            rt.next = inst_in[21:16]
+            rd.next = inst_in[16:11]
+            funct_out.next = inst_in[6:0]
+            imm.next = inst_in[16:0]
+            target_out.next = inst_in[26:0]
 
     return logic
 

@@ -17,7 +17,7 @@ module if_id (
     rd,
     funct_out,
     pc_out,
-    top5,
+    top4,
     target_out
 );
 // IF/ID state register
@@ -31,7 +31,7 @@ module if_id (
 // :param rd: sliced from inst_in, sent to id_ex
 // :param funct_out: Forward inst_in to id_ex, ctrl.funct_in
 // :param pc_out: nxt_pc.  to id_ex
-// :param top5: top 5 bits of nxt_pc. From pc_adder
+// :param top4: top 4 bits of nxt_pc. From pc_adder
 // :param target_out: 26 bit jump immediate
 
 input clock;
@@ -60,7 +60,7 @@ reg [25:0] target_out;
 always @(posedge clock) begin: IF_ID_LOGIC
     if ((if_id_write == 1)) begin
         pc_out <= pc_out;
-        top5 <= top5;
+        top4 <= top4;
         op_code <= op_code;
         rs <= rs;
         rt <= rt;
