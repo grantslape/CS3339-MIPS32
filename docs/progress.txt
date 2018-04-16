@@ -32,9 +32,9 @@ Patrick Vinas:
     mem_wb DONE 2018-04-13
     rfile DONE 2018-04-14
     ex_mux DONE 2018-04-14
-    ctrl
-    ctrl_mux
 Grant Slape:
+    ctrl
+    ctrl_mux DONE 2018-04-16
     Main Driver
     Unit Tests:
     	shift_unit DONE 2018-04-03
@@ -49,8 +49,8 @@ Grant Slape:
         hazard_unit DONE 2018-04-08
         if_id DONE
         id_shift_left DONE 2018-04-07
-        ctrl IN PROGRESS
-        ctrl_mux IN PROGRESS
+        ctrl DONE 2018-04-16
+        ctrl_mux DONE 2018-04-16
         alu
         alu_mux_a 2018-04-03
         alu_mux_b 2018-04-03
