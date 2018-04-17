@@ -1,0 +1,3 @@
+NumberOfInstructions=20
+BranchFrequencyPercentage=10
+DataDependency=25
