@@ -3,13 +3,15 @@ import os
 twoExp15 = 32768
 twoExp15MinusOne = 32767
 negativeTwoExp15 = -32768
+
+INSTRUCTION_PATH = "lib/Instructions.bin"
+PARAM_PATH = "lib/Parameters.txt"
+INST_LIST_PATH = "lib/InstructionList.txt"
 #######################################################################################
 #get the parameters (only instruction count for now)
 def getParameters():
-  equalsSign = 0
-  myLine = ''
   myParameters = ''
-  open_Parameters = open("../../lib/Parameters.txt",'r')
+  open_Parameters = open(PARAM_PATH,'r')
   for item in open_Parameters:
     equalsSign = item.find('=')
     myLine = item[equalsSign+1:]
@@ -23,8 +25,7 @@ def getParameters():
 #######################################################################################
 def getInstructions():
   myInstructions = ''
-  myTempArray = ''
-  open_file = open("../../lib/InstructionList.txt",'r')
+  open_file = open(INST_LIST_PATH,'r')
   for line in open_file:
     if myInstructions == '':
       myInstructions = line
@@ -48,16 +49,8 @@ def complementConverter(n):
   return binary
 #######################################################################################
 def rFormat(myInt,myArray,myLowerRegister,myUpperRegister):
-  shifter = 0
   lowerShiftBound = 0
   upperShiftBound = 31
-  opCode = ''
-  shiftAmt = ''
-  funct = ''
-  myRandInt = 0
-  myRs = ''
-  myRt = ''
-  myRd = ''
   myBin = ''
   for i in range(0,len(myArray),5):
     #print("ARRAY: " + myArray[i])
@@ -80,12 +73,6 @@ def rFormat(myInt,myArray,myLowerRegister,myUpperRegister):
   return myBin
 #######################################################################################
 def immediateFormat(myInt,myArray,myLowerRegister,myUpperRegister):
-  opCode = ''
-  shiftAmt = ''
-  funct = ''
-  myRandInt = 0
-  myRs = ''
-  myRt = ''
   myImm = ''
   myBin = ''
   for i in range(0,len(myArray),5):
@@ -122,15 +109,7 @@ def immediateFormat(myInt,myArray,myLowerRegister,myUpperRegister):
 def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
   lowerBound = -32
   upperBound = 32
-  opCode = ''
-  shiftAmt = ''
-  funct = '001000'
   jrFunct = '000000'
-  myRandInt = 0
-  myRs = ''
-  myRt = ''
-  myImm = ''
-  myJmp = ''
   jrConst = '000000000000000'
   myBin = ''
   for i in range(0,len(myArray),5):
@@ -139,8 +118,6 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
       print("J-Format Instruction: " + myArray[i])
       if myArray[i] == '12':
         opCode = myArray[i+1]
-        shiftAmt = myArray[i+2]
-        funct = myArray[i+3]
         myRandInt = randint(myLowerRegister,myUpperRegister) #a0 - t9
         myRs = '{0:05b}'.format(myRandInt)
         myRandInt = randint(myLowerRegister,myUpperRegister) #a0 - t9
@@ -172,19 +149,18 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
   return myBin
 #######################################################################################
 def deleteInstructionFile():
-  if os.path.exists("../../lib/Instructions.bin"):
-    os.remove("../../lib/Instructions.bin")
+  if os.path.exists(INSTRUCTION_PATH):
+    os.remove(INSTRUCTION_PATH)
   return
 #######################################################################################
 def createInstructionsFile():
-  file = open("../../lib/Instructions.bin",'w')
+  file = open(INSTRUCTION_PATH,'w')
   file.close()
   return
 #######################################################################################
 def writeInstructions(myArray):
   import random
-  instructionArray = ''
-  file = open("../../lib/Instructions.bin",'a')
+  file = open(INSTRUCTION_PATH,'a')
   instructionArray = myArray.split(',')
   random.shuffle(instructionArray)
   for i in range(0,len(instructionArray)):
@@ -195,22 +171,12 @@ def writeInstructions(myArray):
   return
 #######################################################################################
 def driver():
-  dataDependency = 0.0
   lowerRegister = 0
   upperRegister = 25
-  instructionList = ''
   nonBranchInstructions = ''
-  nonBranchArray = ''
   branchInstructions = ''
-  branchArray = ''
-  numberOfInstructions = 0
-  totalInstructions = 0
-  branchFrequency = 0.0
-  numberOfBranchInstructions = 0
-  parameterArray = ''
   deleteInstructionFile()
   createInstructionsFile()
-  myInstruction = ''
   inputArray = getParameters()
   parameterArray = inputArray.split(',')
   totalInstructions = parameterArray[0]

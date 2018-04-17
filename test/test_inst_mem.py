@@ -29,8 +29,9 @@ class TestInstructionMemory(TestCase):
     def dynamic(self, python=False, verilog=False):
         """Test random instructions from file"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            index = Signal(intbv(randint(0, len(self.mem))))
-            self.inst_reg.next = index % 4
+            # account for byte vs. word addressing
+            index = Signal(intbv(randint(0, len(self.mem)) * 4))
+            self.inst_reg.next = index
             yield half_period()
             if python:
                 self.assertEqual(self.mem[index%4], self.inst_out)

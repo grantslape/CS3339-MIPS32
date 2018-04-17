@@ -23,7 +23,6 @@ initial
 
 always @(inst_reg)
     begin
-        inst_reg <= inst_reg % 4;
-        inst_out <= raw_mem[inst_reg];
+        inst_out <= raw_mem[inst_reg % 4];
     end
 endmodule
