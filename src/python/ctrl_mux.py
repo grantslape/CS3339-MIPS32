@@ -5,8 +5,8 @@ from myhdl import always_comb, Cosimulation
 
 
 def ctrl_mux(ex_stall, jump, branch, mem_read, mem_to_reg, mem_write, alu_src, reg_write, reg_dst,
-                alu_op, jump_out, branch_out, mem_read_out, mem_to_reg_out, mem_write_out,
-                alu_src_out, reg_write_out, reg_dst_out, alu_op_out):
+             alu_op, jump_out, branch_out, mem_read_out, mem_to_reg_out, mem_write_out,
+             alu_src_out, reg_write_out, reg_dst_out, alu_op_out):
     """
     Ctrl multiplexer
     :param ex_stall:
