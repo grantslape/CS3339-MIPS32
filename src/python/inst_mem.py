@@ -2,7 +2,7 @@ from os import system
 
 from myhdl import always_comb, intbv, Cosimulation
 
-arraySize = 1048576
+arraySize = 10000
 def inst_mem(inst_reg, inst_out):
     """
     Instruction Memory.  Stores the instructions that will be executed
@@ -13,7 +13,7 @@ def inst_mem(inst_reg, inst_out):
     """
     TB_SIZE = 0
     raw_mem = []
-    mem_file = open('lib/instructions')
+    mem_file = open('lib/instructions',)
     try:
         raw_mem = [intbv(line) for line in mem_file]
     except IOError:
@@ -24,7 +24,7 @@ def inst_mem(inst_reg, inst_out):
 
     @always_comb
     def logic():
-        inst_out.next = raw_mem[inst_reg]
+        inst_out.next = raw_mem[inst_reg%4]
     return logic
 
 
@@ -36,7 +36,7 @@ def inst_mem_v(inst_reg, inst_out):
     :param inst_out: Inst_mem logic to inst_mem_mux
     :return Cosimulation
     """
-    cmd = "iverilog -o bin/inst_mem.out -P inst_mem_tb.TB_SIZE=" + str(arraySize) + " src/verilog/inst_mem.v src/verilog/inst_mem_tb.v"
+    cmd = "iverilog -o bin/inst_mem.out -P inst_mem_tb.TBSIZE=" + str(arraySize) + " src/verilog/inst_mem.v src/verilog/inst_mem_tb.v"
     system(cmd)
 
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/inst_mem.out",

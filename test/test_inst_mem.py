@@ -30,12 +30,12 @@ class TestInstructionMemory(TestCase):
         """Test random instructions from file"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             index = Signal(intbv(randint(0, len(self.mem))))
-            self.inst_reg.next = index
+            self.inst_reg.next = index % 4
             yield half_period()
             if python:
-                self.assertEqual(self.mem[index], self.inst_out)
+                self.assertEqual(self.mem[index%4], self.inst_out)
             if verilog:
-                self.assertEqual(self.mem[index], self.inst_out_v)
+                self.assertEqual(self.mem[index%4], self.inst_out_v)
         raise StopSimulation
 
     def testInstMemDynamicPython(self):

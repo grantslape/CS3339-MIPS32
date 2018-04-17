@@ -99,12 +99,12 @@ def immediateFormat(myInt,myArray,myLowerRegister,myUpperRegister):
       myRs = '{0:05b}'.format(myRandInt)
       myRandInt = randint(myLowerRegister,myUpperRegister) #a0 - t9
       myRt = '{0:05b}'.format(myRandInt)
-      if myArray[i] == '10' or myArray[i] == '11':
+      if myArray[i] == '8' or myArray[i] == '9':
         #myRandInt = randint(0,32768) #range from 0 - 32768 2^15
         myRandInt = randint(0,twoExp15)
         myImm = '{0:16b}'.format(myRandInt).strip()
         myImm = myImm.zfill(16)
-      elif myArray[i] == '12' or myArray[i] == '13':
+      elif myArray[i] == '10' or myArray[i] == '11':
         #myRandInt = randint(-32768,32767) #2^15 signed range
         myRandInt = randint(negativeTwoExp15,twoExp15MinusOne)  
         #myRandInt = randint(-10,10) #2^15 signed range
@@ -137,7 +137,7 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
     #print("ARRAY: " + myArray[i])
     if myArray[i] == str(myInt):
       print("J-Format Instruction: " + myArray[i])
-      if myArray[i] == '14':
+      if myArray[i] == '12':
         opCode = myArray[i+1]
         shiftAmt = myArray[i+2]
         funct = myArray[i+3]
@@ -154,7 +154,7 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
           myBin = myBin[2:]
           myImm = myBin.zfill(16)
         myBin = opCode + myRs + myRt + myImm
-      elif myArray[i] == '15' or myArray[i] == '16':
+      elif myArray[i] == '13' or myArray[i] == '14':
         opCode = myArray[i+1]
         myRandInt = randint(0,1000000) #0 - 1 million. This can be increased to accommodate a larger instruction count
         myRandInt = myRandInt / 4
@@ -163,7 +163,7 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
         myJmp = myJmp[4:]
         myJmp = myJmp[:-2]
         myBin = opCode + myJmp
-      elif myArray[i] == '17':
+      elif myArray[i] == '15':
         opCode = myArray[i+1]
         myRandInt = randint(myLowerRegister,myUpperRegister) #Do we want this to be $ra all the time or random using all the available registers from $4 - $25?
         myRs = '{0:05b}'.format(myRandInt)
@@ -236,8 +236,8 @@ def driver():
   convertedToInstArray = instrString.split(',')
   myRandInt = 0
   for x in range(0,int(numberOfInstructions)):
-    myRandInt = randint(1,13)
-    if myRandInt == 1 or myRandInt == 2 or myRandInt == 3 or myRandInt == 4 or myRandInt == 5 or myRandInt == 6 or myRandInt == 7 or myRandInt == 8 or myRandInt == 9:
+    myRandInt = randint(1,11)
+    if myRandInt == 1 or myRandInt == 2 or myRandInt == 3 or myRandInt == 4 or myRandInt == 5 or myRandInt == 6 or myRandInt == 7:
       #call the R-format function
       myInstruction = rFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
       if nonBranchInstructions == '':
@@ -245,7 +245,7 @@ def driver():
       else:
         nonBranchInstructions = nonBranchInstructions + "," + myInstruction
       print(myInstruction)
-    elif myRandInt == 10 or myRandInt == 11 or myRandInt == 12 or myRandInt == 13:
+    elif myRandInt == 8 or myRandInt == 9 or myRandInt == 10 or myRandInt == 11:
       myInstruction = immediateFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
       if nonBranchInstructions == '':
         nonBranchInstructions = myInstruction
@@ -254,8 +254,8 @@ def driver():
       print(myInstruction)
 
   for x in range(0,int(numberOfBranchInstructions)):
-    myRandInt = randint(14,17)
-    if myRandInt == 14 or myRandInt == 15 or myRandInt == 16 or myRandInt == 17:
+    myRandInt = randint(12,15)
+    if myRandInt == 12 or myRandInt == 13 or myRandInt == 14 or myRandInt == 15:
       myInstruction = jumpFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
       if branchInstructions == '':
         branchInstructions = myInstruction
