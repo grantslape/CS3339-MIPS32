@@ -10,7 +10,6 @@ from src.commons.signal_generator import unsigned_signal_set, signed_signal_set,
 from src.commons.settings import settings as sf
 
 
-@unittest.skip("ID/EX Register not implemented")
 class TestIdExRegister(TestCase):
     """Testing ID/EX Pipeline Register Functionality"""
 
