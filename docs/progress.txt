@@ -13,9 +13,6 @@ Natalie Garza:
     hazard_unit
     if_id
     id_shift_left
-Jubal Grubb:
-    ctrl
-    ctrl_mux
 Serena Gutierrez:
     alu
     alu_mux_a DONE
@@ -26,7 +23,7 @@ Isaac Jaimes:
     inst_mem
     fwd_unit DONE 2018-04-03
     shift_unit DONE 2018-04-03
-    instruction generator:
+    instruction generator: Basically Done
 Robert Tomlinson:
     ex_mem
     branch_adder
@@ -36,6 +33,8 @@ Patrick Vinas:
     rfile DONE 2018-04-14
     ex_mux DONE 2018-04-14
 Grant Slape:
+    ctrl DONE 2018-04-16
+    ctrl_mux DONE 2018-04-16
     Main Driver
     Unit Tests:
     	shift_unit DONE 2018-04-03
@@ -50,15 +49,15 @@ Grant Slape:
         hazard_unit DONE 2018-04-08
         if_id DONE
         id_shift_left DONE 2018-04-07
-        ctrl
-        ctrl_mux 
-        alu
+        ctrl DONE 2018-04-16
+        ctrl_mux DONE 2018-04-16
+        alu IN PROGRESS
         alu_mux_a 2018-04-03
         alu_mux_b 2018-04-03
         alu_mux_imm genericized
         rfile DONE 2018-04-03
         ex_mux DONE 2018-04-03
-        inst_mem DONE =
+        inst_mem DONE
         inst_mem_mux DONE 2018-04-07 under 2:1
         ex_mem DONE 2018-04-13
         branch_adder DONE 2018-04-11
