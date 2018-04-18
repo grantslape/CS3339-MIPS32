@@ -2,51 +2,32 @@ import os
 from myhdl import Cosimulation, always
 
 
-def id_ex(clock, reset_in, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_in, mem_to_reg_in, alu_op_in,
+def id_ex(clock, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_in, mem_to_reg_in, alu_op_in,
           branch_in, r_data1, r_data2, rs, rt, rd, pc_value_in, imm, reg_dst_out, reg_write_out, alu_src_out,
           mem_read_out, mem_write_out, mem_to_reg_out, alu_op_out, branch_out, r_data1_out, r_data2_out, rs_out, rt_out,
           rd_out, pc_value_out, imm_out):
     @always(clock.posedge)
     def seq_logic():
-        if reset_in:
-            reg_dst_out.next = 0
-            reg_write_out.next = 0
-            alu_src_out.next = 0
-            mem_read_out.next = 0
-            mem_write_out.next = 0
-            mem_to_reg_out.next = 0
-            alu_op_out.next = 0
-            branch_out.next = 0
-
-            r_data1_out.next = 0
-            r_data2_out.next = 0
-            rs_out.next = 0
-            rt_out.next = 0
-            rd_out.next = 0
-            pc_value_out.next = 0
-            imm_out.next = 0
-        else:
-            reg_dst_out.next = reg_dst_in
-            reg_write_out.next = reg_write_in
-            alu_src_out.next = alu_src_in
-            mem_read_out.next = mem_read_in
-            mem_write_out.next = mem_write_in
-            mem_to_reg_out.next = mem_to_reg_in
-            alu_op_out.next = alu_op_in
-            branch_out.next = branch_in
-
-            r_data1_out.next = r_data1
-            r_data2_out.next = r_data2
-            rs_out.next = rs
-            rt_out.next = rt
-            rd_out.next = rd
-            pc_value_out.next = pc_value_in
-            imm_out.next = imm
+        reg_dst_out.next = reg_dst_in
+        reg_write_out.next = reg_write_in
+        alu_src_out.next = alu_src_in
+        mem_read_out.next = mem_read_in
+        mem_write_out.next = mem_write_in
+        mem_to_reg_out.next = mem_to_reg_in
+        alu_op_out.next = alu_op_in
+        branch_out.next = branch_in
+        r_data1_out.next = r_data1
+        r_data2_out.next = r_data2
+        rs_out.next = rs
+        rt_out.next = rt
+        rd_out.next = rd
+        pc_value_out.next = pc_value_in
+        imm_out.next = imm
 
     return seq_logic
 
 
-def id_ex_v(clock, reset_in, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_in, mem_to_reg_in, alu_op_in,
+def id_ex_v(clock, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_in, mem_to_reg_in, alu_op_in,
             branch_in, r_data1, r_data2, rs, rt, rd, pc_value_in, imm, reg_dst_out, reg_write_out, alu_src_out,
             mem_read_out, mem_write_out, mem_to_reg_out, alu_op_out, branch_out, r_data1_out, r_data2_out, rs_out,
             rt_out, rd_out, pc_value_out, imm_out):
@@ -55,7 +36,6 @@ def id_ex_v(clock, reset_in, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, 
 
     return Cosimulation("vvp -m lib/myhdl.vpi bin/id_ex.out",
                         clock=clock,
-                        reset_in=reset_in,
                         reg_dst_in=reg_dst_in,
                         reg_write_in=reg_write_in,
                         alu_src_in=alu_src_in,

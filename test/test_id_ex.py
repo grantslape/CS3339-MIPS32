@@ -20,8 +20,7 @@ class TestIdExRegister(TestCase):
             self.mem_to_reg_out_v, self.mem_write_out, self.mem_write_out_v, self.alu_src_out, \
             self.alu_src_out_v, self.reg_write_out, self.reg_write_out_v, self.reg_dst_out, \
             self.reg_dst_out_v = unsigned_signal_set(22, width=1)
-        # TODO: UPDATE WHEN ALU OP CODES ARE DETERMINED
-        self.alu_op_in, self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(3)
+        self.alu_op_in, self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(3, width=sf['ALU_CODE_SIZE'])
         self.pc_value_in, self.pc_value_out, self.pc_value_out_v = unsigned_signal_set(3)
         self.r_data1, self.r_data1_out, self.r_data1_out_v, self.r_data2, self.r_data2_out, \
             self.r_data2_out_v, self.imm, self.imm_out, self.imm_out_v, = signed_signal_set(9)
@@ -41,7 +40,9 @@ class TestIdExRegister(TestCase):
         return {
             'clock': self.clock,
             'branch_in': self.branch_in,
-            'alu_op': self.alu_op_in,
+            'reg_write_in': self.reg_write_in,
+            'alu_src_in': self.alu_src_in,
+            'alu_op_in': self.alu_op_in,
             'mem_read_in': self.mem_read_in,
             'mem_to_reg_in': self.mem_to_reg_in,
             'mem_write_in': self.mem_write_in,
@@ -67,16 +68,16 @@ class TestIdExRegister(TestCase):
             'alu_src_out': self.alu_src_out if which == "python" else self.alu_src_out_v,
             'reg_write_out': self.reg_write_out if which == "python" else self.reg_write_out_v,
             'reg_dst_out': self.reg_dst_out if which == "python" else self.reg_dst_out_v,
+            'mem_to_reg_out': self.mem_to_reg_out if which == "python" else self.mem_to_reg_out_v
         }
 
-    # TODO: test signals pass through correctly
     def deassert(self, python=False, verilog=False):
         """test deassert functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH'] / 2):
             yield self.clock.posedge
             yield self.clock.negedge
             if python:
-                self.assertEqual(bin(self.branch_out), 0b0)
+                self.assertEqual(bin(self.branch_out), bin(0b0))
                 self.assertEqual(bin(0b0), bin(self.mem_read_out))
                 self.assertEqual(bin(0b0), bin(self.mem_to_reg_out))
                 self.assertEqual(bin(0b0), bin(self.mem_write_out))
@@ -92,7 +93,7 @@ class TestIdExRegister(TestCase):
                 self.assertEqual(bin(0b0), bin(self.rt_out))
                 self.assertEqual(bin(0b0), bin(self.rd_out))
             if verilog:
-                self.assertEqual(bin(self.branch_out_v), 0b0)
+                self.assertEqual(bin(self.branch_out_v), bin(0b0))
                 self.assertEqual(bin(0b0), bin(self.mem_read_out_v))
                 self.assertEqual(bin(0b0), bin(self.mem_to_reg_out_v))
                 self.assertEqual(bin(0b0), bin(self.mem_write_out_v))
@@ -109,15 +110,13 @@ class TestIdExRegister(TestCase):
                 self.assertEqual(bin(0b0), bin(self.rd_out_v))
         raise StopSimulation
 
-# TODO: test signals pass through correctly
     def dynamic(self, python=False, verilog=False):
         """Dynamic testing of ID/EX Pipeline Register"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.branch_in.next, self.mem_read_in.next, self.mem_to_reg_in.next,\
                 self.mem_write_in.next, self.alu_src_in.next, self.reg_write_in.next,\
                 self.reg_dst_in.next = unsigned_signal_set(7, randint(0, 1), 1)
-            # TODO: UPDATE WHEN ALU OP CODES ARE DETERMINED
-            self.alu_op_in = Signal(intbv())
+            self.alu_op_in = Signal(intbv()[sf['ALU_CODE_SIZE']:])
             self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
             self.r_data1.next, self.r_data2.next, self.imm.next = [
                 Signal(random_signed_intbv()) for _ in range(3)
