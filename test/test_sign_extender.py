@@ -10,17 +10,17 @@ from src.commons.settings import settings as sf
 from src.python.sign_extender import sign_extender, sign_extender_v
 
 
-@unittest.skip("Sign Extender not implemented")
 class TestSignExtender(TestCase):
     """Testing 16=>32bit sign extension module"""
     def setUp(self):
-        self.imm_in = Signal(intbv(0, min=sf['16_SIGNED_MIN_VALUE'], max=sf['16_SIGNED_MAX_VALUE']))
+        self.imm_in = Signal(intbv(min=sf['16_SIGNED_MIN_VALUE'], max=sf['16_SIGNED_MAX_VALUE']))
         self.imm_out, self.imm_out_v = signed_signal_set(2)
         self.dut = sign_extender(imm_in=self.imm_in, imm_out=self.imm_out)
 
     def deassert(self, python=False, verilog=False):
         """Testing nothing happens with zero input"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
+            yield half_period()
             if python:
                 self.assertEqual(bin(self.imm_out), bin(0x00000000))
             if verilog:
@@ -30,7 +30,7 @@ class TestSignExtender(TestCase):
     def dynamic(self, python=False, verilog=False):
         """Testing dynamic functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            self.imm_in = Signal(intbv(randint(sf['16_SIGNED_MIN_VALUE'], sf['16_SIGNED_MAX_VALUE']),
+            self.imm_in.next = Signal(intbv(randint(sf['16_SIGNED_MIN_VALUE'], sf['16_SIGNED_MAX_VALUE']),
                                        min=sf['16_SIGNED_MIN_VALUE'],
                                        max=sf['16_SIGNED_MAX_VALUE']))
             yield half_period()
