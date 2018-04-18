@@ -2,7 +2,7 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import Simulation, StopSimulation, intbv, Signal, posedge
+from myhdl import Simulation, StopSimulation, intbv, Signal
 
 from src.python.id_ex import id_ex, id_ex_v
 from src.commons.clock import clock_gen
@@ -53,7 +53,7 @@ class TestIdExRegister(TestCase):
             'rt': self.rt,
             'rd': self.rd,
             'imm': self.imm,
-            'r_data1_out': which == self.r_data1_out if which == "python" else self.r_data1_out_v,
+            'r_data1_out': self.r_data1_out if which == "python" else self.r_data1_out_v,
             'r_data2_out': self.r_data2_out if which == "python" else self.r_data2_out_v,
             'imm_out': self.imm_out if which == "python" else self.imm_out_v,
             'rs_out': self.rs_out if which == "python" else  self.rs_out_v,
