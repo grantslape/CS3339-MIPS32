@@ -31,8 +31,8 @@ class TestSignExtender(TestCase):
         """Testing dynamic functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.imm_in.next = Signal(intbv(randint(sf['16_SIGNED_MIN_VALUE'], sf['16_SIGNED_MAX_VALUE']),
-                                       min=sf['16_SIGNED_MIN_VALUE'],
-                                       max=sf['16_SIGNED_MAX_VALUE']))
+                                      min=sf['16_SIGNED_MIN_VALUE'],
+                                      max=sf['16_SIGNED_MAX_VALUE']))
             yield half_period()
             if python:
                 self.assertEqual(bin(self.imm_in), bin(self.imm_out))
