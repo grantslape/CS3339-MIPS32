@@ -1,13 +1,12 @@
 """EX/MEM Pioeline Register Unit tests"""
 import unittest
 from unittest import TestCase
-from random import randint
 from myhdl import Simulation, StopSimulation
 
 from src.python.ex_mem import ex_mem, ex_mem_v
 from src.commons.clock import clock_gen
 from src.commons.signal_generator import unsigned_signal_set, signed_signal_set, \
-    random_signed_intbv, random_unsigned_intbv, rand_unsigned_signal_set, rand_signed_signal_set
+    random_unsigned_intbv, rand_unsigned_signal_set, rand_signed_signal_set
 from src.commons.settings import settings as sf
 
 
