@@ -7,8 +7,8 @@ Mark Gitthens:
     inst_mem_mux genericized 2018-04-05
     pc_adder DON 2018-04-05
 Huan Wu:
-    sign_extender
-    id_ex
+    sign_extender DONE
+    id_ex DONE
 Natalie Garza:
     hazard_unit
     if_id
@@ -23,7 +23,7 @@ Isaac Jaimes:
     inst_mem
     fwd_unit DONE 2018-04-03
     shift_unit DONE 2018-04-03
-    instruction generator: Basically Done
+    instruction generator: DONE
 Robert Tomlinson:
     ex_mem
     branch_adder
@@ -36,7 +36,7 @@ Grant Slape:
     ctrl DONE 2018-04-16
     ctrl_mux DONE 2018-04-16
     Main Driver
-    Unit Tests:
+    Unit Tests: DONE
     	shift_unit DONE 2018-04-03
     	pc_mux_a DONE 2018-04-03
     	fwd_unit DONE 2018-04-03
@@ -51,7 +51,7 @@ Grant Slape:
         id_shift_left DONE 2018-04-07
         ctrl DONE 2018-04-16
         ctrl_mux DONE 2018-04-16
-        alu IN PROGRESS
+        alu DONE
         alu_mux_a 2018-04-03
         alu_mux_b 2018-04-03
         alu_mux_imm genericized
