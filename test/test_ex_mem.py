@@ -4,7 +4,7 @@ from unittest import TestCase
 from random import randint
 from myhdl import Simulation, StopSimulation
 
-from src.python.id_ex import id_ex, id_ex_v
+from src.python.ex_mem import ex_mem, ex_mem_v
 from src.commons.clock import clock_gen
 from src.commons.signal_generator import unsigned_signal_set, signed_signal_set, \
     random_signed_intbv, random_unsigned_intbv
@@ -28,9 +28,9 @@ class TestExMemRegister(TestCase):
     def get_module(self, which="python"):
         """Return module under test"""
         if which == "python":
-            module = id_ex(**self.get_args())
+            module = ex_mem(**self.get_args())
         else:
-            module = id_ex_v(**self.get_args(verilog=True))
+            module = ex_mem_v(**self.get_args(verilog=True))
         return module
 
     def get_args(self, verilog=False):
