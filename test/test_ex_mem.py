@@ -10,7 +10,7 @@ from src.commons.signal_generator import unsigned_signal_set, signed_signal_set,
 from src.commons.settings import settings as sf
 
 
-# @unittest.skip("EX/MEM Register not implemented")
+@unittest.skip("EX/MEM Register not implemented")
 class TestExMemRegister(TestCase):
     """Testing functionality of EX/MEM Pipeline Register"""
 
