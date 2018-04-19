@@ -1,13 +1,12 @@
 """EX/MEM Pioeline Register Unit tests"""
 import unittest
 from unittest import TestCase
-from random import randint
 from myhdl import Simulation, StopSimulation
 
-from src.python.id_ex import id_ex, id_ex_v
+from src.python.ex_mem import ex_mem, ex_mem_v
 from src.commons.clock import clock_gen
 from src.commons.signal_generator import unsigned_signal_set, signed_signal_set, \
-    random_signed_intbv, random_unsigned_intbv
+    random_unsigned_intbv, rand_unsigned_signal_set, rand_signed_signal_set
 from src.commons.settings import settings as sf
 
 
@@ -28,9 +27,9 @@ class TestExMemRegister(TestCase):
     def get_module(self, which="python"):
         """Return module under test"""
         if which == "python":
-            module = id_ex(**self.get_args())
+            module = ex_mem(**self.get_args())
         else:
-            module = id_ex_v(**self.get_args(verilog=True))
+            module = ex_mem_v(**self.get_args(verilog=True))
         return module
 
     def get_args(self, verilog=False):
@@ -88,8 +87,8 @@ class TestExMemRegister(TestCase):
         """Testing dynamic functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.branch_in.next, self.mem_read_in.next, self.reg_write_in.next, \
-                self.z_in.next = randint(0, 1)
-            self.rt_in.next, self.result_in.next = random_signed_intbv()
+                self.z_in.next = rand_unsigned_signal_set(4, width=1)
+            self.rt_in.next, self.result_in.next = rand_signed_signal_set(2)
             self.jmp_addr_in.next = random_unsigned_intbv()
             self.reg_dst_in.next = random_unsigned_intbv(width=5)
             yield self.clock.posedge
