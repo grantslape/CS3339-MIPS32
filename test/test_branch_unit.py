@@ -2,14 +2,13 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import StopSimulation, Simulation
+from myhdl import StopSimulation, Simulation, Signal
 from src.commons.clock import half_period
 from src.commons.settings import settings as sf
-from src.commons.signal_generator import unsigned_signal_set
+from src.commons.signal_generator import unsigned_signal_set, unsigned_intbv
 from src.python.branch_unit import branch_unit, branch_unit_v
 
 
-@unittest.skip("Branch Unit not implemented")
 class TestBranchUnit(TestCase):
     """Test Branch Unit module"""
     def setUp(self):
@@ -31,21 +30,21 @@ class TestBranchUnit(TestCase):
             self.zero_in.next = randint(0, 1)
             yield half_period()
             if python:
-                self.assertEqual(bin(0), self.pc_src)
+                self.assertEqual(Signal(unsigned_intbv(0, width=1)), self.pc_src)
             if verilog:
-                self.assertEqual(bin(0), self.pc_src_v)
+                self.assertEqual(Signal(unsigned_intbv(0, width=1)), self.pc_src_v)
         raise StopSimulation
 
     def asserted(self, python=False, verilog=False):
-        """Test when branch_Ctrl off"""
+        """Test when branch_Ctrl on"""
         self.branch_ctrl.next = 1
         self.zero_in.next = 1
         for _ in range(sf['DEFAULT_TEST_LENGTH'] / 10):
             yield half_period()
             if python:
-                self.assertEqual(bin(1), self.pc_src)
+                self.assertEqual(Signal(unsigned_intbv(1, width=1)), self.pc_src)
             if verilog:
-                self.assertEqual(bin(1), self.pc_src_v)
+                self.assertEqual(Signal(unsigned_intbv(1, width=1)), self.pc_src_v)
         raise StopSimulation
 
     def dynamic(self, python=False, verilog=False):
@@ -56,14 +55,14 @@ class TestBranchUnit(TestCase):
             yield half_period()
             if self.branch_ctrl == 1 and self.zero_in == 1:
                 if python:
-                    self.assertEqual(bin(1), self.pc_src)
+                    self.assertEqual(Signal(unsigned_intbv(1, width=1)), self.pc_src)
                 if verilog:
-                    self.assertEqual(bin(1), self.pc_src_v)
+                    self.assertEqual(Signal(unsigned_intbv(1, width=1)), self.pc_src_v)
             else:
                 if python:
-                    self.assertEqual(bin(0), self.pc_src)
+                    self.assertEqual(Signal(unsigned_intbv(0, width=1)), self.pc_src)
                 if verilog:
-                    self.assertEqual(bin(0), self.pc_src_v)
+                    self.assertEqual(Signal(unsigned_intbv(0, width=1)), self.pc_src_v)
         raise StopSimulation
 
     def testDeassertedPython(self):
