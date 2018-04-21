@@ -3,6 +3,7 @@ import os
 twoExp15 = 32768
 twoExp15MinusOne = 32767
 negativeTwoExp15 = -32768
+maxInstructions = 2**20
 
 INSTRUCTION_PATH = "lib/Instructions.bin"
 PARAM_PATH = "lib/Parameters.txt"
@@ -111,6 +112,7 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
   upperBound = 32
   jrFunct = '000000'
   jrConst = '000000000000000'
+  raRegister = '11111'
   myBin = ''
   for i in range(0,len(myArray),5):
     #print("ARRAY: " + myArray[i])
@@ -133,8 +135,7 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
         myBin = opCode + myRs + myRt + myImm
       elif myArray[i] == '13' or myArray[i] == '14':
         opCode = myArray[i+1]
-        myRandInt = randint(0,1000000) #0 - 1 million. This can be increased to accommodate a larger instruction count
-        myRandInt = myRandInt / 4
+        myRandInt = randint(0,2**13) #fit inside the array, fit inside the default number of instructions (10000)
         myJmp = '{0:20b}'.format(myRandInt).strip()
         myJmp = myJmp.zfill(32)
         myJmp = myJmp[4:]
@@ -142,9 +143,7 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
         myBin = opCode + myJmp
       elif myArray[i] == '15':
         opCode = myArray[i+1]
-        myRandInt = randint(myLowerRegister,myUpperRegister) #Do we want this to be $ra all the time or random using all the available registers from $4 - $25?
-        myRs = '{0:05b}'.format(myRandInt)
-        myBin = opCode + myRs + jrConst + jrFunct
+        myBin = opCode + raRegister + jrConst + jrFunct
       break
   return myBin
 #######################################################################################
@@ -160,6 +159,7 @@ def createInstructionsFile():
 #######################################################################################
 def writeInstructions(myArray):
   import random
+  jLast = '00001000000000000000000000000000'
   file = open(INSTRUCTION_PATH,'a')
   instructionArray = myArray.split(',')
   random.shuffle(instructionArray)
@@ -167,6 +167,8 @@ def writeInstructions(myArray):
    file.write(instructionArray[i])
    if i < (len(instructionArray) - 1):
      file.write('\n')
+  file.write('\n')
+  file.write(jLast)
   file.close()
   return
 #######################################################################################
@@ -179,9 +181,33 @@ def driver():
   createInstructionsFile()
   inputArray = getParameters()
   parameterArray = inputArray.split(',')
-  totalInstructions = parameterArray[0]
-  branchFrequency = int(parameterArray[1]) / 100.0
-  dataDependency = int(parameterArray[2]) / 100.0
+  try:
+    totalInstructions = int(parameterArray[0]) - 1
+    if totalInstructions > maxInstructions:
+      print("The instruction count exceeds the max of 2^20 instructions. The total instruction count has been converted to 2^20.")
+      totalInstructions = maxInstructions
+    elif totalInstructions <= 1000:
+      print("The instruction count is too low. It won't produce a good simulation. The total instruction count has been converted to 10000.")    
+      totalInstructions = 10000
+  except:
+    totalInstructions = 10000
+    print("You entered an invalid character. The total instruction count has been reset to 10000.")
+  
+  try:
+    branchFrequency = int(parameterArray[1]) / 100.0
+    if branchFrequency < 0.0 or branchFrequency > 100.0:
+      branchFrequency = 0.0
+      print("Branch Frequency: The branch frequency was outside the valid range of 0% - 100%. It has been set to 0%")
+  except:
+    branchFrequency = 0.0
+    print("Brnch Frequency: You attempted to enter an invalid character. The default branch frequency will be 0. Please enter a whole number next time.")
+
+  try:
+    dataDependency = int(parameterArray[2]) / 100.0
+  except:
+    dataDependency = 0.0
+    print("Data Dependency: You attempted to enter an invalid character. The default data dependency will be 0. Please enter a whole number next time.")
+
   if dataDependency == 0.0:
     lowerRegister = 4
   elif dataDependency == 0.25:
@@ -192,9 +218,13 @@ def driver():
     lowerRegister = 17
   elif dataDependency == 1.0:
     lowerRegister = 21
-  print("DATA DEPENDENCY: " + str(dataDependency))
+  else:
+    lowerRegister = 4
+    dataDependency = 0.0
+    print("The only accepted values for data dependency are 0, 25, 50, 75, and 100. All other values will default to 0.")
+  print("DATA DEPENDENCY: " + str(dataDependency*100)) + "%"
   print("LOWER REGISTER: " + str(lowerRegister))
-  print("BRANCH FREQUENCY: " + str(branchFrequency))
+  print("BRANCH FREQUENCY: " + str(branchFrequency*100)) + "%"
   numberOfBranchInstructions = int(int(totalInstructions) * float(branchFrequency))
   numberOfInstructions = int(totalInstructions) - int(numberOfBranchInstructions)
   print("# Branch Instructions: " + str(numberOfBranchInstructions))
