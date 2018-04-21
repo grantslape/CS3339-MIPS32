@@ -44,8 +44,8 @@ output [0:0] branch;
 reg [0:0] branch;
 output [0:0] mem_read;
 reg [0:0] mem_read;
-output [0:0] mem_to_reg;
-reg [0:0] mem_to_reg;
+output [1:0] mem_to_reg;
+reg [1:0] mem_to_reg;
 output [0:0] mem_write;
 reg [0:0] mem_write;
 output [0:0] alu_src;
@@ -95,7 +95,7 @@ always @(posedge clock) begin: CTRL_LOGIC
         alu_src <= 0;
         reg_write <= 0;
     end
-    else if (((op_in == 2) || (op_in == 3))) begin
+    else if ((op_in == 2)) begin
         jump <= 1;
         branch <= 0;
         reset_out <= 1;
@@ -104,6 +104,17 @@ always @(posedge clock) begin: CTRL_LOGIC
         mem_read <= 0;
         alu_src <= 0;
         alu_op <= 0;
+    end
+    else if ((op_in == 3)) begin
+        jump <= 1;
+        branch <= 0;
+        reset_out <= 1;
+        mem_write <= 0;
+        reg_write <= 1;
+        mem_read <= 0;
+        alu_src <= 0;
+        alu_op <= 0;
+        mem_to_reg <= 2;
     end
     else if ((op_in == 25)) begin
         jump <= 2;

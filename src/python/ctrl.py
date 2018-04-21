@@ -14,7 +14,7 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
     :param branch: activate branch unit, to id_ex.branch_in
     :param alu_op: multi-bit alu op code.  see table. to id_ex.alu_op_in
     :param mem_read: activate read from memory, to id_ex.mem_read_in
-    :param mem_to_reg: 0 for Alu result writeback, 1 for data writeback. to id_ex.mem_to_reg
+    :param mem_to_reg: 00 for Alu result writeback, 01 for data writeback. to id_ex.mem_to_reg, 10 for data writeback of pc_next to register ra
     :param mem_write: activate to write to memory. to id_ex
     :param alu_src: 0 for register input, 1 for immediate. to id_ex.alu_src_in
     :param reg_write: activate to write to register.  to id_ex.reg_write_in
@@ -56,8 +56,8 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
             alu_src.next = 0
             reg_write.next = 0
         # we may want to "reg_write" here and drop PC+4 value into the flow.
-        elif op_in == 2 or op_in == 3:
-            # JUMP AND JAL
+        elif op_in == 2:
+            # JUMP
             # TODO: break JAL out because we need to handle it differently
             jump.next = 1
             branch.next = 0
@@ -67,6 +67,18 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
             mem_read.next = 0
             alu_src.next = 0
             alu_op.next = 0
+        elif op_in == 3:
+            # JAL
+            # TODO: break JAL out because we need to handle it differently
+            jump.next = 1
+            branch.next = 0
+            reset_out.next = 1
+            mem_write.next = 0
+            reg_write.next = 1
+            mem_read.next = 0
+            alu_src.next = 0
+            alu_op.next = 0
+            mem_to_reg.next = 2
         elif op_in == 25:
             # jr $ra
             jump.next = 0b10

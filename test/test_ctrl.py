@@ -18,7 +18,7 @@ class TestControlUnit(TestCase):
         self.branch, self.branch_v, self.mem_read, self.mem_read_v, self.mem_to_reg, \
             self.mem_to_reg_v, self.mem_write, self.mem_write_v, self.alu_src, self.alu_src_v, \
             self.reg_write, self.reg_write_v, self.reg_dst, self.reg_dst_v, self.clock = \
-            unsigned_signal_set(15, width=1)
+            unsigned_signal_set(15, width=2)
         self.alu_op, self.alu_op_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
         self.reset_out, self.reset_out_v = unsigned_signal_set(2, width=1)
 
@@ -159,23 +159,25 @@ class TestControlUnit(TestCase):
             self.assertEqual(0, self.branch)
             self.assertEqual(1, self.reset_out)
             # we may want to "write" here and drop PC+4 value into the flow.
-            self.assertEqual(0, self.reg_write)
+            self.assertEqual(1, self.reg_write)
             self.assertEqual(0, self.mem_read)
             self.assertEqual(0, self.alu_src)
             # Unsure about this, we may way to add here
             self.assertEqual(0, self.alu_op)
             self.assertEqual(0, self.mem_write)
+            self.assertEqual(2, self.mem_to_reg)
         if verilog:
             self.assertEqual(1, self.jump_v)
             self.assertEqual(0, self.branch_v)
             self.assertEqual(1, self.reset_out_v)
             # we may want to "write" here and drop PC+4 value into the flow.
-            self.assertEqual(0, self.reg_write_v)
+            self.assertEqual(1, self.reg_write_v)
             self.assertEqual(0, self.mem_read_v)
             self.assertEqual(0, self.alu_src_v)
             # Unsure about this, we may way to add here
             self.assertEqual(0, self.alu_op_v)
             self.assertEqual(0, self.mem_write_v)
+            self.assertEqual(2, self.mem_to_reg_v)
         raise StopSimulation
 
     def jr_ra_test(self, python=False, verilog=False):
