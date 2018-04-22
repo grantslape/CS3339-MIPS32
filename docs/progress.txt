@@ -20,7 +20,6 @@ Serena Gutierrez:
     alu_mux_a DONE
     alu_mux_b DONE
 Jihan Roujiel:
-    branch_unit
 Isaac Jaimes:
     inst_mem DONE
     fwd_unit DONE 2018-04-03
@@ -35,6 +34,7 @@ Patrick Vinas:
     mem_wb DONE 2018-04-13
     rfile DONE 2018-04-14
     ex_mux DONE 2018-04-14
+    branch_unit DONE 2018-04-21
 Grant Slape:
     ctrl DONE 2018-04-16
     ctrl_mux DONE 2018-04-16
