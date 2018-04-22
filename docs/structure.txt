@@ -6,12 +6,12 @@ cpu:
 	 	input clock: system clock
 		input pc_write: 1 to stall (repeat instruction), from hazard_unit.pc_write
 		input [31:0] nxt_inst: next instruction address from pc_mux_b
-		output [31:0] cur_pc: next instruction address goes to inst_mem, pc_mux_c
+		output [31:0] cur_pc: next instruction address goes to inst_mem
 	pc_mux_a: 2:1 Mux for program_counter input: instance of 32 bit 2:1 mux
 		input pc_src: which input to use. 0 for nxt_pc, 1, for imm_jmp_addr. From branch predictor
 		input [31:0] imm_jmp_addr: a new PC value from the EX/MEM register
 		input [31:0] nxt_pc: sequential next PC from pc_adder
-		output [31:0] nxt_inst: actual next instruction address to pc_mux_b
+		output [31:0] nxt_inst: actual next instruction address to pc_mux_b and inst_mem
 	pc_mux_b: 3:1 Mux to avoid jump stalls / handle jr $ra instance of 32 bit 3:1 mux
 		input [1:0] jmp_ctrl: source signal.  from ctrl.  0 for next_inst, 1 for jmp_addr, 10 for jmp_reg
 		input [31:0] nxt_inst_in: actual next instruction address from pc_mux_a
@@ -22,7 +22,7 @@ cpu:
 		input [31:0] cur_pc: current instruction address. from program_counter
 		output [31:0] nxt_pc: next sequential instruction address to pc_mux_a and if_id
 	inst_mem: Instruction Read unit and register:
-		input [31:0] inst_reg: address to read from, from nxt_inst.  this is probably an index of raw_mem array.
+		input [31:0] inst_reg: address to read from, from pc_mux_a.  this is an index of raw_mem array.
 		output [31:0] inst_out: instruction output to inst_mem_mux
 		[31:0] raw_mem [SIZE-1:0]: Instruction memory from a text file.  This should be an array of 32 bit regs
 	inst_mem_mux: Mux to support ID jumps by stalling
@@ -60,9 +60,9 @@ cpu:
 	id_shift_left: early jump support shift target left 2, then concat with top4
 		input [31:28] top4: top 4 bits of PC.  from if_id
 		input [25:0] target: 26 bit immediate jump target.  from if_id
-		output [31:0] jaddr_out: jump address. to pc_mux_b 
+		output [31:0] jaddr_out: jump address. to pc_mux_b
 	ctrl: Main control unit. everything to ID_EX passes through ctrl_mux
-	    input clock: system clock
+	  input clock: system clock
 		input [5:0] funct_in: from if_id.funct_out
 		input [5:0] op_in: This is a MIPS op code from IF_ID
 		output [1:0] jump: 1 for jmp lbl, 10 for j $ra. to inst_mem_mux.jmp_ctrl, pc_mux_b.jmp_ctrl
@@ -86,7 +86,7 @@ cpu:
 		input [4:0]: if_id_rt: current Rt, from if_id.rt
 		input [4:0]: id_ex_rt: previous Rt, from id_ex.rt_out
 		input mem_read: previous mem_read ctrl signal. from id_ex.mem_read_out
-		output pc_write: activate to stall (nop). to pc_mux_c
+		output pc_write: activate to stall (nop). to pc_mux_a
 		output if_id_write: stall if_id stage by setting control signals to 0. - this may not be necessary
 		output ex_stall: Insert bubble into pipeline by setting ctrl signals to 0. to ctrl_mux
 	id_ex: ID/EX state register
@@ -125,7 +125,7 @@ cpu:
 		input [31:0] r_data1: rs data received from id_ex
 		input [31:0] mem_rd: rd from the previous cycle, received from ex_mem
 		input [31:0] wb_rd: rd from two cycles ago, received from wb_mux
-		output [31:0] op1_out: Output for Rs/Op1.  Sent to ALU 
+		output [31:0] op1_out: Output for Rs/Op1.  Sent to ALU
 	alu_mux_b: 3:1 Mux for forwarding results from 2 cycles ago
 		input [1:0] forward_b: two bit input selector from fwd_unit
 		input [31:0] r_data2: rt data received from id_ex
@@ -208,5 +208,3 @@ cpu:
 		input [31:0] rdata_in: Read data input. from mem_wb.rdata_out
 		input [31:0] result_in: result input. from mem_wb.result_out
 		output [31:0] wb_out: output to write to register file. to rfile.w_data
-
-		
