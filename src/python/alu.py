@@ -1,8 +1,7 @@
 import os
-from myhdl import *
+from myhdl import always_comb, Cosimulation
 
-
-def alu(op_1, op_2, alu_op,z,result):
+def alu(op_1, op_2, alu_op, z, result):
     """
         alu: The main ALU
         input [31:0] op_1: a 32 bit operand.  from alu_mux_1
@@ -11,8 +10,8 @@ def alu(op_1, op_2, alu_op,z,result):
         output [31:0] result: a 32 bit result of operation.  to ex_mem
         output z: Zero flag.  to ex_mem
     """
-    
-    @always_comb 
+
+    @always_comb
     def logic():
         if alu_op == 1:
             result.next = op_1 + op_2
@@ -20,7 +19,7 @@ def alu(op_1, op_2, alu_op,z,result):
             result.next = op_1 - op_2
         elif alu_op == 3:
             result.next = op_1 ^ op_2
-        elif alu_op == 4 :
+        elif alu_op == 4:
             result.next = op_1 | op_2
         elif alu_op == 5:
             result.next = op_1 & op_2
