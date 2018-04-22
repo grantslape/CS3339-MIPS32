@@ -16,6 +16,7 @@ from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 from src.python.mux32bit3to1 import mux32bit3to1
 from src.python.mux32bit2to1 import mux32bit2to1
+from src.python.pc_adder import pc_adder
 
 clock, pc_write, pc_src, jmp_ctrl = unsigned_signal_set(4, width=1)
 nxt_inst, cur_pc, imm_jmp_addr, nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg = unsigned_signal_set(7)
@@ -33,16 +34,18 @@ def top():
                             data2=jmp_addr_last,
                             data3=jmp_reg,
                             out=nxt_inst)
+    pc_add = pc_adder(cur_pc=cur_pc,
+                      next_pc=nxt_pc)
 
     clock_inst = clock_gen(clock)
 
-    return clock_inst, pc, pc_mux_a, pc_mux_b
+    return clock_inst, pc, pc_mux_a, pc_mux_b, pc_add
 
 
 def stim():
     """Test stimulus"""
+    cur_pc.next = 4
     while 1:
-        nxt_pc.next += 4
         yield clock.negedge
         print("PC: {}".format(hex(cur_pc)))
 
