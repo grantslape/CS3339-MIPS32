@@ -14,23 +14,23 @@ def alu(op_1, op_2, alu_op,z,result):
     
     @always_comb 
     def logic():
-        if(alu_op == 1):
-	     result.next = op_1.signed() + op_2.signed()
-        elif(alu_op == 2):
-            result.next = op_1.signed() - op_2.signed()
-        elif(alu_op == 3):
+        if alu_op == 1:
+            result.next = op_1 + op_2
+        elif alu_op == 2:
+            result.next = op_1 - op_2
+        elif alu_op == 3:
             result.next = op_1 ^ op_2
-        elif(alu_op == 4):
+        elif alu_op == 4 :
             result.next = op_1 | op_2
-        elif(alu_op == 5):
+        elif alu_op == 5:
             result.next = op_1 & op_2
-        elif(alu_op == 8):
+        elif alu_op == 8:
             result.next = ~(op_1 | op_2)
-        elif(alu_op == 9):
-            if(op_1.signed() < op_2.signed()):
-               result.next = 1
+        elif alu_op == 9:
+            if op_1 < op_2:
+                result.next = 1
             else:
-               result.next = 0
+                result.next = 0
 
     @always_comb
     def zero_detect():
@@ -47,8 +47,8 @@ def alu_v(op_1, op_2, alu_op, z, result):
     cmd = "iverilog -o bin/alu.out src/verilog/alu.v src/verilog/alu_tb.v"
     os.system(cmd)
     return Cosimulation("vvp -m  lib/myhdl.vpi bin/alu.out",
-                         op_1=op_1,
-                         op_2=op_2,
-                         alu_op=alu_op,
-                         z=z,
-                         result=result)
+                        op_1=op_1,
+                        op_2=op_2,
+                        alu_op=alu_op,
+                        z=z,
+                        result=result)

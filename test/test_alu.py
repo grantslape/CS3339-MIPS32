@@ -1,5 +1,6 @@
 """Main ALU unit tests"""
 import unittest
+from random import randint
 from unittest import TestCase
 from myhdl import Simulation, StopSimulation, intbv, Signal, bin
 
@@ -7,7 +8,7 @@ from src.python.alu import alu, alu_v
 from src.commons.settings import settings as sf
 from src.commons.clock import half_period
 from src.commons.signal_generator import signed_signal_set, unsigned_signal_set, \
-    rand_signed_signal_set
+    rand_signed_signal_set, signed_intbv, random_signed_intbv
 
 
 class TestALU(TestCase):
@@ -42,9 +43,11 @@ class TestALU(TestCase):
     def add_test(self, python=False, verilog=False):
         """Stim for addition"""
         self.alu_op.next = intbv(0b0001)
-        self.op_1.next = self.op_1 // 2
-        self.op_2.next = self.op_2 // 2
-        result = self.op_1 + self.op_2
+        first = signed_intbv(randint(sf['16_SIGNED_MIN_VALUE'], sf['16_SIGNED_MAX_VALUE']))
+        second = signed_intbv(randint(sf['16_SIGNED_MIN_VALUE'], sf['16_SIGNED_MAX_VALUE']))
+        result = first + second
+        self.op_1.next = first
+        self.op_2.next = second
         yield half_period()
         if python:
             self.assertEqual(bin(self.result), bin(result))
@@ -57,9 +60,11 @@ class TestALU(TestCase):
     def sub_test(self, python=False, verilog=False):
         """Stim for subtraction"""
         self.alu_op.next = intbv(0b0010)
-        self.op_1.next = self.op_1 // 2
-        self.op_2.next = self.op_2 // 2
-        result = self.op_1 - self.op_2
+        first = signed_intbv(randint(sf['16_SIGNED_MIN_VALUE'], sf['16_SIGNED_MAX_VALUE']))
+        second = signed_intbv(randint(sf['16_SIGNED_MIN_VALUE'], sf['16_SIGNED_MAX_VALUE']))
+        result = first - second
+        self.op_1.next = first
+        self.op_2.next = second
         yield half_period()
         if python:
             self.assertEqual(bin(result), bin(self.result))
@@ -135,7 +140,7 @@ class TestALU(TestCase):
         """Stim for SLT"""
         for _ in range(sf['DEFAULT_TEST_LENGTH'] / 10):
             self.alu_op.next = intbv(0b1001)
-            result = 0 if self.op_1 < self.op_2 else 1
+            result = 1 if self.op_1 < self.op_2 else 0
             yield half_period()
             if python:
                 self.assertEqual(bin(result), bin(self.result))
