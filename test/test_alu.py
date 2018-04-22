@@ -1,7 +1,7 @@
 """Main ALU unit tests"""
 import unittest
 from unittest import TestCase
-from myhdl import Simulation, StopSimulation, intbv, Signal
+from myhdl import Simulation, StopSimulation, intbv, Signal, bin
 
 from src.python.alu import alu, alu_v
 from src.commons.settings import settings as sf
@@ -10,7 +10,6 @@ from src.commons.signal_generator import signed_signal_set, unsigned_signal_set,
     rand_signed_signal_set
 
 
-@unittest.skip("ALU not implemented")
 class TestALU(TestCase):
     """Test main ALU functionality"""
 
@@ -48,10 +47,10 @@ class TestALU(TestCase):
         result = self.op_1 + self.op_2
         yield half_period()
         if python:
-            self.assertEqual(self.result, result)
+            self.assertEqual(bin(self.result), bin(result))
             self.check_zero(self.z, result)
         if verilog:
-            self.assertEqual(self.result_v, result)
+            self.assertEqual(bin(self.result_v), bin(result))
             self.check_zero(self.z_v, result)
         raise StopSimulation
 
@@ -63,10 +62,10 @@ class TestALU(TestCase):
         result = self.op_1 - self.op_2
         yield half_period()
         if python:
-            self.assertEqual(result, self.result)
+            self.assertEqual(bin(result), bin(self.result))
             self.check_zero(self.z, result)
         if verilog:
-            self.assertEqual(result, self.result_v)
+            self.assertEqual(bin(result), bin(self.result_v))
             self.check_zero(self.z_v, result)
         raise StopSimulation
 
@@ -76,10 +75,10 @@ class TestALU(TestCase):
         result = self.op_1 ^ self.op_2
         yield half_period()
         if python:
-            self.assertEqual(result, self.result)
+            self.assertEqual(bin(result), bin(self.result))
             self.check_zero(self.z, result)
         if verilog:
-            self.assertEqual(result, self.result_v)
+            self.assertEqual(bin(result), bin(self.result_v))
             self.check_zero(self.z_v, result)
         raise StopSimulation
 
@@ -89,10 +88,10 @@ class TestALU(TestCase):
         result = self.op_1 | self.op_2
         yield half_period()
         if python:
-            self.assertEqual(result, self.result)
+            self.assertEqual(bin(result), bin(self.result))
             self.check_zero(self.z, result)
         if verilog:
-            self.assertEqual(result, self.result_v)
+            self.assertEqual(bin(result), bin(self.result_v))
             self.check_zero(self.z_v, result)
         raise StopSimulation
 
@@ -102,10 +101,10 @@ class TestALU(TestCase):
         result = self.op_1 & self.op_2
         yield half_period()
         if python:
-            self.assertEqual(result, self.result)
+            self.assertEqual(bin(result), bin(self.result))
             self.check_zero(self.z, result)
         if verilog:
-            self.assertEqual(result, self.result_v)
+            self.assertEqual(bin(result), bin(self.result_v))
             self.check_zero(self.z_v, result)
         raise StopSimulation
 
@@ -125,10 +124,10 @@ class TestALU(TestCase):
         result = ~ (self.op_1 | self.op_2)
         yield half_period()
         if python:
-            self.assertEqual(result, self.result)
+            self.assertEqual(bin(result), bin(self.result))
             self.check_zero(self.z, result)
         if verilog:
-            self.assertEqual(result, self.result_v)
+            self.assertEqual(bin(result), bin(self.result_v))
             self.check_zero(self.z_v, result)
         raise StopSimulation
 
@@ -139,9 +138,9 @@ class TestALU(TestCase):
             result = 0 if self.op_1 < self.op_2 else 1
             yield half_period()
             if python:
-                self.assertEqual(result, self.result)
+                self.assertEqual(bin(result), bin(self.result))
             if verilog:
-                self.assertEqual(result, self.result_v)
+                self.assertEqual(bin(result), bin(self.result_v))
         raise StopSimulation
 
     def testAddOpPython(self):
