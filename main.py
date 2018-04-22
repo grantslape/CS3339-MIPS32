@@ -10,6 +10,10 @@
 """
 from myhdl import Simulation, bin, StopSimulation, ResetSignal
 
+import shift_unit
+from fwd_unit import fwd_unit
+from src.python.ex_mux import ex_mux
+from src.python.alu import alu
 from src.python.id_ex import id_ex
 from src.python.hazard_unit import hazard_unit
 from src.python.ctrl_mux import ctrl_mux
@@ -28,15 +32,18 @@ from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 
 clock, pc_write, pc_src, jmp_ctrl, jump_gate, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
-    mem_read_ctrl, mem_read_gate, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_write_ctrl, mem_read_id_ex, \
-    mem_write_gate, mem_write_id_ex, alu_src_ctrl, alu_src_gate, alu_src_id_ex, reg_write_ctrl, \
-    reg_write_gate, reg_write_id_ex, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, ex_stall \
-    = unsigned_signal_set(28, width=1)
+mem_read_ctrl, mem_read_gate, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_write_ctrl, mem_read_id_ex, \
+mem_write_gate, mem_write_id_ex, alu_src_ctrl, alu_src_gate, alu_src_id_ex, reg_write_ctrl, \
+reg_write_gate, reg_write_id_ex, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, ex_stall, zero_flag \
+    = unsigned_signal_set(29, width=1)
+
+forward_a_out, forward_b_out = unsigned_signal_set(2, width=2)
 
 nxt_inst, cur_pc, imm_jmp_addr, nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
-    pc_id, pc_id_ex, if_id_write, reg_write_final = unsigned_signal_set(13)
+pc_id, pc_id_ex, if_id_write, reg_write_final = unsigned_signal_set(13)
 
-imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex = signed_signal_set(6)
+imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem, \
+result_mem_wb, op1_out, op2_out, op2_final = signed_signal_set(12)
 
 rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, w_addr = unsigned_signal_set(7, width=5)
 
@@ -91,6 +98,7 @@ def top():
                        reset=reset_ctrl)
 
     extender = sign_extender(imm_in=imm, imm_out=imm_out)
+
     registers = rfile(clock=clock,
                       # dummy for now
                       reset=ResetSignal(sf['INACTIVE_HIGH'], active=sf['ACTIVE_LOW'], async=True),
@@ -164,6 +172,7 @@ def top():
                        rt=rt,
                        rd=rd,
                        imm=imm,
+                       jmp_imm=imm_out,
                        r_data1_out=r_data1_id_ex,
                        r_data2_out=r_data2_id_ex,
                        imm_out=imm_id_ex,
@@ -180,10 +189,49 @@ def top():
                        reg_dst_out=reg_dst_id_ex,
                        mem_to_reg_out=mem_to_reg_id_ex)
 
+    # TODO: CHECK THESE SIGNALS
+    alu_mux_a = mux32bit3to1(ctrl_line=forward_a_out,
+                             data1=r_data1_id_ex,
+                             data2=result_ex_mem,
+                             data3=result_mem_wb,
+                             out=op1_out)
+    alu_mux_b = mux32bit3to1(ctrl_line=forward_b_out,
+                             data1=r_data2_id_ex,
+                             data2=result_ex_mem,
+                             data3=result_mem_wb,
+                             out=op2_out)
+    alu_mux_imm = mux32bit2to1(ctrl_line=alu_src_id_ex,
+                               input1=op2_out,
+                               input2=imm_out,
+                               out=op2_final)
+
+    alu_ = alu(op_1=op1_out,
+               op_2=op2_final,
+               alu_op=alu_op_id_ex,
+               result=result,
+               z=zero_flag)
+
+    ex_mux_ = ex_mux(reg_dst=reg_dst_id_ex,
+                     rt_in=rt_id_ex,
+                     rd_in=rd_id_ex,
+                     dest=dest_ex)
+
+    forwarder = fwd_unit(rt_in=rt_id_ex,
+                         rs_in=rs_id_ex,
+                         ex_rd=rd_ex_mem,
+                         mem_rd=rd_mem_wb,
+                         mem_reg_write=reg_write_ex_mem,
+                         wb_reg_write=reg_write_mem_wb,
+                         forward_a=forward_a_out,
+                         forward_b=forward_b_out)
+
+    shifter = shift_unit()
+
     clock_inst = clock_gen(clock)
 
     return clock_inst, pc, pc_mux_a, pc_mux_b, pc_add, inst_memory, inst_mem_mux, if_id_pipe, \
-        extender, registers, id_shifter, ctrl_unit, ctrl_gate, hzd, id_ex_pipe
+        extender, registers, id_shifter, ctrl_unit, ctrl_gate, hzd, id_ex_pipe, alu_mux_a, \
+        alu_mux_b, alu_mux_imm, alu_, ex_mux_
 
 
 def stim():
@@ -201,13 +249,18 @@ def stim():
         if pc_id == 350000:
             pc_write.next = 1
         yield clock.negedge
-        print("Cycle: {}, PC: {}, R1: {}, R2: {}, rs: {}, rt: {}, rd: {}, imm: {}, B: {}, MR: {}, MW: {}, "
-              "AS: {}, RW: {}, RD: {}, MTR: {}, ALU: {}".format(int(nxt_inst // 4) + 1,
-                bin(pc_id_ex, width=32), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
-                bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
-                bin(imm_id_ex, width=16), bin(branch_id_ex), bin(mem_read_id_ex),
-                bin(mem_write_id_ex), bin(alu_src_id_ex), bin(reg_write_id_ex), bin(reg_dst_id_ex),
-                bin(mem_to_reg_id_ex), bin(alu_op_id_ex, width=4)))
+        # print("Cycle: {0}, PC: {1}, Op: {2}, Funct: {3}, J: {}, B: {}, MR: {}, MW: {}, AS: {}, "
+        #       "RW: {}, RD: {}, MTR: {}, ALU: {}, result: {}, op1: {}, op2: {}")
+        print("Cycle: {}, PC: {}, R1: {}, R2: {}, rs: {}, rt: {}, rd: {}, imm: {}, J: {}, B: {}, MR: {}, MW: {}, "
+              "AS: {}, RW: {}, RD: {}, MTR: {}, ALU: {}, result: {}, op1: {}, op2: {}"
+              # We are looking at values for 2 cycles ago
+              .format(int(nxt_inst // 4) + 1 - 2,
+                      bin(pc_id_ex, width=32), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
+                      bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
+                      bin(imm_id_ex, width=16), bin(jmp_ctrl), bin(branch_id_ex), bin(mem_read_id_ex),
+                      bin(mem_write_id_ex), bin(alu_src_id_ex), bin(reg_write_id_ex), bin(reg_dst_id_ex),
+                      bin(mem_to_reg_id_ex), bin(alu_op_id_ex, width=4), bin(result, width=32),
+                      bin(op1_out), bin(op2_final)))
 
 
 def monitor():
@@ -219,7 +272,7 @@ def monitor():
 
 def main():
     """Run the simulation!!"""
-    Simulation(top(), stim()).run(duration=97507)
+    Simulation(top(), stim()).run(duration=975070)
 
 
 if __name__ == '__main__':

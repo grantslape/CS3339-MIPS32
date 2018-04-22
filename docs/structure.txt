@@ -133,16 +133,16 @@ cpu:
 		input [31:0] wb_rd: rd from two cycles ago, received from wb_mux
 		output [31:0] op2_out: Output for Rt.  Sent to alu_mux_imm, ex_mem
 	alu_mux_imm: 2:1 Mux to support immediate type instructions instance of 32 bit 2:1 mux
-		input alu_src: one bit input from ctrl
+		input alu_src: one bit input from ID/EX
 		input [31:0] rt_in: Rt data from alu_mux_b
 		input [31:0] imm_in: immediate data from sign_extender
-		ouput [31:0] op2_out: Output for Rt/Op2.  Sent to ALU
+		output [31:0] op2_out: Output for Rt/Op2.  Sent to ALU
 	alu: The main ALU
 		input [31:0] op_1: a 32 bit operand.  from alu_mux_1
 		input [31:0] op_2: a 32 bit operand.  from alu_mux_imm
 		input [3:0] alu_op: The 4-bit ALU op code.  See  OpCode table.
-		ouput [31:0] result: a 32 bit result of operation.  to ex_mem
-		ouput z: Zero flag.  to ex_mem
+		output [31:0] result: a 32 bit result of operation.  to ex_mem
+		output z: Zero flag.  to ex_mem
 	ex_mux: 2:1 Mux to select write address
 		input reg_dst: 1 bit selector from id_ex.reg_dst_out 0 for rt, 1 for rd
 		input [4:0] rt_in: rt, sent from id_ex
