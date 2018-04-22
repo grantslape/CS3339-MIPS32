@@ -1,7 +1,7 @@
 """ID Shift Left Module Unit Test"""
 import unittest
 from unittest import TestCase
-from myhdl import Signal, StopSimulation, intbv, Simulation
+from myhdl import Signal, StopSimulation, intbv, Simulation, concat, bin
 
 from src.commons.clock import half_period
 from src.commons.settings import settings as sf
@@ -9,7 +9,6 @@ from src.commons.signal_generator import unsigned_signal_set, unsigned_intbv, ra
 from src.python.id_shift_left import id_shift_left, id_shift_left_v
 
 
-@unittest.skip('ID Shift not implemented')
 class TestIdShiftLeft(TestCase):
     """Test ID Shift Left Module"""
     def setUp(self):
@@ -31,16 +30,13 @@ class TestIdShiftLeft(TestCase):
     def dynamic(self, python=False, verilog=False):
         """Zero test"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            self.top4 = random_unsigned_intbv(width=4)
-            self.target = random_unsigned_intbv(width=26)
-            expected = intbv()[sf['WIDTH']:]
-            expected[32:29] = self.top4
-            expected[29:0] = self.target
+            self.top4.next = random_unsigned_intbv(width=4)
+            self.target.next = random_unsigned_intbv(width=26)
             yield half_period()
             if python:
-                self.assertEqual(bin(expected), bin(self.output))
+                self.assertEqual(bin(concat(self.top4, self.target, intbv()[2:])), bin(self.output))
             if verilog:
-                self.assertEqual(bin(expected), bin(self.output_v))
+                self.assertEqual(bin(concat(self.top4, self.target, intbv()[2:])), bin(self.output_v))
         raise StopSimulation
 
     def testIdShiftUnitZeroPython(self):

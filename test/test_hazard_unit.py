@@ -2,14 +2,13 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import Simulation, StopSimulation
+from myhdl import Simulation, StopSimulation, bin
 from src.python.hazard_unit import hazard_unit, hazard_unit_v
 from src.commons.clock import half_period
 from src.commons.signal_generator import unsigned_signal_set, random_unsigned_intbv, rand_unsigned_signal_set
 from src.commons.settings import settings as sf
 
 
-# @unittest.skip("Hazard unit not implemented yet")
 class TestHazardUnit(TestCase):
     """Test Hazard Unit functionality"""
     def setUp(self):
