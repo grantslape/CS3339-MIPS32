@@ -16,7 +16,7 @@ class TestControlMux(TestCase):
         # INPUTS
         self.jump = Signal(intbv()[2:])
         self.branch, self.mem_read, self.mem_to_reg, self.mem_write, self.alu_src, self.reg_write, \
-            self.reg_dst, self.ex_stall = unsigned_signal_set(8, width=1)
+            self.reg_dst, self.ex_stall = unsigned_signal_set(8, width=2)
         self.alu_op = Signal(intbv()[sf['ALU_CODE_SIZE']:])
 
         # OUTPUTS
@@ -24,7 +24,7 @@ class TestControlMux(TestCase):
         self.branch_out, self.branch_out_v, self.mem_read_out, self.mem_read_out_v, \
             self.mem_to_reg_out, self.mem_to_reg_out_v, self.mem_write_out, self.mem_write_out_v, \
             self.alu_src_out, self.alu_src_out_v, self.reg_write_out, self.reg_write_out_v, \
-            self.reg_dst_out, self.reg_dst_out_v = unsigned_signal_set(14, width=1)
+            self.reg_dst_out, self.reg_dst_out_v = unsigned_signal_set(14, width=2)
         self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
 
     def get_args(self, which="python"):
