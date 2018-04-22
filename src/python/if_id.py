@@ -1,10 +1,14 @@
-import os
+"""IF/ID state register"""
+from os import system
 from myhdl import always, Cosimulation
 
-def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4, target_out):
+
+def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4,
+          target_out):
     """
     IF/ID state register
-    :param if_id_write: from hazard unit.  activate to stall by by keeping same outputs as last cycle
+    :param clock system clock
+    :param if_id_write: from hazard unit.  activate to stall by keeping same outputs as last cycle
     :param nxt_pc: next sequential instruction address
     :param inst_in: Instruction input from inst_mem.inst_out
     :param op_code: sliced from inst_in, Forward to ctrl.funct_in
@@ -21,41 +25,30 @@ def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_o
     def logic():
         # if if_id_write is true then do not update the state Register
         if if_id_write == 1:
-            # program counter logic
-            pc_out.next = pc_out
-            top4.next = top4
-
-            # instruction logic
-            op_code.next = op_code
-            rs.next = rs
-            rt.next = rt
-            rd.next = rd
-            funct_out.next = funct_out
-            imm.next = imm
-            target_out.next = target_out
-
-        # else update the register with the appropriate inputs
+            pass
         else:
             # program counter logic
             pc_out.next = nxt_pc
-            top4.next = nxt_pc[:28]
+            top4.next = nxt_pc[32:28]
 
             # instruction logic
-            op_code.next = op_code[:26]
+            op_code.next = inst_in[32:26]
             rs.next = inst_in[26:21]
             rt.next = inst_in[21:16]
             rd.next = inst_in[16:11]
             funct_out.next = inst_in[6:0]
-            imm.next = inst_in[16:0]
+            imm.next = inst_in[16:0].signed()
             target_out.next = inst_in[26:0]
 
     return logic
 
 
-def if_id_v(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4, target_out):
+def if_id_v(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4,
+            target_out):
     """
     IF/ID state register
-    :param if_id_write: from hazard unit.  activate to stall by by keeping same outputs as last cycle
+    :param clock system clock
+    :param if_id_write: from hazard unit.  activate to stall by keeping same outputs as last cycle
     :param nxt_pc: next sequential instruction address
     :param inst_in: Instruction input from inst_mem.inst_out
     :param op_code: sliced from inst_in, Forward to ctrl.funct_in
@@ -70,7 +63,7 @@ def if_id_v(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct
     """
 
     cmd = "iverilog -o bin/if_id.out src/verilog/if_id.v src/verilog/if_id_tb.v"
-    os.system(cmd)
+    system(cmd)
 
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/if_id.out",
                         clock=clock,

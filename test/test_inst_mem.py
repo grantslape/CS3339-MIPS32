@@ -35,9 +35,9 @@ class TestInstructionMemory(TestCase):
             self.inst_reg.next = index
             yield half_period()
             if python:
-                self.assertEqual(self.mem[index%4], self.inst_out)
+                self.assertEqual(self.mem[index//4], self.inst_out)
             if verilog:
-                self.assertEqual(self.mem[index%4], self.inst_out_v)
+                self.assertEqual(self.mem[index//4], self.inst_out_v)
         raise StopSimulation
 
     def testInstMemDynamicPython(self):

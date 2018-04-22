@@ -1,7 +1,7 @@
 """ID Shift Left Module Unit Test"""
 import unittest
 from unittest import TestCase
-from myhdl import Signal, StopSimulation, intbv, Simulation, concat
+from myhdl import Signal, StopSimulation, intbv, Simulation, concat, bin
 
 from src.commons.clock import half_period
 from src.commons.settings import settings as sf
@@ -9,7 +9,6 @@ from src.commons.signal_generator import unsigned_signal_set, unsigned_intbv, ra
 from src.python.id_shift_left import id_shift_left, id_shift_left_v
 
 
-# @unittest.skip('ID Shift not implemented')
 class TestIdShiftLeft(TestCase):
     """Test ID Shift Left Module"""
     def setUp(self):

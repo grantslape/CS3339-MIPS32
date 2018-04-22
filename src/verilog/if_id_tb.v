@@ -1,7 +1,7 @@
 module tb_if_id;
 
-reg clock;
-reg if_id_write;
+reg [0:0] clock;
+reg [0:0] if_id_write;
 reg [31:0] nxt_pc;
 reg [31:0] inst_in;
 wire [5:0] op_code;
