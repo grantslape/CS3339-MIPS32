@@ -10,6 +10,7 @@
 """
 from myhdl import Simulation, bin, StopSimulation
 
+from sign_extender import sign_extender
 from src.python.mux32bit3to1 import mux32bit3to1
 from src.python.mux32bit2to1 import mux32bit2to1
 from src.python.pc_adder import pc_adder
@@ -21,9 +22,14 @@ from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 
 clock, pc_write, pc_src, jmp_ctrl = unsigned_signal_set(4, width=1)
+
 nxt_inst, cur_pc, imm_jmp_addr, nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
     pc_id, if_id_write = unsigned_signal_set(11)
+
+imm_out = Signal(signed_intbv())
+
 rs, rt, rd = unsigned_signal_set(3, width=5)
+
 imm = Signal(intbv(min=sf['16_SIGNED_MIN_VALUE'], max=sf['16_SIGNED_MAX_VALUE']))
 top4 = Signal(unsigned_intbv(width=4))
 target_out = Signal(unsigned_intbv(width=26))
@@ -37,19 +43,24 @@ def top():
                             input1=nxt_pc,
                             input2=imm_jmp_addr,
                             out=nxt_inst_mux_a)
+
     pc_mux_b = mux32bit3to1(ctrl_line=jmp_ctrl,
                             data1=nxt_inst_mux_a,
                             data2=jmp_addr_last,
                             data3=jmp_reg,
                             out=nxt_inst)
+
     pc_add = pc_adder(cur_pc=cur_pc,
                       next_pc=nxt_pc)
+
     inst_memory = inst_mem(inst_reg=nxt_inst,
                            inst_out=inst_out)
+
     inst_mem_mux = mux32bit2to1(ctrl_line=jmp_ctrl,
                                 input1=inst_out,
                                 input2=Signal(unsigned_intbv()),
                                 out=inst_if)
+
     if_id_pipe = if_id(if_id_write=if_id_write,
                        clock=clock,
                        nxt_pc=nxt_pc,
@@ -64,9 +75,12 @@ def top():
                        top4=top4,
                        target_out=target_out)
 
+    extender = sign_extender(imm_in=imm, imm_out=imm_out)
+
+
     clock_inst = clock_gen(clock)
 
-    return clock_inst, pc, pc_mux_a, pc_mux_b, pc_add, inst_memory, inst_mem_mux, if_id_pipe
+    return clock_inst, pc, pc_mux_a, pc_mux_b, pc_add, inst_memory, inst_mem_mux, if_id_pipe, extender
 
 
 def stim():

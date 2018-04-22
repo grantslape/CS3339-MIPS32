@@ -19,7 +19,7 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
     :param alu_src: 0 for register input, 1 for immediate. to id_ex.alu_src_in
     :param reg_write: activate to write to register.  to id_ex.reg_write_in
     :param reg_dst: 0 to write to Rt ([20:16]), 1 to write to Rd ([15:11]). to id_ex.reg_dst_in
-    :param reset_out: 1 to insert a 1 cycle stall in the pipeline.  to id_ex.reset_in
+    :param reset_out: 1 to insert a 1 cycle stall in the pipeline.  to if_id.reset_in
     :return: module logic
     """
 
