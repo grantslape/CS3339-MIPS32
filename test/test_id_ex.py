@@ -19,7 +19,7 @@ class TestIdExRegister(TestCase):
             self.branch_out_v, self.mem_read_out, self.mem_read_out_v, self.mem_to_reg_out, \
             self.mem_to_reg_out_v, self.mem_write_out, self.mem_write_out_v, self.alu_src_out, \
             self.alu_src_out_v, self.reg_write_out, self.reg_write_out_v, self.reg_dst_out, \
-            self.reg_dst_out_v = unsigned_signal_set(22, width=1)
+            self.reg_dst_out_v = unsigned_signal_set(22, width=2)
         self.alu_op_in, self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(3, width=sf['ALU_CODE_SIZE'])
         self.pc_value_in, self.pc_value_out, self.pc_value_out_v = unsigned_signal_set(3)
         self.r_data1, self.r_data1_out, self.r_data1_out_v, self.r_data2, self.r_data2_out, \
@@ -115,7 +115,7 @@ class TestIdExRegister(TestCase):
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.branch_in.next, self.mem_read_in.next, self.mem_to_reg_in.next,\
                 self.mem_write_in.next, self.alu_src_in.next, self.reg_write_in.next,\
-                self.reg_dst_in.next = unsigned_signal_set(7, randint(0, 1), 1)
+                self.reg_dst_in.next = unsigned_signal_set(7, randint(0, 2), 1)
             self.alu_op_in = Signal(intbv()[sf['ALU_CODE_SIZE']:])
             self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
             self.r_data1.next, self.r_data2.next, self.imm.next = [
