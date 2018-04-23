@@ -280,7 +280,7 @@ def top():
                          mem_data_in=read_data,
                          alu_result_in=result_ex_mem,
                          w_reg_addr_in=rd_mem,
-                         mem_to_reg=mem_to_reg_ex_mem,
+                         mem_to_reg_in=mem_to_reg_ex_mem,
                          mem_data_out=read_data_mem_wb,
                          alu_result_out=result_mem_wb,
                          w_reg_addr_out=rd_wb,
