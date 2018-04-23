@@ -43,12 +43,12 @@ module id_ex (
 
 
 input [0:0] clock;
-input [0:0] reg_dst_in;
+input [1:0] reg_dst_in;
 input [0:0] reg_write_in;
 input [0:0] alu_src_in;
 input [0:0] mem_read_in;
 input [0:0] mem_write_in;
-input [0:0] mem_to_reg_in;
+input [1:0] mem_to_reg_in;
 input [3:0] alu_op_in;
 input [0:0] branch_in;
 input signed [31:0] r_data1;
@@ -58,8 +58,8 @@ input [4:0] rt;
 input [4:0] rd;
 input [31:0] pc_value_in;
 input signed [31:0] imm;
-output [0:0] reg_dst_out;
-reg [0:0] reg_dst_out;
+output [1:0] reg_dst_out;
+reg [1:0] reg_dst_out;
 output [0:0] reg_write_out;
 reg [0:0] reg_write_out;
 output [0:0] alu_src_out;
@@ -68,8 +68,8 @@ output [0:0] mem_read_out;
 reg [0:0] mem_read_out;
 output [0:0] mem_write_out;
 reg [0:0] mem_write_out;
-output [0:0] mem_to_reg_out;
-reg [0:0] mem_to_reg_out;
+output [1:0] mem_to_reg_out;
+reg [1:0] mem_to_reg_out;
 output [3:0] alu_op_out;
 reg [3:0] alu_op_out;
 output [0:0] branch_out;

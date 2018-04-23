@@ -12,7 +12,7 @@ from src.commons.signal_generator import random_unsigned_intbv, unsigned_signal_
 class TestExMuxDeasserted(TestCase):
     """Test Ex mux"""
     def setUp(self):
-        self.reg_dst = Signal(intbv(0)[1:])
+        self.reg_dst = Signal(intbv(0)[2:])
         self.rt_in, self.rd_in, self.dest, self.dest_v = unsigned_signal_set(4, width=5)
         self.dut = ex_mux(self.reg_dst, self.rt_in, self.rd_in, self.dest)
 
@@ -22,15 +22,19 @@ class TestExMuxDeasserted(TestCase):
             self.reg_dst.next = 0
             self.rt_in.next = random_unsigned_intbv(5)
             self.rd_in.next = random_unsigned_intbv(5)
-            while self.rd_in.next == self.rt_in.next:
+            while self.rd_in.next == self.rt_in.next or bin(self.rd_in.next) == bin(0b11111):
                 self.rd_in.next = random_unsigned_intbv(5)
+            while self.rt_in.next == self.rd_in.next or bin(self.rt_in.next) == bin(0b11111):
+                self.rt_in.next = random_unsigned_intbv(5)
             yield half_period()
             if python:
                 self.assertEqual(self.dest, self.rt_in)
                 self.assertNotEquals(self.dest, self.rd_in)
+                self.assertNotEquals(bin(self.dest), bin(0b11111))
             if verilog:
                 self.assertEqual(self.dest_v, self.rt_in)
                 self.assertNotEquals(self.dest_v, self.rd_in)
+                self.assertNotEquals(bin(self.dest_v), bin(0b11111))
         raise StopSimulation
 
     def asserted(self, python=False, verilog=False):
@@ -39,42 +43,63 @@ class TestExMuxDeasserted(TestCase):
             self.reg_dst.next = 1
             self.rt_in.next = random_unsigned_intbv(5)
             self.rd_in.next = random_unsigned_intbv(5)
-            while self.rd_in.next == self.rt_in.next:
+            while self.rd_in.next == self.rt_in.next or bin(self.rd_in.next) == bin(0b11111):
                 self.rd_in.next = random_unsigned_intbv(5)
+            while self.rt_in.next == self.rd_in.next or bin(self.rt_in.next) == bin(0b11111):
+                self.rt_in.next = random_unsigned_intbv(5)
             yield half_period()
             if python:
                 self.assertEqual(self.dest, self.rd_in)
                 self.assertNotEquals(self.dest, self.rt_in)
+                self.assertNotEquals(bin(self.dest), bin(0b11111))
             if verilog:
                 self.assertEqual(self.dest_v, self.rd_in)
                 self.assertNotEquals(self.dest_v, self.rt_in)
+                self.assertNotEquals(bin(self.dest_v), bin(0b11111))
         raise StopSimulation
 
     def dynamic(self, python=False, verilog=False):
         """Test Dynamic functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            self.reg_dst.next = randint(0, 1)
+            self.reg_dst.next = randint(0, 2)
             self.rt_in.next = random_unsigned_intbv(5)
             self.rd_in.next = random_unsigned_intbv(5)
-            while self.rd_in.next == self.rt_in.next or self.rd_in.next == self.rt_in:
+            while self.rd_in.next == self.rt_in.next or bin(self.rd_in.next) == bin(0b11111):
                 self.rd_in.next = random_unsigned_intbv(5)
+            while self.rt_in.next == self.rd_in.next or bin(self.rt_in.next) == bin(0b11111):
+                self.rt_in.next = random_unsigned_intbv(5)
             yield half_period()
             if self.reg_dst == 0:
                 if python:
                     self.assertEqual(self.dest, self.rt_in)
                     self.assertNotEquals(self.dest, self.rd_in)
+                    self.assertNotEquals(bin(self.dest), bin(0b11111))
                 if verilog:
                     self.assertEqual(self.dest_v, self.rt_in)
                     self.assertNotEquals(self.dest_v, self.rd_in)
-            else:
+                    self.assertNotEquals(bin(self.dest_v), bin(0b11111))
+            elif self.reg_dst == 1:
                 if python:
                     self.assertEqual(self.reg_dst, 1)
                     self.assertEqual(self.dest, self.rd_in)
                     self.assertNotEquals(self.dest, self.rt_in)
+                    self.assertNotEquals(bin(self.dest), bin(0b11111))
                 if verilog:
                     self.assertEqual(self.reg_dst, 1)
                     self.assertEqual(self.dest_v, self.rd_in)
                     self.assertNotEquals(self.dest_v, self.rt_in)
+                    self.assertNotEquals(bin(self.dest_v), bin(0b11111))
+            elif self.reg_dst == 2:
+                if python:
+                    self.assertEqual(self.reg_dst, 2)
+                    self.assertEqual(bin(self.dest), bin(0b11111))
+                    self.assertNotEquals(self.dest, self.rd_in)
+                    self.assertNotEquals(self.dest, self.rt_in)
+                if verilog:
+                   self.assertEqual(self.reg_dst, 2)
+                   self.assertEqual(bin(self.dest_v), bin(0b11111))
+                   self.assertNotEquals(self.dest_v, self.rd_in)
+                   self.assertNotEquals(self.dest_v, self.rt_in)
         raise StopSimulation
 
     def testExMuxDeassertedPython(self):

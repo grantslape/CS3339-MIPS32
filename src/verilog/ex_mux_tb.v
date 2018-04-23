@@ -2,7 +2,7 @@ module ex_mux_tb;
 
 reg [4:0] rt_in;
 reg [4:0] rd_in;
-reg reg_dst;
+reg [1:0] reg_dst;
 wire [4:0] dest;
 
 initial begin
