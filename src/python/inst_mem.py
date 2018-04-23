@@ -12,7 +12,7 @@ def inst_mem(inst_reg, inst_out):
     :param inst_out: Inst_mem logic to inst_mem_mux
     :return: module logic
     """
-    TB_SIZE = 0
+    TB_SIZE = 100000
     raw_mem = []
     mem_file = open('lib/instructions',)
     try:
@@ -25,7 +25,6 @@ def inst_mem(inst_reg, inst_out):
 
     @always_comb
     def logic():
-        print("raw_mem inst: " + str(bin(raw_mem[inst_reg//4])))
         inst_out.next = raw_mem[inst_reg//4]
     return logic
 
@@ -38,7 +37,7 @@ def inst_mem_v(inst_reg, inst_out):
     :param inst_out: Inst_mem logic to inst_mem_mux
     :return Cosimulation
     """
-    cmd = "iverilog -o bin/inst_mem.out -Pinst_mem_tb.TBSIZE={} src/verilog/inst_mem.v src/verilog/inst_mem_tb.v".format(2 ** sf['MEMORY_WIDTH'])
+    cmd = "iverilog -o bin/inst_mem.out -p inst_mem_tb.TBSIZE={} src/verilog/inst_mem.v src/verilog/inst_mem_tb.v".format(2 ** sf['MEMORY_WIDTH'])
     system(cmd)
 
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/inst_mem.out",

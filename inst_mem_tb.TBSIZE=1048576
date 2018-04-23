@@ -1,0 +1,47 @@
+#! /usr/bin/vvp
+:ivl_version "0.9.7 " "(v0_9_7)";
+:vpi_time_precision - 11;
+:vpi_module "system";
+:vpi_module "v2005_math";
+:vpi_module "va_math";
+S_0x13b0760 .scope module, "inst_mem_tb" "inst_mem_tb" 2 1;
+ .timescale -9 -11;
+P_0x13e6498 .param/l "TBSIZE" 2 2, +C4<0>;
+v0x13f3aa0_0 .net "inst_out", 31 0, v0x13e60c0_0; 1 drivers
+v0x13f3b70_0 .var "inst_reg", 31 0;
+S_0x13e5f90 .scope module, "dut" "inst_mem" 2 17, 3 3, S_0x13b0760;
+ .timescale -9 -11;
+P_0x13b0df8 .param/l "SIZE" 3 7, +C4<0>;
+v0x13e60c0_0 .var "inst_out", 31 0;
+v0x13f3960_0 .net "inst_reg", 31 0, v0x13f3b70_0; 1 drivers
+v0x13f3a00 .array "raw_mem", 0 0, 31 0;
+E_0x13b0690 .event edge, v0x13f3960_0;
+    .scope S_0x13e5f90;
+T_0 ;
+    %vpi_call 3 22 "$readmemb", "lib/instructions", v0x13f3a00;
+    %end;
+    .thread T_0;
+    .scope S_0x13e5f90;
+T_1 ;
+    %wait E_0x13b0690;
+    %load/v 40, v0x13f3960_0, 32;
+    %movi 72, 4, 32;
+    %div 40, 72, 32;
+    %ix/get 3, 40, 32;
+    %load/av 8, v0x13f3a00, 32;
+    %ix/load 0, 32, 0;
+    %assign/v0 v0x13e60c0_0, 0, 8;
+    %jmp T_1;
+    .thread T_1, $push;
+    .scope S_0x13b0760;
+T_2 ;
+    %vpi_call 2 9 "$from_myhdl", v0x13f3b70_0;
+    %vpi_call 2 12 "$to_myhdl", v0x13f3aa0_0;
+    %end;
+    .thread T_2;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "src/verilog/inst_mem_tb.v";
+    "src/verilog/inst_mem.v";

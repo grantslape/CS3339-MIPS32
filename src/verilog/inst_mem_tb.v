@@ -1,5 +1,5 @@
 module inst_mem_tb;
-parameter TBSIZE = 0;
+parameter TBSIZE = 100000;
 
 reg [31:0] inst_reg;
 wire [31:0] inst_out;

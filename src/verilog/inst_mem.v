@@ -1,10 +1,10 @@
 `timescale 1ns/10ps
 
 module inst_mem(
-        inst_reg, 
+        inst_reg,
         inst_out
 );
-parameter SIZE = 0; //default value for array size
+parameter SIZE = 100000; //default value for array size
 
 // Inst_Mem
 // :param inst_reg: address to read from, from nxt_inst. This is an index of raw_mem
