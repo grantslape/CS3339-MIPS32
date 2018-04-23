@@ -9,7 +9,6 @@ from src.commons.signal_generator import unsigned_signal_set, unsigned_intbv
 from src.python.branch_adder import branch_adder, branch_adder_v
 
 
-@unittest.skip("Branch Adder not implemented")
 class TestBranchAdder(TestCase):
     """Test Branch Adder module"""
     def setUp(self):
@@ -39,7 +38,7 @@ class TestBranchAdder(TestCase):
             if python:
                 self.assertEqual(bin(self.pc_in + self.imm_in), bin(self.addr_out))
             if verilog:
-                self.assertEqual(bin(self.pc_in + self.imm_in), bin(self.addr_out))
+                self.assertEqual(bin(self.pc_in + self.imm_in), bin(self.addr_out_v))
         raise StopSimulation
 
     def testBranchAdderZeroPython(self):
