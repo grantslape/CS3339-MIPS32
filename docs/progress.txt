@@ -1,3 +1,5 @@
+ALL:
+    Main Driver IN PROGRESS
 Mark Gitthens:
     program_counter DONE
     alu_mux_imm genericized 2018-04-05
@@ -5,37 +7,37 @@ Mark Gitthens:
     pc_mux_b genericized 2018-04-05
     wb_mux genericized 2018-04-05
     inst_mem_mux genericized 2018-04-05
-    pc_adder DON 2018-04-05
+    pc_adder DONE 2018-04-05
 Huan Wu:
     sign_extender DONE
     id_ex DONE
 Natalie Garza:
-    hazard_unit
-    if_id
-    id_shift_left
+    hazard_unit DONE
+    if_id DONE
+    id_shift_left DONE
 Serena Gutierrez:
-    alu
+    alu IN PROGRESS
     alu_mux_a DONE
     alu_mux_b DONE
 Jihan Roujiel:
-    branch_unit
 Isaac Jaimes:
-    inst_mem
+    inst_mem DONE
     fwd_unit DONE 2018-04-03
     shift_unit DONE 2018-04-03
-    instruction generator: DONE
+    instruction generator: DONE/UPDATING
+    jal mux IN PROGRESS
 Robert Tomlinson:
-    ex_mem
-    branch_adder
+    ex_mem IN PROGRESS
+    branch_adder IN PROGRESS
 Patrick Vinas:
     data_mem DONE 2018-04-13
     mem_wb DONE 2018-04-13
     rfile DONE 2018-04-14
     ex_mux DONE 2018-04-14
+    branch_unit DONE 2018-04-21
 Grant Slape:
     ctrl DONE 2018-04-16
     ctrl_mux DONE 2018-04-16
-    Main Driver
     Unit Tests: DONE
     	shift_unit DONE 2018-04-03
     	pc_mux_a DONE 2018-04-03

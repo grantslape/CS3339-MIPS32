@@ -11,6 +11,7 @@ def ex_mem(**kwargs):
     :param branch_in: branch ctrl signal from id_ex.branch_out
     :param mem_read_in: mem_read ctrl signal. from id_ex.mem_read_out
     :param mem_write_in: mem_write ctrl signal. from id_ex.mem_write_out
+    :param mem_to_reg_in: mem_to_reg ctrl signal from id_ex
     :param reg_write_in: reg_write ctrl signal. from id_ex.reg_write_out
     :param mem_to_reg_in: mem_to_reg ctrl signal. from id_ex.mem_to_reg_out
     :param jmp_addr: jump address.  from branch_adder.addr_out
@@ -29,7 +30,8 @@ def ex_mem(**kwargs):
     :param reg_write_out: reg_write ctrl signal to mem_wb.reg_write_in
     :param mem_to_reg_out: mem_to_reg ctrl signal to mem_wb.
     :param reg_dst_out: Destination Register for write back to mem_wb
-    :param pc_value_out: 
+    :param pc_value_out:
+    :param mem_to_reg_out: mem_to_reg ctrl signal to mem_wb
     :return:
     """
     def logic():

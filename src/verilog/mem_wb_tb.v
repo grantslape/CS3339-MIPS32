@@ -1,7 +1,7 @@
-module mem_wb_tb;
+module tb_mem_wb;
 
-reg clk;
-reg reset;
+reg [0:0] clk;
+reg [0:0] reset;
 reg [0:0] w_reg_ctl_in;
 reg [1:0] mem_to_reg_in;
 reg [31:0] mem_data_in;

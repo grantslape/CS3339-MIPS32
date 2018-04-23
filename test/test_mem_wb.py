@@ -2,7 +2,7 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import StopSimulation, Simulation, ResetSignal
+from myhdl import StopSimulation, Simulation, bin
 from src.commons.clock import clock_gen
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import unsigned_signal_set, signed_signal_set, \
@@ -36,7 +36,7 @@ class TestMemWb(TestCase):
         """Return verilog design under test"""
         return mem_wb_v(self.clock, self.reset,
                         w_reg_ctl_in=self.reg_write_in,
-                        mem_to_reg_in=self.mem_to_reg_in,
+                        mem_to_reg=self.mem_to_reg_in,
                         mem_data_in=self.rdata_in,
                         alu_result_in=self.result_in,
                         pc_value_in=self.pc_value_in,
@@ -47,7 +47,6 @@ class TestMemWb(TestCase):
                         w_reg_ctl_out=self.reg_write_out_v,
                         mem_to_reg_out=self.mem_to_reg_out_v,
                         pc_value_out=self.pc_value_out_v)
-
 
     def hold_zero(self, python=False, verilog=False):
         """Test when inputs are held zero"""
@@ -61,6 +60,7 @@ class TestMemWb(TestCase):
                 self.assertEqual(bin(self.result_out), bin(0))
                 self.assertEqual(bin(self.rt_out), bin(0))
                 self.assertEqual(bin(self.reg_write_out), bin(0))
+                self.assertEqual(bin(self.mem_to_reg_out), bin(0))
             if verilog:
                 self.assertEqual(bin(self.rdata_out_v), bin(0))
                 self.assertEqual(bin(self.pc_value_out_v), bin(0))
@@ -68,6 +68,7 @@ class TestMemWb(TestCase):
                 self.assertEqual(bin(self.result_out_v), bin(0))
                 self.assertEqual(bin(self.rt_out_v), bin(0))
                 self.assertEqual(bin(self.reg_write_out_v), bin(0))
+                self.assertEqual(bin(self.mem_to_reg_out_v), bin(0))
         raise StopSimulation
 
     def dynamic(self, python=False, verilog=False):
@@ -86,6 +87,7 @@ class TestMemWb(TestCase):
                 self.assertEqual(bin(self.pc_value_in), bin(self.pc_value_out))
                 self.assertEqual(bin(self.result_in), bin(self.result_out))
                 self.assertEqual(bin(self.rt_in), bin(self.rt_out))
+                self.assertEqual(bin(self.mem_to_reg_out), bin(self.mem_to_reg_in))
             if verilog:
                 self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out_v))
                 self.assertEqual(bin(self.mem_to_reg_in), bin(self.mem_to_reg_out_v))
@@ -93,6 +95,7 @@ class TestMemWb(TestCase):
                 self.assertEqual(bin(self.pc_value_in), bin(self.pc_value_out_v))
                 self.assertEqual(bin(self.result_in), bin(self.result_out_v))
                 self.assertEqual(bin(self.rt_in), bin(self.rt_out_v))
+                self.assertEqual(bin(self.mem_to_reg_out_v), bin(self.mem_to_reg_in))
         raise StopSimulation
 
     def testMemWbHoldZeroPython(self):
