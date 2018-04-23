@@ -8,7 +8,7 @@
 # Natalie Garza
 # Huan Wu
 """
-from myhdl import Simulation, bin, StopSimulation, ResetSignal
+from myhdl import Simulation, bin, StopSimulation, ResetSignal, join
 
 from src.python.branch_unit import branch_unit
 from src.python.data_mem import data_mem
@@ -78,6 +78,8 @@ def top():
                             input2=imm_jmp_addr,
                             out=nxt_inst_mux_a)
 
+    # function needed to assign value to jmp_reg below
+    # would we be calling rfile under certain conditions inside of main?
     pc_mux_b = mux32bit3to1(ctrl_line=jmp_ctrl,
                             data1=nxt_inst_mux_a,
                             data2=jmp_addr_last,
@@ -313,18 +315,20 @@ def stim():
     # Hack for now to get things moving
     cur_pc.next = 4
     while 1:
-        yield clock.negedge
-        print(nxt_inst, pc_src)
-        # print("Cycle: {}, PC: {}, R1: {}, R2: {}, rs: {}, rt: {}, rd: {}, imm: {}, J: {}, B: {}, MR: {}, MW: {}, "
-        #       "AS: {}, RW: {}, RD: {}, MTR: {}, ALU: {}, result: {}, op1: {}, op2: {}"
-        #       # We are looking at values for 2 cycles ago
-        #       .format(int(nxt_inst // 4) + 1 - 2,
-        #               hex(pc_id_ex), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
-        #               bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
-        #               bin(imm_id_ex, width=16), bin(jmp_ctrl), bin(branch_id_ex), bin(mem_read_id_ex),
-        #               bin(mem_write_id_ex), bin(alu_src_id_ex), bin(reg_write_id_ex), bin(reg_dst_id_ex),
-        #               bin(mem_to_reg_id_ex), bin(alu_op_id_ex, width=4), bin(result, width=32),
-        #               bin(op1_out), bin(op2_final)))
+        # print(nxt_inst, pc_src)
+        yield join(clock.negedge)
+        print("Cycle: {}, NxtInst: {}, \nPC: {}, \nR1: {}, \nR2: {}, \nrs: {}, \nrt: {}, \nrd: {}, \nimm: {}, \nJump: {}, \nBranch: {},"
+            "\nMemRead: {}, \nMemWrite: {}, \nAluSrc: {}, \nRegWrite: {}, \nRegDest: {}, \nMemToReg: {}, \nPcWrite: {}, "
+              "\nALU: {}, \nresult: {}, \nop1: {}, \nop2: {}"
+              # We are looking at values for 2 cycles ago
+              .format(int(nxt_inst // 4) + 1 - 2, int(nxt_inst),
+                      hex(pc_id_ex), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
+                      bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
+                      bin(imm_id_ex, width=16), bool(jmp_ctrl), bool(branch_id_ex), bool(mem_read_id_ex),
+                      bool(mem_write_id_ex), bool(alu_src_id_ex), bool(reg_write_id_ex), bool(reg_dst_id_ex),
+                      bool(mem_to_reg_id_ex), bool(pc_write), bin(alu_op_id_ex, width=4), bin(result, width=32),
+                      bin(op1_out), bin(op2_final)))
+        print("\n")
 
 
 def monitor():

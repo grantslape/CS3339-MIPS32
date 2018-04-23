@@ -15,18 +15,8 @@ input [31:0] cur_pc;
 output [31:0] next_pc;
 reg [31:0] next_pc;
 
-
-
-
-
-
 always @(cur_pc) begin: PC_ADDER_LOGIC
-    if ((cur_pc != 0)) begin
-        next_pc = (cur_pc + 4);
-    end
-    else begin
-        next_pc = 0;
-    end
+    next_pc = (cur_pc + 4);
 end
 
 endmodule

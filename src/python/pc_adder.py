@@ -11,10 +11,7 @@ def pc_adder(cur_pc, next_pc):
     """
     @always_comb
     def logic():
-        if cur_pc != 0:
-            next_pc.next = cur_pc + int(0x4)
-        else:
-            next_pc.next = 0;
+        next_pc.next = cur_pc + int(0x4)
     return logic
 
 
