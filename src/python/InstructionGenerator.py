@@ -4,8 +4,8 @@ twoExp15 = 32768
 twoExp15MinusOne = 32767
 negativeTwoExp15 = -32768
 maxInstructions = 2**20
-
-INSTRUCTION_PATH = "lib/Instructions.bin"
+debug = 0
+INSTRUCTION_PATH = "lib/instructions"
 PARAM_PATH = "lib/Parameters.txt"
 INST_LIST_PATH = "lib/InstructionList.txt"
 #######################################################################################
@@ -46,7 +46,6 @@ def convertBinary(n):
 #######################################################################################
 def complementConverter(n):
   binary = convertBinary(n)
-  #print(str(binary))
   return binary
 #######################################################################################
 def rFormat(myInt,myArray,myLowerRegister,myUpperRegister):
@@ -54,9 +53,9 @@ def rFormat(myInt,myArray,myLowerRegister,myUpperRegister):
   upperShiftBound = 31
   myBin = ''
   for i in range(0,len(myArray),5):
-    #print("ARRAY: " + myArray[i])
     if myArray[i] == str(myInt):
-      print("R-Format Instruction: " + myArray[i])
+      if debug == 1:
+        print("R-Format Instruction: " + myArray[i])
       opCode = myArray[i+1]
       shiftAmt = myArray[i+2]
       if shiftAmt == '':
@@ -76,10 +75,11 @@ def rFormat(myInt,myArray,myLowerRegister,myUpperRegister):
 def immediateFormat(myInt,myArray,myLowerRegister,myUpperRegister):
   myImm = ''
   myBin = ''
+  global debug
   for i in range(0,len(myArray),5):
-    #print("ARRAY: " + myArray[i])
     if myArray[i] == str(myInt):
-      print("I-Format Instruction: " + myArray[i])
+      if debug == 1:
+        print("I-Format Instruction: " + myArray[i])
       opCode = myArray[i+1]
       shiftAmt = myArray[i+2]
       funct = myArray[i+3]
@@ -96,7 +96,8 @@ def immediateFormat(myInt,myArray,myLowerRegister,myUpperRegister):
         #myRandInt = randint(-32768,32767) #2^15 signed range
         myRandInt = randint(negativeTwoExp15,twoExp15MinusOne)  
         #myRandInt = randint(-10,10) #2^15 signed range
-        print("IMM VALUE: " + str(myRandInt))
+        if debug == 1:
+          print("IMM VALUE: " + str(myRandInt))
         if myRandInt < 0:
           myImm = complementConverter(myRandInt)
         else:
@@ -108,6 +109,7 @@ def immediateFormat(myInt,myArray,myLowerRegister,myUpperRegister):
   return myBin
 #######################################################################################
 def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
+  global debug  
   lowerBound = -32
   upperBound = 32
   jrFunct = '000000'
@@ -115,9 +117,9 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
   raRegister = '11111'
   myBin = ''
   for i in range(0,len(myArray),5):
-    #print("ARRAY: " + myArray[i])
     if myArray[i] == str(myInt):
-      print("J-Format Instruction: " + myArray[i])
+      if debug == 1:
+        print("J-Format Instruction: " + myArray[i])
       if myArray[i] == '12':
         opCode = myArray[i+1]
         myRandInt = randint(myLowerRegister,myUpperRegister) #a0 - t9
@@ -173,6 +175,7 @@ def writeInstructions(myArray):
   return
 #######################################################################################
 def driver():
+  global debug
   lowerRegister = 0
   upperRegister = 25
   nonBranchInstructions = ''
@@ -182,31 +185,44 @@ def driver():
   inputArray = getParameters()
   parameterArray = inputArray.split(',')
   try:
+    debug = int(parameterArray[3])
+    if debug < 0 or debug > 1:
+      debug = 0
+  except:
+    debug = 0
+
+  try:
     totalInstructions = int(parameterArray[0]) - 1
     if totalInstructions > maxInstructions:
-      print("The instruction count exceeds the max of 2^20 instructions. The total instruction count has been converted to 2^20.")
+      if debug == 1:
+        print("The instruction count exceeds the max of 2^20 instructions. The total instruction count has been converted to 2^20.")
       totalInstructions = maxInstructions
     elif totalInstructions <= 1000:
-      print("The instruction count is too low. It won't produce a good simulation. The total instruction count has been converted to 10000.")    
+      if debug == 1:  
+        print("The instruction count is too low. It won't produce a good simulation. The total instruction count has been converted to 10000.")    
       totalInstructions = 10000
   except:
     totalInstructions = 10000
-    print("You entered an invalid character. The total instruction count has been reset to 10000.")
+    if debug == 1:
+      print("You entered an invalid character. The total instruction count has been reset to 10000.")
   
   try:
     branchFrequency = int(parameterArray[1]) / 100.0
     if branchFrequency < 0.0 or branchFrequency > 100.0:
       branchFrequency = 0.0
-      print("Branch Frequency: The branch frequency was outside the valid range of 0% - 100%. It has been set to 0%")
+      if debug == 1:
+        print("Branch Frequency: The branch frequency was outside the valid range of 0% - 100%. It has been set to 0%")
   except:
     branchFrequency = 0.0
-    print("Brnch Frequency: You attempted to enter an invalid character. The default branch frequency will be 0. Please enter a whole number next time.")
+    if debug == 1:
+      print("Brnch Frequency: You attempted to enter an invalid character. The default branch frequency will be 0. Please enter a whole number next time.")
 
   try:
     dataDependency = int(parameterArray[2]) / 100.0
   except:
     dataDependency = 0.0
-    print("Data Dependency: You attempted to enter an invalid character. The default data dependency will be 0. Please enter a whole number next time.")
+    if debug == 1:
+      print("Data Dependency: You attempted to enter an invalid character. The default data dependency will be 0. Please enter a whole number next time.")
 
   if dataDependency == 0.0:
     lowerRegister = 4
@@ -221,13 +237,16 @@ def driver():
   else:
     lowerRegister = 4
     dataDependency = 0.0
-    print("The only accepted values for data dependency are 0, 25, 50, 75, and 100. All other values will default to 0.")
-  print("DATA DEPENDENCY: " + str(dataDependency*100)) + "%"
-  print("LOWER REGISTER: " + str(lowerRegister))
-  print("BRANCH FREQUENCY: " + str(branchFrequency*100)) + "%"
+    if debug == 1:
+      print("The only accepted values for data dependency are 0, 25, 50, 75, and 100. All other values will default to 0.")
+  if debug == 1:
+    print("DATA DEPENDENCY: " + str(dataDependency*100)) + "%"
+    print("LOWER REGISTER: " + str(lowerRegister))
+    print("BRANCH FREQUENCY: " + str(branchFrequency*100)) + "%"
   numberOfBranchInstructions = int(int(totalInstructions) * float(branchFrequency))
   numberOfInstructions = int(totalInstructions) - int(numberOfBranchInstructions)
-  print("# Branch Instructions: " + str(numberOfBranchInstructions))
+  if debug == 1:
+    print("# Branch Instructions: " + str(numberOfBranchInstructions))
   instrString = getInstructions()
   convertedToInstArray = instrString.split(',')
   myRandInt = 0
@@ -240,14 +259,16 @@ def driver():
         nonBranchInstructions = myInstruction
       else:
         nonBranchInstructions = nonBranchInstructions + "," + myInstruction
-      print(myInstruction)
+      if debug == 1:
+        print(myInstruction)
     elif myRandInt == 8 or myRandInt == 9 or myRandInt == 10 or myRandInt == 11:
       myInstruction = immediateFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
       if nonBranchInstructions == '':
         nonBranchInstructions = myInstruction
       else:
         nonBranchInstructions = nonBranchInstructions + "," + myInstruction
-      print(myInstruction)
+      if debug == 1:
+        print(myInstruction)
 
   for x in range(0,int(numberOfBranchInstructions)):
     myRandInt = randint(12,15)
@@ -257,7 +278,8 @@ def driver():
         branchInstructions = myInstruction
       else:
         branchInstructions = branchInstructions + "," + myInstruction
-      print(myInstruction)
+      if debug == 1:
+        print(myInstruction)
   instructionList = nonBranchInstructions + "," + branchInstructions
   writeInstructions(instructionList)
   return
