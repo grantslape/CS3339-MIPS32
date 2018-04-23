@@ -2,7 +2,7 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import StopSimulation, Simulation
+from myhdl import StopSimulation, Simulation, bin
 from src.commons.clock import half_period
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import unsigned_signal_set, unsigned_intbv
