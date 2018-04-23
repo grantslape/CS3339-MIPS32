@@ -15,16 +15,17 @@ class TestControlMux(TestCase):
     def setUp(self):
         # INPUTS
         self.jump = Signal(intbv()[2:])
-        self.branch, self.mem_read, self.mem_to_reg, self.mem_write, self.alu_src, self.reg_write, \
-            self.reg_dst, self.ex_stall = unsigned_signal_set(8, width=1)
+        self.branch, self.mem_read, self.mem_write, self.alu_src, self.reg_write, \
+            self.ex_stall = unsigned_signal_set(6, width=1)
+        self.mem_to_reg, self.reg_dst = unsigned_signal_set(2, width=2)
         self.alu_op = Signal(intbv()[sf['ALU_CODE_SIZE']:])
 
         # OUTPUTS
         self.jump_out, self.jump_out_v = unsigned_signal_set(2, width=2)
         self.branch_out, self.branch_out_v, self.mem_read_out, self.mem_read_out_v, \
-            self.mem_to_reg_out, self.mem_to_reg_out_v, self.mem_write_out, self.mem_write_out_v, \
-            self.alu_src_out, self.alu_src_out_v, self.reg_write_out, self.reg_write_out_v, \
-            self.reg_dst_out, self.reg_dst_out_v = unsigned_signal_set(14, width=1)
+            self.mem_write_out, self.mem_write_out_v, \
+            self.alu_src_out, self.alu_src_out_v, self.reg_write_out, self.reg_write_out_v = unsigned_signal_set(10, width=1)
+        self.mem_to_reg_out, self.mem_to_reg_out_v, self.reg_dst_out, self.reg_dst_out_v = unsigned_signal_set(4, width=2)
         self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
 
     def get_args(self, which="python"):
@@ -60,9 +61,10 @@ class TestControlMux(TestCase):
     def random_input(self):
         """Randomize input signals for test cases"""
         self.jump.next = random_unsigned_intbv(width=2)
-        self.branch.next, self.mem_read.next, self.mem_to_reg.next, self.mem_write.next, \
-            self.alu_src.next, self.reg_write.next, self.reg_dst.next = \
-            unsigned_signal_set(7, width=1)
+        self.branch.next, self.mem_read.next, self.mem_write.next, \
+            self.alu_src.next, self.reg_write.next = \
+            unsigned_signal_set(5, width=1)
+        self.mem_to_reg.next, self.reg_dst.next = unsigned_signal_set(2, width=2)
         self.alu_op.next = random_unsigned_intbv(width=sf['ALU_CODE_SIZE'])
 
     def deassert(self, python=False, verilog=False):
