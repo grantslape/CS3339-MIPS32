@@ -198,9 +198,11 @@ cpu:
 	mem_wb: Memory/Writeback pipeline register
 		input clock: system clock
 		input reg_write_in: activate to write to the regster on rt_in. from ex_mem.reg_write_out
+		input mem_to_reg: mem_to_reg
 		input [31:0] rdata_in: read data.  from data_mem
 		input [31:0] result_in: ALU result. from ex_mem.result_out.
 		input [4:0] rt_in: destination register address.  from ex_mem.reg_dst
+		output mem_to_reg: mem_to_reg
 		output [31:0] rdata_out: read data out. to wb_mux
 		output [31:0] result_out: ALU result. to wb_mux.reg_in
 		output [4:0] rt_out: rt_address. To rfile.w_addr, fwd_unit.mem_rd
