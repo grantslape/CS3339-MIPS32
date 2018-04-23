@@ -25,7 +25,7 @@ always @(cur_pc) begin: PC_ADDER_LOGIC
         next_pc = (cur_pc + 4);
     end
     else begin
-        next_pc = 0;
+        // next_pc = 0;
     end
 end
 

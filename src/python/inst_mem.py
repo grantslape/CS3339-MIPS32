@@ -25,6 +25,7 @@ def inst_mem(inst_reg, inst_out):
 
     @always_comb
     def logic():
+        print("raw_mem inst: " + str(bin(raw_mem[inst_reg//4])))
         inst_out.next = raw_mem[inst_reg//4]
     return logic
 
