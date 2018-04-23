@@ -190,6 +190,7 @@ cpu:
 		input z_in: zero flag.  From ex_mem.z_out
 		output pc_src: pc ctrl signal.  to pc_mux_a.pc_src
 	data_mem: Main Data Memory
+	    input clock: system clock
 		input read_ctrl: read contrl. from ex_mem.mem_read_out
 		input w_ctrl: write control. from ex_mem.mem_write_out
 		input [31:0] mem_addr: read/write address.  from ex_mem

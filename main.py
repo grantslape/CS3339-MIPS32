@@ -12,6 +12,7 @@ from myhdl import Simulation, bin, StopSimulation, ResetSignal
 
 from branch_unit import branch_unit
 from data_mem import data_mem
+from mem_wb import mem_wb
 from src.python.ex_mem import ex_mem
 from src.python.branch_adder import branch_adder
 from src.python.shift_unit import shift_unit
@@ -36,10 +37,10 @@ from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 
 clock, pc_write, pc_src, jmp_ctrl, jump_gate, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
-branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_write_ctrl, mem_read_id_ex, \
-mem_write_gate, mem_write_id_ex, alu_src_ctrl, alu_src_gate, alu_src_id_ex, reg_write_ctrl, \
+branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb, mem_write_ctrl, mem_read_id_ex, \
+mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate, alu_src_id_ex, reg_write_ctrl, \
 reg_write_gate, reg_write_id_ex, reg_write_ex_mem, reg_write_mem_wb, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, ex_stall, zero_flag, zero_flag_ex_mem \
-    = unsigned_signal_set(32, width=1)
+    = unsigned_signal_set(35, width=1)
 
 forward_a_out, forward_b_out = unsigned_signal_set(2, width=2)
 
@@ -241,6 +242,7 @@ def top():
                          mem_read_in=mem_read_id_ex,
                          mem_write_in=mem_write_id_ex,
                          reg_write_in=reg_write_id_ex,
+                         mem_to_reg_in=mem_to_reg_id_ex,
                          jmp_addr=b_addr_out,
                          z_in=zero_flag,
                          result_in=result,
@@ -254,13 +256,31 @@ def top():
                          mem_read_out=mem_read_ex_mem,
                          mem_write_out=mem_write_ex_mem,
                          reg_write_out=reg_write_ex_mem,
+                         mem_to_reg_out=mem_to_reg_ex_mem,
                          reg_dst_out=rd_mem)
 
     brancher = branch_unit(branch_ctrl=branch_ex_mem,
                            zero_in=zero_flag_ex_mem,
                            pc_src=pc_src)
 
-    data_memory = data_mem(read_wire=)
+    data_memory = data_mem(clk=clock,
+                           read_wire=mem_read_ex_mem,
+                           write_wire=mem_write_ex_mem,
+                           address=result_ex_mem,
+                           write_data=wdata_mem,
+                           read_data=read_data)
+
+    mem_wb_pipe = mem_wb(clk=clock,
+                         w_reg_ctl_in=reg_write_ex_mem,
+                         mem_data_in=read_data,
+                         alu_result_in=result_ex_mem,
+                         w_reg_addr_in=rd_mem,
+                         mem_to_reg_in=mem_to_reg_ex_mem,
+                         mem_data_out=read_data_mem_wb,
+                         alu_result_out=result_mem_wb,
+                         w_reg_addr_out=rd_wb,
+                         w_reg_ctl_out=reg_write_mem_wb,
+                         mem_to_reg_out=mem_to_reg_mem_wb)
 
     clock_inst = clock_gen(clock)
 
