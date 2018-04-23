@@ -120,6 +120,7 @@ cpu:
 		output alu_src_out: 0 for register input, 1 for immediate. To alu_mux_imm.alu_src
 		output reg_write_out: reg_write ctrl signal.  to ex_mem.reg_write_in
 		output reg_dst_out: reg_dst ctrl signal. to ex_mux.reg_dst
+		output mem_to_reg_out: mem_to_reg ctrl signal.  to ex_mem.
 	alu_mux_a: 3:1 Mux for forwarding results from 2 cycles ago
 		input [1:0] forward_a: two bit input selector from fwd_unit
 		input [31:0] r_data1: rs data received from id_ex
@@ -178,11 +179,12 @@ cpu:
 		output  [31:0] jmp_addr_out: jump address. to pc_mux_a
 		output z_out: zero flag. to branch_unit
 		output result_out: read ALU result output. to data_mem, mem_wb, alu_mux_a
-		output [31:0] rt_out: special rt output for sw. to data_mem.rt_in, fwd_unit.ex_rd
+		output [31:0] rt_out: special rt output for sw. to data_mem.rt_in
 		output branch_out: branch ctrl signal to branch_unit.branch_ctrl
 		output mem_read_out: mem_read ctrl signal to data_mem.read_ctrl
 		output mem_write_out: mem_write ctrl signal to data_mem.w_ctrl
 		output reg_write_out: reg_write ctrl signal to mem_wb.reg_write_in
+		output [4:0]: reg_dest_out: destination register_address to mem_wb, fwd_unit
 	branch_unit: Branching Unit
 		input branch_ctrl: Branch control signal.  from ex_mem
 		input z_in: zero flag.  From ex_mem.z_out

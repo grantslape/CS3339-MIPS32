@@ -10,8 +10,12 @@
 """
 from myhdl import Simulation, bin, StopSimulation, ResetSignal
 
-import shift_unit
-from fwd_unit import fwd_unit
+from branch_unit import branch_unit
+from data_mem import data_mem
+from src.python.ex_mem import ex_mem
+from src.python.branch_adder import branch_adder
+from src.python.shift_unit import shift_unit
+from src.python.fwd_unit import fwd_unit
 from src.python.ex_mux import ex_mux
 from src.python.alu import alu
 from src.python.id_ex import id_ex
@@ -32,10 +36,10 @@ from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 
 clock, pc_write, pc_src, jmp_ctrl, jump_gate, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
-mem_read_ctrl, mem_read_gate, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_write_ctrl, mem_read_id_ex, \
+branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_write_ctrl, mem_read_id_ex, \
 mem_write_gate, mem_write_id_ex, alu_src_ctrl, alu_src_gate, alu_src_id_ex, reg_write_ctrl, \
-reg_write_gate, reg_write_id_ex, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, ex_stall, zero_flag \
-    = unsigned_signal_set(29, width=1)
+reg_write_gate, reg_write_id_ex, reg_write_ex_mem, reg_write_mem_wb, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, ex_stall, zero_flag, zero_flag_ex_mem \
+    = unsigned_signal_set(32, width=1)
 
 forward_a_out, forward_b_out = unsigned_signal_set(2, width=2)
 
@@ -43,9 +47,10 @@ nxt_inst, cur_pc, imm_jmp_addr, nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, 
 pc_id, pc_id_ex, if_id_write, reg_write_final = unsigned_signal_set(13)
 
 imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem, \
-result_mem_wb, op1_out, op2_out, op2_final = signed_signal_set(12)
+result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, wdata_mem \
+    = signed_signal_set(16)
 
-rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, w_addr = unsigned_signal_set(7, width=5)
+rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr = unsigned_signal_set(9, width=5)
 
 alu_op_code, alu_op_gate, alu_op_id_ex = unsigned_signal_set(3, width=sf['ALU_CODE_SIZE'])
 
@@ -187,7 +192,8 @@ def top():
                        alu_src_out=alu_src_id_ex,
                        reg_write_out=reg_write_id_ex,
                        reg_dst_out=reg_dst_id_ex,
-                       mem_to_reg_out=mem_to_reg_id_ex)
+                       mem_to_reg_out=mem_to_reg_id_ex,
+                       jmp_imm_out=jmp_imm_id_ex)
 
     # TODO: CHECK THESE SIGNALS
     alu_mux_a = mux32bit3to1(ctrl_line=forward_a_out,
@@ -214,24 +220,54 @@ def top():
     ex_mux_ = ex_mux(reg_dst=reg_dst_id_ex,
                      rt_in=rt_id_ex,
                      rd_in=rd_id_ex,
-                     dest=dest_ex)
+                     dest=rd_ex)
 
     forwarder = fwd_unit(rt_in=rt_id_ex,
                          rs_in=rs_id_ex,
-                         ex_rd=rd_ex_mem,
-                         mem_rd=rd_mem_wb,
+                         ex_rd=rd_ex,
+                         mem_rd=rd_mem,
                          mem_reg_write=reg_write_ex_mem,
                          wb_reg_write=reg_write_mem_wb,
                          forward_a=forward_a_out,
                          forward_b=forward_b_out)
 
-    shifter = shift_unit()
+    shifter = shift_unit(imm_in=jmp_imm_id_ex, imm_out=jmp_imm_shift)
+    branch_adder_ = branch_adder(pc_in=pc_id_ex,
+                                 imm_in=jmp_imm_shift,
+                                 addr_out=b_addr_out)
+
+    ex_mem_pipe = ex_mem(clock=clock,
+                         branch_in=branch_id_ex,
+                         mem_read_in=mem_read_id_ex,
+                         mem_write_in=mem_write_id_ex,
+                         reg_write_in=reg_write_id_ex,
+                         jmp_addr=b_addr_out,
+                         z_in=zero_flag,
+                         result_in=result,
+                         rt_in=op2_out,
+                         reg_dst=rd_ex,
+                         jmp_addr_out=imm_jmp_addr,
+                         z_out=zero_flag_ex_mem,
+                         result_out=result_ex_mem,
+                         rt_out=wdata_mem,
+                         branch_out=branch_ex_mem,
+                         mem_read_out=mem_read_ex_mem,
+                         mem_write_out=mem_write_ex_mem,
+                         reg_write_out=reg_write_ex_mem,
+                         reg_dst_out=rd_mem)
+
+    brancher = branch_unit(branch_ctrl=branch_ex_mem,
+                           zero_in=zero_flag_ex_mem,
+                           pc_src=pc_src)
+
+    data_memory = data_mem(read_wire=)
 
     clock_inst = clock_gen(clock)
 
     return clock_inst, pc, pc_mux_a, pc_mux_b, pc_add, inst_memory, inst_mem_mux, if_id_pipe, \
         extender, registers, id_shifter, ctrl_unit, ctrl_gate, hzd, id_ex_pipe, alu_mux_a, \
-        alu_mux_b, alu_mux_imm, alu_, ex_mux_
+        alu_mux_b, alu_mux_imm, alu_, ex_mux_, forwarder, shifter, branch_adder_, ex_mem_pipe, \
+
 
 
 def stim():

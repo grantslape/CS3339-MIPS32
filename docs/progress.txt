@@ -8,6 +8,7 @@ Mark Gitthens:
     wb_mux genericized 2018-04-05
     inst_mem_mux genericized 2018-04-05
     pc_adder DONE 2018-04-05
+    branch_adder DONE
 Huan Wu:
     sign_extender DONE
     id_ex DONE
@@ -28,7 +29,6 @@ Isaac Jaimes:
     jal mux IN PROGRESS
 Robert Tomlinson:
     ex_mem IN PROGRESS
-    branch_adder IN PROGRESS
 Patrick Vinas:
     data_mem DONE 2018-04-13
     mem_wb DONE 2018-04-13
