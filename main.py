@@ -254,7 +254,7 @@ def top():
                          z_in=zero_flag,
                          result_in=result,
                          rt_in=op2_out,
-                         reg_dst=rd_ex,
+                         reg_dst_in=rd_ex,
                          jmp_addr_out=imm_jmp_addr,
                          z_out=zero_flag_ex_mem,
                          result_out=result_ex_mem,
