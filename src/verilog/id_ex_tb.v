@@ -1,7 +1,7 @@
 module tb_id_ex;
 
 reg [0:0] clock;
-reg [0:0] reg_dst_in;
+reg [1:0] reg_dst_in;
 reg [0:0] reg_write_in;
 reg [0:0] alu_src_in;
 reg [0:0] mem_read_in;
@@ -16,7 +16,7 @@ reg [4:0] rt;
 reg [4:0] rd;
 reg [31:0] pc_value_in;
 reg [31:0] imm;
-wire [0:0] reg_dst_out;
+wire [1:0] reg_dst_out;
 wire [0:0] reg_write_out;
 wire [0:0] alu_src_out;
 wire [0:0] mem_read_out;

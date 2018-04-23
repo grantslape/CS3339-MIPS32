@@ -15,10 +15,11 @@ class TestControlUnit(TestCase):
     def setUp(self):
         self.funct_in, self.op_in = unsigned_signal_set(2, width=6)
         self.jump, self.jump_v = unsigned_signal_set(2, width=2)
-        self.branch, self.branch_v, self.mem_read, self.mem_read_v, self.mem_to_reg, \
-            self.mem_to_reg_v, self.mem_write, self.mem_write_v, self.alu_src, self.alu_src_v, \
-            self.reg_write, self.reg_write_v, self.reg_dst, self.reg_dst_v, self.clock = \
-            unsigned_signal_set(15, width=2)
+        self.branch, self.branch_v, self.mem_read, self.mem_read_v, \
+            self.mem_write, self.mem_write_v, self.alu_src, self.alu_src_v, \
+            self.reg_write, self.reg_write_v, self.clock = \
+            unsigned_signal_set(11, width=1)
+        self.mem_to_reg, self.mem_to_reg_v, self.reg_dst, self.reg_dst_v = unsigned_signal_set(4, width=2)
         self.alu_op, self.alu_op_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
         self.reset_out, self.reset_out_v = unsigned_signal_set(2, width=1)
 
@@ -166,6 +167,7 @@ class TestControlUnit(TestCase):
             self.assertEqual(0, self.alu_op)
             self.assertEqual(0, self.mem_write)
             self.assertEqual(2, self.mem_to_reg)
+            self.assertEqual(2, self.reg_dst)
         if verilog:
             self.assertEqual(1, self.jump_v)
             self.assertEqual(0, self.branch_v)
@@ -178,6 +180,7 @@ class TestControlUnit(TestCase):
             self.assertEqual(0, self.alu_op_v)
             self.assertEqual(0, self.mem_write_v)
             self.assertEqual(2, self.mem_to_reg_v)
+            self.assertEqual(2, self.reg_dst_v)
         raise StopSimulation
 
     def jr_ra_test(self, python=False, verilog=False):

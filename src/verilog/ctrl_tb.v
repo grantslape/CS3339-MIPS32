@@ -10,7 +10,7 @@ wire [1:0] mem_to_reg;
 wire [0:0] mem_write;
 wire [0:0] alu_src;
 wire [0:0] reg_write;
-wire [0:0] reg_dst;
+wire [1:0] reg_dst;
 wire [3:0] alu_op;
 wire [0:0] reset_out;
 

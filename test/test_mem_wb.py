@@ -13,8 +13,8 @@ from src.python.mem_wb import mem_wb, mem_wb_v
 class TestMemWb(TestCase):
     """Test MEM/WB Pipeline register"""
     def setUp(self):
-        self.clock, self.reset, self.reg_write_in, self.mem_to_reg_in, self.mem_to_reg_out, self.mem_to_reg_out_v, self.reg_write_out, self.reg_write_out_v, \
-            self.mux_ctl_in, self.mux_ctl_out = unsigned_signal_set(10, width=2)
+        self.clock, self.reset, self.reg_write_in, self.reg_write_out, self.reg_write_out_v = unsigned_signal_set(5, width=1)
+        self.mem_to_reg_in, self.mem_to_reg_out, self.mem_to_reg_out_v = unsigned_signal_set(3, width=2)
         self.rdata_in, self.result_in, self.pc_value_in, self.pc_value_out, self.pc_value_out_v, self.rdata_out, self.rdata_out_v, self.result_out, \
             self.result_out_v = signed_signal_set(9)
         self.rt_in, self.rt_out, self.rt_out_v = unsigned_signal_set(3, width=5)
@@ -30,8 +30,6 @@ class TestMemWb(TestCase):
                           w_reg_addr_out=self.rt_out,
                           w_reg_ctl_out=self.reg_write_out,
                           mem_to_reg_out=self.mem_to_reg_out,
-                          mux_ctl_in=self.mux_ctl_in,
-                          mux_ctl_out=self.mux_ctl_out,
                           pc_value_out=self.pc_value_out)
 
     def getVerilog(self):
@@ -48,8 +46,6 @@ class TestMemWb(TestCase):
                         w_reg_addr_out=self.rt_out_v,
                         w_reg_ctl_out=self.reg_write_out_v,
                         mem_to_reg_out=self.mem_to_reg_out_v,
-                        mux_ctl_in=self.mux_ctl_in,
-                        mux_ctl_out=self.mux_ctl_out,
                         pc_value_out=self.pc_value_out_v)
 
 

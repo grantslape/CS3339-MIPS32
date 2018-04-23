@@ -41,7 +41,7 @@ module id_ex (
 
 
 input [0:0] clock;
-input [0:0] reg_dst_in;
+input [1:0] reg_dst_in;
 input [0:0] reg_write_in;
 input [0:0] alu_src_in;
 input [0:0] mem_read_in;
@@ -56,8 +56,8 @@ input [4:0] rt;
 input [4:0] rd;
 input [31:0] pc_value_in;
 input signed [31:0] imm;
-output [0:0] reg_dst_out;
-reg [0:0] reg_dst_out;
+output [1:0] reg_dst_out;
+reg [1:0] reg_dst_out;
 output [0:0] reg_write_out;
 reg [0:0] reg_write_out;
 output [0:0] alu_src_out;

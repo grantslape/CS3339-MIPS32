@@ -18,7 +18,8 @@ class TestExMemRegister(TestCase):
         self.clock, self.branch_in, self.mem_read_in, self.reg_write_in, self.z_in, self.z_out, \
             self.z_out_v, self.branch_out, self.branch_out_v, self.mem_read_out, \
             self.mem_read_out_v, self.mem_write_out, self.mem_write_out_v, self.reg_write_out, \
-            self.reg_write_out_v, self.mem_write_in, self.mem_to_reg_in, self.mem_to_reg_out, self.mem_to_reg_out_v = unsigned_signal_set(19, width=2)
+            self.reg_write_out_v, self.mem_write_in = unsigned_signal_set(16, width=1)
+        self.mem_to_reg_in, self.mem_to_reg_out, self.mem_to_reg_out_v = unsigned_signal_set(3, width=2)
         self.rt_in, self.result_in,  self.rt_out, self.rt_out_v, self.pc_value_in, self.pc_value_out, self.pc_value_out_v, self.result_out, \
             self.result_out_v = signed_signal_set(9)
         self.jmp_addr_in, self.jmp_addr_out, self.jmp_addr_out_v = unsigned_signal_set(3)
@@ -121,7 +122,7 @@ class TestExMemRegister(TestCase):
                 self.assertEqual(bin(self.pc_value_in), bin(self.pc_value_out_v))
                 self.assertEqual(bin(self.branch_in), bin(self.branch_out_v))
                 self.assertEqual(bin(self.mem_read_in), bin(self.mem_read_out_v))
-                self.assertEqual(bin(self.mem_to_reg_in_v), bin(self.mem_to_reg_out_v))
+                self.assertEqual(bin(self.mem_to_reg_in), bin(self.mem_to_reg_out_v))
                 self.assertEqual(bin(self.mem_write_in), bin(self.mem_write_out_v))
                 self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out_v))
                 self.assertEqual(bin(self.reg_dst_in), bin(self.reg_dst_out_v))
