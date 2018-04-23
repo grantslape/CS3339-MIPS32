@@ -1,7 +1,7 @@
 """EX/MEM Pioeline Register Unit tests"""
 import unittest
 from unittest import TestCase
-from myhdl import Simulation, StopSimulation
+from myhdl import Simulation, StopSimulation, bin
 
 from src.python.ex_mem import ex_mem, ex_mem_v
 from src.commons.clock import clock_gen
@@ -18,7 +18,8 @@ class TestExMemRegister(TestCase):
         self.clock, self.branch_in, self.mem_read_in, self.reg_write_in, self.z_in, self.z_out, \
             self.z_out_v, self.branch_out, self.branch_out_v, self.mem_read_out, \
             self.mem_read_out_v, self.mem_write_out, self.mem_write_out_v, self.reg_write_out, \
-            self.reg_write_out_v, self.mem_write_in = unsigned_signal_set(16, width=1)
+            self.reg_write_out_v, self.mem_write_in, self.mem_to_reg, self.mem_to_reg_out, \
+            self.mem_to_reg_out_v = unsigned_signal_set(19, width=1)
         self.rt_in, self.result_in,  self.rt_out, self.rt_out_v, self.result_out, \
             self.result_out_v = signed_signal_set(6)
         self.jmp_addr_in, self.jmp_addr_out, self.jmp_addr_out_v = unsigned_signal_set(3)
@@ -53,7 +54,9 @@ class TestExMemRegister(TestCase):
             'mem_read_out': self.mem_read_out_v if verilog else self.mem_read_out,
             'mem_write_out': self.mem_write_out_v if verilog else self.mem_write_out,
             'reg_write_out': self.reg_write_out_v if verilog else self.reg_write_out,
-            'reg_dst_out': self.reg_dst_out_v if verilog else self.reg_dst_out
+            'reg_dst_out': self.reg_dst_out_v if verilog else self.reg_dst_out,
+            'mem_to_reg': self.mem_to_reg,
+            'mem_to_reg_out': self.mem_to_reg_out_v if verilog else self.mem_to_reg_out
         }
 
     def deassert(self, python=False, verilog=False):
@@ -71,6 +74,7 @@ class TestExMemRegister(TestCase):
                 self.assertEqual(bin(0), bin(self.mem_write_out))
                 self.assertEqual(bin(0), bin(self.reg_write_out))
                 self.assertEqual(bin(0), bin(self.reg_dst_out))
+                self.assertEqual(bin(0), bin(self.mem_to_reg_out))
             if verilog:
                 self.assertEqual(bin(0), bin(self.jmp_addr_out_v))
                 self.assertEqual(bin(0), bin(self.z_out_v))
@@ -81,6 +85,7 @@ class TestExMemRegister(TestCase):
                 self.assertEqual(bin(0), bin(self.mem_write_out_v))
                 self.assertEqual(bin(0), bin(self.reg_write_out_v))
                 self.assertEqual(bin(0), bin(self.reg_dst_out_v))
+                self.assertEqual(bin(0), bin(self.mem_to_reg_out_v))
         raise StopSimulation
 
     def dynamic(self, python=False, verilog=False):
@@ -103,6 +108,7 @@ class TestExMemRegister(TestCase):
                 self.assertEqual(bin(self.mem_write_in), bin(self.mem_write_out))
                 self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out))
                 self.assertEqual(bin(self.reg_dst_in), bin(self.reg_dst_out))
+                self.assertEqual(bin(self.mem_to_reg), bin(self.mem_to_reg_out))
             if verilog:
                 self.assertEqual(bin(self.jmp_addr_in), bin(self.jmp_addr_out_v))
                 self.assertEqual(bin(self.z_in), bin(self.z_out_v))
@@ -113,6 +119,7 @@ class TestExMemRegister(TestCase):
                 self.assertEqual(bin(self.mem_write_in), bin(self.mem_write_out_v))
                 self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out_v))
                 self.assertEqual(bin(self.reg_dst_in), bin(self.reg_dst_out_v))
+                self.assertEqual(bin(self.mem_to_reg), bin(self.mem_to_reg_out_v))
         raise StopSimulation
 
     def testDeassertPython(self):
