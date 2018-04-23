@@ -36,22 +36,22 @@ from src.commons.clock import clock_gen
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 
-clock, pc_write, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
+clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
     branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_to_reg_ctrl, \
     mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb, mem_write_ctrl, \
     mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate, \
     alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem, \
     reg_write_mem_wb, ex_stall, zero_flag, \
-    zero_flag_ex_mem \
+    zero_flag_ex_mem, pc_write \
     = unsigned_signal_set(32, width=1)
+
+cur_pc = Signal(unsigned_intbv(value=8))
 
 forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate = unsigned_signal_set(7, width=2)
 
-nxt_inst, imm_jmp_addr, nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
-pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final = \
+imm_jmp_addr, nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
+pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst = \
     unsigned_signal_set(14)
-
-cur_pc = Signal(unsigned_intbv(value=4))
 
 imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem, \
     result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, \
@@ -310,16 +310,15 @@ def top():
 
 def stim():
     """Test stimulus"""
-
+    # Hack for now to get things moving
+    cur_pc.next = 4
     while 1:
-        cur_pc.next = 4
         yield clock.negedge
-        # print("Cycle: {0}, PC: {1}, Op: {2}, Funct: {3}, J: {}, B: {}, MR: {}, MW: {}, AS: {}, "
-        #       "RW: {}, RD: {}, MTR: {}, ALU: {}, result: {}, op1: {}, op2: {}")
+        print(nxt_inst, pc_src)
         # print("Cycle: {}, PC: {}, R1: {}, R2: {}, rs: {}, rt: {}, rd: {}, imm: {}, J: {}, B: {}, MR: {}, MW: {}, "
         #       "AS: {}, RW: {}, RD: {}, MTR: {}, ALU: {}, result: {}, op1: {}, op2: {}"
         #       # We are looking at values for 2 cycles ago
-        #       .format(int(nxt_inst // 4) + 1,
+        #       .format(int(nxt_inst // 4) + 1 - 2,
         #               hex(pc_id_ex), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
         #               bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
         #               bin(imm_id_ex, width=16), bin(jmp_ctrl), bin(branch_id_ex), bin(mem_read_id_ex),
