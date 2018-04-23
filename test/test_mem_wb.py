@@ -2,7 +2,7 @@
 import unittest
 from unittest import TestCase
 from random import randint
-from myhdl import StopSimulation, Simulation, ResetSignal
+from myhdl import StopSimulation, Simulation, bin
 from src.commons.clock import clock_gen
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import unsigned_signal_set, signed_signal_set, \
@@ -14,7 +14,8 @@ class TestMemWb(TestCase):
     """Test MEM/WB Pipeline register"""
     def setUp(self):
         self.clock, self.reset, self.reg_write_in, self.reg_write_out, self.reg_write_out_v, \
-            self.mux_ctl_in, self.mux_ctl_out = unsigned_signal_set(7, width=1)
+            self.mux_ctl_in, self.mux_ctl_out, self.mem_to_reg, self.mem_to_reg_out, \
+            self.mem_to_reg_out_v = unsigned_signal_set(10, width=1)
         self.rdata_in, self.result_in, self.rdata_out, self.rdata_out_v, self.result_out, \
             self.result_out_v = signed_signal_set(6)
         self.rt_in, self.rt_out, self.rt_out_v = unsigned_signal_set(3, width=5)
@@ -27,8 +28,8 @@ class TestMemWb(TestCase):
                           alu_result_out=self.result_out,
                           w_reg_addr_out=self.rt_out,
                           w_reg_ctl_out=self.reg_write_out,
-                          mux_ctl_in=self.mux_ctl_in,
-                          mux_ctl_out=self.mux_ctl_out)
+                          mem_to_reg=self.mem_to_reg,
+                          mem_to_reg_out=self.mem_to_reg_out)
 
     def getVerilog(self):
         """Return verilog design under test"""
@@ -42,8 +43,9 @@ class TestMemWb(TestCase):
                         w_reg_addr_out=self.rt_out_v,
                         w_reg_ctl_out=self.reg_write_out_v,
                         mux_ctl_in=self.mux_ctl_in,
-                        mux_ctl_out=self.mux_ctl_out)
-
+                        mux_ctl_out=self.mux_ctl_out,
+                        mem_to_reg=self.mem_to_reg,
+                        mem_to_reg_out=self.mem_to_reg_out_v)
 
     def hold_zero(self, python=False, verilog=False):
         """Test when inputs are held zero"""
@@ -55,17 +57,20 @@ class TestMemWb(TestCase):
                 self.assertEqual(bin(self.result_out), bin(0))
                 self.assertEqual(bin(self.rt_out), bin(0))
                 self.assertEqual(bin(self.reg_write_out), bin(0))
+                self.assertEqual(bin(self.mem_to_reg_out), bin(0))
             if verilog:
                 self.assertEqual(bin(self.rdata_out_v), bin(0))
                 self.assertEqual(bin(self.result_out_v), bin(0))
                 self.assertEqual(bin(self.rt_out_v), bin(0))
                 self.assertEqual(bin(self.reg_write_out_v), bin(0))
+                self.assertEqual(bin(self.mem_to_reg_out_v), bin(0))
         raise StopSimulation
 
     def dynamic(self, python=False, verilog=False):
         """Test dynamic (normal) operation"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.reg_write_in.next = randint(0, 1)
+            self.mem_to_reg.next = randint(0, 1)
             self.rdata_in.next, self.result_in.next = rand_signed_signal_set(2)
             self.rt_in.next = random_unsigned_intbv(width=5)
             yield self.clock.posedge
@@ -75,11 +80,13 @@ class TestMemWb(TestCase):
                 self.assertEqual(bin(self.rdata_in), bin(self.rdata_out))
                 self.assertEqual(bin(self.result_in), bin(self.result_out))
                 self.assertEqual(bin(self.rt_in), bin(self.rt_out))
+                self.assertEqual(bin(self.mem_to_reg_out), bin(self.mem_to_reg))
             if verilog:
                 self.assertEqual(bin(self.reg_write_in), bin(self.reg_write_out_v))
                 self.assertEqual(bin(self.rdata_in), bin(self.rdata_out_v))
                 self.assertEqual(bin(self.result_in), bin(self.result_out_v))
                 self.assertEqual(bin(self.rt_in), bin(self.rt_out_v))
+                self.assertEqual(bin(self.mem_to_reg_out_v), bin(self.mem_to_reg))
         raise StopSimulation
 
     def testMemWbHoldZeroPython(self):
