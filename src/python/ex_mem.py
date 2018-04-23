@@ -4,8 +4,9 @@ from myhdl import always, Cosimulation
 
 
 def ex_mem(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_write_in, jmp_addr,
-           z_in, result_in, rt_in, reg_dst, jmp_addr_out, z_out, result_out, rt_out,
-           branch_out, mem_read_out, mem_write_out, reg_write_out, reg_dst_out, mem_to_reg_out):
+           z_in, pc_value_in, result_in, rt_in, reg_dst, jmp_addr_out, z_out, result_out,
+           rt_out, branch_out, mem_read_out, mem_write_out, reg_write_out, reg_dst_out,
+           pc_value_out, mem_to_reg_out):
     """
     EX/MEM Pipeline register
     :param clock: system clock
@@ -46,14 +47,16 @@ def ex_mem(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_write
         z_out.next = z_in
         result_out.next = result_in
         rt_out.next = rt_in
+        pc_value_out.next = pc_value_in
         reg_dst_out.next = reg_dst
         
     return logic
 
 
 def ex_mem_v(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_write_in, jmp_addr,
-           z_in, result_in, rt_in, reg_dst, jmp_addr_out, z_out, result_out, rt_out,
-           branch_out, mem_read_out, mem_write_out, reg_write_out, reg_dst_out, mem_to_reg_out):
+           z_in, pc_value_in, result_in, rt_in, reg_dst, jmp_addr_out, z_out, result_out,
+           rt_out, branch_out, mem_read_out, mem_write_out, reg_write_out, reg_dst_out,
+           pc_value_out, mem_to_reg_out):
     """
     Verilog See above
     :param kwargs:
@@ -71,6 +74,7 @@ def ex_mem_v(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_wri
                         reg_write_in=reg_write_in,
                         jmp_addr=jmp_addr,
                         z_in=z_in,
+                        pc_value_in=pc_value_in,
                         result_in=result_in,
                         rt_in=rt_in,
                         reg_dst=reg_dst,
@@ -83,4 +87,5 @@ def ex_mem_v(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_wri
                         mem_write_out=mem_write_out,
                         reg_write_out=reg_write_out,
                         reg_dst_out=reg_dst_out,
+                        pc_value_out=pc_value_out,
                         mem_to_reg_out=mem_to_reg_out)
