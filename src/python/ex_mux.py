@@ -6,19 +6,23 @@ from myhdl import always_comb, Cosimulation
 def ex_mux(reg_dst, rt_in, rd_in, dest):
     """
     2:1 Mux to select write address
-    :param reg_dst: 1 bit selector from id_ex.reg_dst_out 0 for rt, 1 for rd
+    :param reg_dst: 2 bit selector from id_ex.reg_dst_out 0 for rt, 1 for rd, 2 for ra
     :param rt_in: rt, sent from id_ex
     :param rd_in: rd, sent from id_ex
     :param dest: destination register address, sent to ex_mem
     :return: module logic
     """
 
+    registerRA = 0b11111
+
     @always_comb
     def logic():
         if reg_dst == 0:
             dest.next = rt_in
-        else:
+        elif reg_dst == 1:
             dest.next = rd_in
+        elif reg_dst == 2:
+            dest.next = registerRA
 
     return logic
 
@@ -26,7 +30,7 @@ def ex_mux(reg_dst, rt_in, rd_in, dest):
 def ex_mux_v(reg_dst, rt_in, rd_in, dest):
     """
     2:1 Mux to select write address Verilog
-    :param reg_dst: 1 bit selector from id_ex.reg_dst_out 0 for rt, 1 for rd
+    :param reg_dst: 2 bit selector from id_ex.reg_dst_out 0 for rt, 1 for rd, 2 for ra
     :param rt_in: rt, sent from id_ex
     :param rd_in: rd, sent from id_ex
     :param dest: destination register address, sent to ex_mem

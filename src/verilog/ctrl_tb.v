@@ -6,11 +6,11 @@ reg [5:0] op_in;
 wire [1:0] jump;
 wire [0:0] branch;
 wire [0:0] mem_read;
-wire [0:0] mem_to_reg;
+wire [1:0] mem_to_reg;
 wire [0:0] mem_write;
 wire [0:0] alu_src;
 wire [0:0] reg_write;
-wire [0:0] reg_dst;
+wire [1:0] reg_dst;
 wire [3:0] alu_op;
 wire [0:0] reset_out;
 
