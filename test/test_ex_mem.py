@@ -1,5 +1,6 @@
 """EX/MEM Pioeline Register Unit tests"""
 import unittest
+from random import randint
 from unittest import TestCase
 from myhdl import Simulation, StopSimulation, bin
 
@@ -99,7 +100,8 @@ class TestExMemRegister(TestCase):
         """Testing dynamic functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.branch_in.next, self.mem_read_in.next, self.reg_write_in.next, \
-                self.z_in.next, self.mem_to_reg_in.next = rand_unsigned_signal_set(5, width=2)
+                self.z_in.next = rand_unsigned_signal_set(4, width=1)
+            self.mem_to_reg_in.next = randint(0, 2)
             self.rt_in.next, self.result_in.next, self.pc_value_in.next = rand_signed_signal_set(3)
             self.jmp_addr_in.next = random_unsigned_intbv()
             self.reg_dst_in.next = random_unsigned_intbv(width=5)
