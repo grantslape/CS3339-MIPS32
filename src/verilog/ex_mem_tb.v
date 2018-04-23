@@ -11,16 +11,16 @@ reg z_in;
 reg [31:0] pc_value_in;
 reg [31:0] result_in;
 reg [31:0] rt_in;
-wire [3:0] reg_dst;
+reg [4:0] reg_dst_in;
 wire [31:0] jmp_addr_out;
 wire z_out;
-wire result_out;
+wire [31:0] result_out;
 wire [31:0] rt_out;
 wire branch_out;
 wire mem_read_out;
 wire mem_write_out;
 wire reg_write_out;
-wire [3:0] reg_dst_out;
+wire [4:0] reg_dst_out;
 wire [31:0] pc_value_out;
 wire [1:0] mem_to_reg_out;
 
@@ -36,10 +36,10 @@ initial begin
         z_in,
         pc_value_in,
         result_in,
-        rt_in
+        rt_in,
+        reg_dst_in
     );
     $to_myhdl(
-        reg_dst,
         jmp_addr_out,
         z_out,
         result_out,
@@ -66,7 +66,7 @@ ex_mem dut(
     pc_value_in,
     result_in,
     rt_in,
-    reg_dst,
+    reg_dst_in,
     jmp_addr_out,
     z_out,
     result_out,

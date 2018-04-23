@@ -4,7 +4,7 @@ from myhdl import always, Cosimulation
 
 
 def ex_mem(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_write_in, jmp_addr,
-           z_in, pc_value_in, result_in, rt_in, reg_dst, jmp_addr_out, z_out, result_out,
+           z_in, pc_value_in, result_in, rt_in, reg_dst_in, jmp_addr_out, z_out, result_out,
            rt_out, branch_out, mem_read_out, mem_write_out, reg_write_out, reg_dst_out,
            pc_value_out, mem_to_reg_out):
     """
@@ -48,13 +48,13 @@ def ex_mem(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_write
         result_out.next = result_in
         rt_out.next = rt_in
         pc_value_out.next = pc_value_in
-        reg_dst_out.next = reg_dst
+        reg_dst_out.next = reg_dst_in
         
     return logic
 
 
 def ex_mem_v(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_write_in, jmp_addr,
-           z_in, pc_value_in, result_in, rt_in, reg_dst, jmp_addr_out, z_out, result_out,
+           z_in, pc_value_in, result_in, rt_in, reg_dst_in, jmp_addr_out, z_out, result_out,
            rt_out, branch_out, mem_read_out, mem_write_out, reg_write_out, reg_dst_out,
            pc_value_out, mem_to_reg_out):
     """
@@ -65,7 +65,7 @@ def ex_mem_v(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_wri
     cmd = "iverilog -o bin/ex_mem.out src/verilog/ex_mem.v src/verilog/ex_mem_tb.v"
     os.system(cmd)
 
-    return Cosimulation("vvp -m lib/mydhl.vpi bin/ex_mem.out",
+    return Cosimulation("vvp -m lib/myhdl.vpi bin/ex_mem.out",
                         clock=clock,
                         branch_in=branch_in,
                         mem_read_in=mem_read_in,
@@ -77,7 +77,7 @@ def ex_mem_v(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_wri
                         pc_value_in=pc_value_in,
                         result_in=result_in,
                         rt_in=rt_in,
-                        reg_dst=reg_dst,
+                        reg_dst_in=reg_dst_in,
                         jmp_addr_out=jmp_addr_out,
                         z_out=z_out,
                         result_out=result_out,
