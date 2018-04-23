@@ -58,7 +58,6 @@ class TestExMemRegister(TestCase):
             'mem_write_out': self.mem_write_out_v if verilog else self.mem_write_out,
             'reg_write_out': self.reg_write_out_v if verilog else self.reg_write_out,
             'reg_dst_out': self.reg_dst_out_v if verilog else self.reg_dst_out,
-            'mem_to_reg_in': self.mem_to_reg_in,
             'mem_to_reg_out': self.mem_to_reg_out_v if verilog else self.mem_to_reg_out
         }
 
