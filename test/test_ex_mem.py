@@ -1,7 +1,7 @@
 """EX/MEM Pioeline Register Unit tests"""
 import unittest
 from unittest import TestCase
-from myhdl import Simulation, StopSimulation
+from myhdl import Simulation, StopSimulation, bin
 
 from src.python.ex_mem import ex_mem, ex_mem_v
 from src.commons.clock import clock_gen
@@ -54,11 +54,12 @@ class TestExMemRegister(TestCase):
             'rt_out': self.rt_out_v if verilog else self.rt_out,
             'pc_value_out':self.pc_value_out_v if verilog else self.pc_value_out,
             'branch_out': self.branch_out_v if verilog else self.branch_out,
-            'mem_to_reg_out':self.mem_to_reg_out_v if verilog else self.mem_to_reg_out,
             'mem_read_out': self.mem_read_out_v if verilog else self.mem_read_out,
             'mem_write_out': self.mem_write_out_v if verilog else self.mem_write_out,
             'reg_write_out': self.reg_write_out_v if verilog else self.reg_write_out,
-            'reg_dst_out': self.reg_dst_out_v if verilog else self.reg_dst_out
+            'reg_dst_out': self.reg_dst_out_v if verilog else self.reg_dst_out,
+            'mem_to_reg': self.mem_to_reg_in,
+            'mem_to_reg_out': self.mem_to_reg_out_v if verilog else self.mem_to_reg_out
         }
 
     def deassert(self, python=False, verilog=False):
@@ -78,6 +79,7 @@ class TestExMemRegister(TestCase):
                 self.assertEqual(bin(0), bin(self.mem_write_out))
                 self.assertEqual(bin(0), bin(self.reg_write_out))
                 self.assertEqual(bin(0), bin(self.reg_dst_out))
+                self.assertEqual(bin(0), bin(self.mem_to_reg_out))
             if verilog:
                 self.assertEqual(bin(0), bin(self.jmp_addr_out_v))
                 self.assertEqual(bin(0), bin(self.z_out_v))
@@ -90,6 +92,7 @@ class TestExMemRegister(TestCase):
                 self.assertEqual(bin(0), bin(self.mem_write_out_v))
                 self.assertEqual(bin(0), bin(self.reg_write_out_v))
                 self.assertEqual(bin(0), bin(self.reg_dst_out_v))
+                self.assertEqual(bin(0), bin(self.mem_to_reg_out_v))
         raise StopSimulation
 
     def dynamic(self, python=False, verilog=False):
