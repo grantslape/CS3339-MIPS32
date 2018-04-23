@@ -37,25 +37,26 @@ from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 
 clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
-    branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_to_reg_ctrl, \
-    mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb, mem_write_ctrl, \
+    branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, \
     mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate, \
     alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem, \
     reg_write_mem_wb, ex_stall, zero_flag, \
     zero_flag_ex_mem, pc_write \
-    = unsigned_signal_set(32, width=1)
+    = unsigned_signal_set(27, width=1)
 
-cur_pc = Signal(unsigned_intbv(value=8))
+cur_pc = Signal(unsigned_intbv(value=0))
 
-forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate = unsigned_signal_set(7, width=2)
+mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb, \
+    forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate \
+    = unsigned_signal_set(12, width=2)
 
-imm_jmp_addr, nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
+nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
 pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst = \
-    unsigned_signal_set(14)
+    unsigned_signal_set(13)
 
 imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem, \
     result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, \
-    wdata_mem, read_data, read_data_mem_wb = signed_signal_set(18)
+    wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr = signed_signal_set(19)
 
 rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, rd_wb, w_addr \
     = unsigned_signal_set(10, width=5)
@@ -89,7 +90,7 @@ def top():
     pc_add = pc_adder(cur_pc=cur_pc,
                       next_pc=nxt_pc)
 
-    inst_memory = inst_mem(inst_reg=nxt_inst,
+    inst_memory = inst_mem(inst_reg=cur_pc,
                            inst_out=inst_out)
 
     inst_mem_mux = mux32bit2to1(ctrl_line=jmp_ctrl,
@@ -100,7 +101,7 @@ def top():
     if_id_pipe = if_id(if_id_write=if_id_write,
                        clock=clock,
                        nxt_pc=nxt_pc,
-                       inst_in=inst_out,
+                       inst_in=inst_if,
                        op_code=op_code,
                        rs=rs,
                        rt=rt,
@@ -313,22 +314,20 @@ def top():
 def stim():
     """Test stimulus"""
     # Hack for now to get things moving
-    cur_pc.next = 4
+    # cur_pc.next = 4
+    cycle = 0
     while 1:
         # print(nxt_inst, pc_src)
-        yield join(clock.negedge)
-        print("Cycle: {}, NxtInst: {}, \nPC: {}, \nR1: {}, \nR2: {}, \nrs: {}, \nrt: {}, \nrd: {}, \nimm: {}, \nJump: {}, \nBranch: {},"
-            "\nMemRead: {}, \nMemWrite: {}, \nAluSrc: {}, \nRegWrite: {}, \nRegDest: {}, \nMemToReg: {}, \nPcWrite: {}, "
-              "\nALU: {}, \nresult: {}, \nop1: {}, \nop2: {}"
-              # We are looking at values for 2 cycles ago
-              .format(int(nxt_inst // 4) + 1 - 2, int(nxt_inst),
-                      hex(pc_id_ex), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
-                      bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
-                      bin(imm_id_ex, width=16), bool(jmp_ctrl), bool(branch_id_ex), bool(mem_read_id_ex),
-                      bool(mem_write_id_ex), bool(alu_src_id_ex), bool(reg_write_id_ex), bool(reg_dst_id_ex),
-                      bool(mem_to_reg_id_ex), bool(pc_write), bin(alu_op_id_ex, width=4), bin(result, width=32),
-                      bin(op1_out), bin(op2_final)))
+        yield clock.posedge
+        # print("Cycle: {}, NxtInst: {}, \nPC: {}, \nR1: {}, \nR2: {}, \nrs: {}, \nrt: {}, \nrd: {}, \nimm: {}, \nJump: {}, \nBranch: {},"
+        #     "\nMemRead: {}, \nMemWrite: {}, \nAluSrc: {}, \nRegWrite: {}, \nRegDest: {}, \nMemToReg: {}, \nPcWrite: {}, "
+        #       "\nALU: {}, \nresult: {}, \nop1: {}, \nop2: {}"
+        #       # We are looking at values for 2 cycles ago
+        #       .format(cycle, int(nxt_inst),
+        #               hex(cur_pc)))
+        print("Cycle: {}, CurPC: {}, Instreg: {}\n Inst: {}".format(cycle, hex(cur_pc), hex(nxt_inst), bin(inst_out, width=32)))
         print("\n")
+        cycle += 1
 
 
 def monitor():

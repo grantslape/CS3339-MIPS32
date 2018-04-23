@@ -59,7 +59,6 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
         # we may want to "reg_write" here and drop PC+4 value into the flow.
         elif op_in == 2:
             # JUMP
-            # TODO: break JAL out because we need to handle it differently
             jump.next = 1
             branch.next = 0
             reset_out.next = 1
@@ -70,7 +69,6 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
             alu_op.next = 0
         elif op_in == 3:
             # JAL
-            # TODO: break JAL out because we need to handle it differently
             jump.next = 1
             branch.next = 0
             reset_out.next = 1
