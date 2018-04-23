@@ -31,7 +31,7 @@ module ctrl (
 // :param mem_write: activate to write to memory. to id_ex
 // :param alu_src: 0 for register input, 1 for immediate. to id_ex.alu_src_in
 // :param reg_write: activate to write to register.  to id_ex.reg_write_in
-// :param reg_dst: 0 to write to Rt ([20:16]), 1 to write to Rd ([15:11]). to id_ex.reg_dst_in
+// :param reg_dst: 0 to write to Rt ([20:16]), 1 to write to Rd ([15:11]). to id_ex.reg_dst_in, 2 for the ra register (pc_value)
 // :param reset_out: 1 to insert a 1 cycle stall in the pipeline.  to id_ex.reset_in
 // :return: module logic
 
@@ -44,16 +44,16 @@ output [0:0] branch;
 reg [0:0] branch;
 output [0:0] mem_read;
 reg [0:0] mem_read;
-output [0:0] mem_to_reg;
-reg [0:0] mem_to_reg;
+output [1:0] mem_to_reg;
+reg [1:0] mem_to_reg;
 output [0:0] mem_write;
 reg [0:0] mem_write;
 output [0:0] alu_src;
 reg [0:0] alu_src;
 output [0:0] reg_write;
 reg [0:0] reg_write;
-output [0:0] reg_dst;
-reg [0:0] reg_dst;
+output [1:0] reg_dst;
+reg [1:0] reg_dst;
 output [3:0] alu_op;
 reg [3:0] alu_op;
 output [0:0] reset_out;
@@ -95,7 +95,7 @@ always @(posedge clock) begin: CTRL_LOGIC
         alu_src <= 0;
         reg_write <= 0;
     end
-    else if (((op_in == 2) || (op_in == 3))) begin
+    else if ((op_in == 2)) begin
         jump <= 1;
         branch <= 0;
         reset_out <= 1;
@@ -104,6 +104,18 @@ always @(posedge clock) begin: CTRL_LOGIC
         mem_read <= 0;
         alu_src <= 0;
         alu_op <= 0;
+    end
+    else if ((op_in == 3)) begin
+        jump <= 1;
+        branch <= 0;
+        reset_out <= 1;
+        mem_write <= 0;
+        reg_write <= 1;
+        mem_read <= 0;
+        alu_src <= 0;
+        alu_op <= 0;
+        mem_to_reg <= 2;
+        reg_dst <= 2;
     end
     else if ((op_in == 25)) begin
         jump <= 2;

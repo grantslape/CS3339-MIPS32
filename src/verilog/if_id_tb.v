@@ -13,13 +13,15 @@ wire [5:0] funct_out;
 wire [31:0] pc_out;
 wire [3:0] top4;
 wire [25:0] target_out;
+reg [0:0] reset;
 
 initial begin
     $from_myhdl(
         clock,
         if_id_write,
         nxt_pc,
-        inst_in
+        inst_in,
+        reset
     );
     $to_myhdl(
         op_code,
@@ -47,7 +49,8 @@ if_id dut(
     funct_out,
     pc_out,
     top4,
-    target_out
+    target_out,
+    reset
 );
 
 endmodule

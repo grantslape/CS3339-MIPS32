@@ -13,8 +13,8 @@ def branch_adder(pc_in, imm_in, addr_out):
 
     @always_comb
     def logic():
-        # NOT IMPLEMENTED
-        pass
+        addr_out.next = pc_in + imm_in  
+       
     return logic
 
 
@@ -26,4 +26,11 @@ def branch_adder_v(pc_in, imm_in, addr_out):
     :param addr_out:
     :return:
     """
-    return Cosimulation()
+
+    cmd = "iverilog -o bin/branch_adder.out src/verilog/branch_adder.v src/verilog/branch_adder_tb.v"
+    os.system(cmd)
+
+    return Cosimulation ("vvp -m lib/myhdl.vpi bin/branch_adder.out",
+                         pc_in=pc_in,
+                         imm_in=imm_in, 
+                         addr_out=addr_out)

@@ -3,9 +3,7 @@ import unittest
 from unittest import TestCase
 from myhdl import Simulation, StopSimulation, Signal, intbv
 from src.python.mux32bit3to1 import mux32bit3to1, mux32bit3to1_v
-from src.commons.signal_generator import random_signed_intbv, signed_signal_set, \
-    rand_signed_signal_set
-# TODO: Update this to generic 32 bit mux
+from src.commons.signal_generator import signed_signal_set, rand_signed_signal_set
 from src.commons.clock import half_period
 from src.commons.settings import settings as sf
 
