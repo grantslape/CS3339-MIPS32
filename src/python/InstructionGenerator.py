@@ -49,6 +49,7 @@ def complementConverter(n):
   return binary
 #######################################################################################
 def rFormat(myInt,myArray,myLowerRegister,myUpperRegister):
+  global debug
   lowerShiftBound = 0
   upperShiftBound = 31
   myBin = ''

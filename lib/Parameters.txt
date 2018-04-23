@@ -1,4 +1,4 @@
 NumberOfInstructions=100
 BranchFrequencyPercentage=10
 DataDependency=25
-Debug=1
+Debug=0
