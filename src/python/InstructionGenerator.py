@@ -5,9 +5,10 @@ twoExp15MinusOne = 32767
 negativeTwoExp15 = -32768
 maxInstructions = 2**20
 debug = 0
-INSTRUCTION_PATH = "lib/instructions"
-PARAM_PATH = "lib/Parameters.txt"
-INST_LIST_PATH = "lib/InstructionList.txt"
+INSTRUCTION_PATH = "../../lib/instructions"
+PARAM_PATH = "../../lib/Parameters.txt"
+INST_LIST_PATH = "../../lib/InstructionList.txt"
+INSTRUCTION_PATH2 = "../../lib/instructions2"
 #######################################################################################
 #get the parameters (only instruction count for now)
 def getParameters():
@@ -153,6 +154,8 @@ def jumpFormat(myInt,myArray,myLowerRegister,myUpperRegister):
 def deleteInstructionFile():
   if os.path.exists(INSTRUCTION_PATH):
     os.remove(INSTRUCTION_PATH)
+  if os.path.exists(INSTRUCTION_PATH2):
+    os.remove(INSTRUCTION_PATH2)
   return
 #######################################################################################
 def createInstructionsFile():
@@ -162,16 +165,12 @@ def createInstructionsFile():
 #######################################################################################
 def writeInstructions(myArray):
   import random
-  jLast = '00001000000000000000000000000000'
   file = open(INSTRUCTION_PATH,'a')
   instructionArray = myArray.split(',')
   random.shuffle(instructionArray)
-  for i in range(0,len(instructionArray)):
-   file.write(instructionArray[i])
-   if i < (len(instructionArray) - 1):
-     file.write('\n')
-  file.write('\n')
-  file.write(jLast)
+  for i in range(len(instructionArray)):
+   if i < (len(instructionArray)):
+     file.write(instructionArray[i].strip() + "\n")
   file.close()
   return
 #######################################################################################
@@ -244,48 +243,82 @@ def driver():
     print("DATA DEPENDENCY: " + str(dataDependency*100)) + "%"
     print("LOWER REGISTER: " + str(lowerRegister))
     print("BRANCH FREQUENCY: " + str(branchFrequency*100)) + "%"
+  
   numberOfBranchInstructions = int(int(totalInstructions) * float(branchFrequency))
   numberOfInstructions = int(totalInstructions) - int(numberOfBranchInstructions)
   if debug == 1:
     print("# Branch Instructions: " + str(numberOfBranchInstructions))
+    print("# Non-Branch Instructions: " + str(numberOfInstructions))
+  forLoopBranch = 0
+  forLoopNonBranch = 0
+  counterNonBranch = 0
+  counterBranch = 0
   instrString = getInstructions()
   convertedToInstArray = instrString.split(',')
-  myRandInt = 0
-  for x in range(0,int(numberOfInstructions)):
-    myRandInt = randint(1,11)
-    if myRandInt == 1 or myRandInt == 2 or myRandInt == 3 or myRandInt == 4 or myRandInt == 5 or myRandInt == 6 or myRandInt == 7:
-      #call the R-format function
-      myInstruction = rFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
-      if nonBranchInstructions == '':
-        nonBranchInstructions = myInstruction
-      else:
-        nonBranchInstructions = nonBranchInstructions + "," + myInstruction
-      if debug == 1:
-        print(myInstruction)
-    elif myRandInt == 8 or myRandInt == 9 or myRandInt == 10 or myRandInt == 11:
-      myInstruction = immediateFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
-      if nonBranchInstructions == '':
-        nonBranchInstructions = myInstruction
-      else:
-        nonBranchInstructions = nonBranchInstructions + "," + myInstruction
-      if debug == 1:
-        print(myInstruction)
-
-  for x in range(0,int(numberOfBranchInstructions)):
-    myRandInt = randint(12,15)
-    if myRandInt == 12 or myRandInt == 13 or myRandInt == 14 or myRandInt == 15:
-      myInstruction = jumpFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
-      if branchInstructions == '':
-        branchInstructions = myInstruction
-      else:
-        branchInstructions = branchInstructions + "," + myInstruction
-      if debug == 1:
-        print(myInstruction)
-  instructionList = nonBranchInstructions + "," + branchInstructions
-  writeInstructions(instructionList)
+  while (forLoopBranch < int(numberOfBranchInstructions)):
+    nonBranchInstructions = ''
+    branchInstructions = ''
+    forLoopNonBranch += counterNonBranch
+    forLoopBranch += counterBranch
+    counterBranch = 0
+    counterNonBranch = 0
+    myRandInt = 0
+    if (forLoopNonBranch < int(numberOfInstructions)):
+      for x in range(forLoopNonBranch,int(numberOfInstructions)):
+        if (counterNonBranch > 0 and (counterNonBranch % 10000 == 0)):
+	      break
+        myRandInt = randint(1,11)
+        if myRandInt == 1 or myRandInt == 2 or myRandInt == 3 or myRandInt == 4 or myRandInt == 5 or myRandInt == 6 or myRandInt == 7:
+          #call the R-format function
+          myInstruction = rFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
+          if nonBranchInstructions == '':
+            nonBranchInstructions = myInstruction
+          else:
+            nonBranchInstructions = nonBranchInstructions + "," + myInstruction
+          if debug == 1:
+            print(myInstruction)
+        elif myRandInt == 8 or myRandInt == 9 or myRandInt == 10 or myRandInt == 11:
+          myInstruction = immediateFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
+          if nonBranchInstructions == '':
+            nonBranchInstructions = myInstruction
+          else:
+            nonBranchInstructions = nonBranchInstructions + "," + myInstruction
+          if debug == 1:
+            print(myInstruction)
+        counterNonBranch = counterNonBranch + 1
+    
+    for x in range(forLoopBranch,int(numberOfBranchInstructions)):
+      if (counterBranch > 0 and (counterBranch % 1000 == 0)):
+	    break
+      myRandInt = randint(12,15)
+      if myRandInt == 12 or myRandInt == 13 or myRandInt == 14 or myRandInt == 15:
+        myInstruction = jumpFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
+        if branchInstructions == '':
+          branchInstructions = myInstruction
+        else:
+          branchInstructions = branchInstructions + "," + myInstruction
+        if debug == 1:
+          print(myInstruction)
+      counterBranch = counterBranch + 1
+    instructionList = nonBranchInstructions + "," + branchInstructions
+    writeInstructions(instructionList)
+  #cleanup and reset instructions
+  out = open(INSTRUCTION_PATH,'r')
+  lines = out.readlines()
+  out.close()
+  lines = filter(lambda x: x.strip(), lines)
+  file = open(INSTRUCTION_PATH2,'w')
+  file.writelines(lines)
+  jLast = '00001100000000000000000000000000'
+  file.write(jLast)
+  file.close()
+  if os.path.exists(INSTRUCTION_PATH):
+    os.remove(INSTRUCTION_PATH)
+    os.rename(INSTRUCTION_PATH2,INSTRUCTION_PATH)
   return
 #######################################################################################
 driver()
+
 
 
 
