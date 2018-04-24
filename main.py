@@ -8,10 +8,7 @@
 # Natalie Garza
 # Huan Wu
 """
-<<<<<<< HEAD
-=======
 from __future__ import print_function
->>>>>>> f077b83d4b0eb81ae5ff76116511809cb492c279
 from myhdl import Simulation, bin, StopSimulation, ResetSignal, join
 
 from src.python.branch_unit import branch_unit
@@ -55,21 +52,12 @@ mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_re
     = unsigned_signal_set(12, width=2)
 
 nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
-<<<<<<< HEAD
-pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst = \
-    unsigned_signal_set(13)
-
-imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem, \
-    result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, imm_jmp_addr,  \
-    wdata_mem, read_data, read_data_mem_wb = signed_signal_set(19)
-=======
 pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, nxt_inst_if = \
     unsigned_signal_set(14)
 
 imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem, \
     result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, \
     wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr = signed_signal_set(19)
->>>>>>> f077b83d4b0eb81ae5ff76116511809cb492c279
 
 rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, rd_wb, w_addr \
     = unsigned_signal_set(10, width=5)
@@ -92,13 +80,6 @@ def top():
                             input2=imm_jmp_addr,
                             out=nxt_inst_mux_a)
 
-<<<<<<< HEAD
-    # function needed to assign value to jmp_reg below
-    # would we be calling rfile under certain conditions inside of main?
-=======
-    # Our JR format is 01100111111000000000000000000000, so we just need r_data1 to go to data3
-    # would we be calling rfile under certain conditions inside of main? yes
->>>>>>> f077b83d4b0eb81ae5ff76116511809cb492c279
     pc_mux_b = mux32bit3to1(ctrl_line=jmp_ctrl,
                             data1=nxt_inst_mux_a,
                             data2=jmp_addr_last,
@@ -325,50 +306,71 @@ def top():
         alu_mux_b, alu_mux_imm, alu_, ex_mux_, forwarder, shifter, branch_adder_,  \
         brancher, data_memory, mem_wb_pipe, wb_mux, ex_mem_pipe
 
+def print_regs(cycle):
+    # this is a dummy for now, we need to be able to access the registers From
+    # the instantiation above
+    print("REGISTER FILE CYCLE: " + str(cycle))
+    for i in xrange(0,31,2):
+        j = i + 1
+        reg1 = 0
+        reg2 = 0
+        regs = rfile(clock=clock,
+                     reset=ResetSignal(sf['INACTIVE_HIGH'], active=sf['ACTIVE_LOW'], async=True),
+                     r_addr1=i,
+                     r_addr2=j,
+                     w_addr=0,
+                     w_data=0,
+                     r_data1=reg1,
+                     r_data2=reg2,
+                     reg_write=0)
+        print("{}: {}, \n{}: {}," .format(i, reg1, j, reg2))
 
+    cycle = input("What cycle would you like to pause at next? ")
+    return cycle
 
 def stim():
     """Test stimulus"""
     cycle = 1
+    cycle_pause = input("What cycle would you like to pause at? ")
     while 1:
-<<<<<<< HEAD
         # print(nxt_inst, pc_src)
         yield join(clock.negedge)
-        print("Cycle: {}, NxtInst: {}, \nPC: {}, \nR1: {}, \nR2: {}, \nrs: {}, \nrt: {}, \nrd: {}, \nimm: {}, \nJump: {}, \nBranch: {},"
-            "\nMemRead: {}, \nMemWrite: {}, \nAluSrc: {}, \nRegWrite: {}, \nRegDest: {}, \nMemToReg: {}, \nPcWrite: {}, "
-              "\nALU: {}, \nresult: {}, \nop1: {}, \nop2: {}"
-              # We are looking at values for 2 cycles ago
-              .format(int(nxt_inst // 4) + 1 - 2, int(nxt_inst),
-                      hex(pc_id_ex), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
-                      bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
-                      bin(imm_id_ex, width=16), bool(jmp_ctrl), bool(branch_id_ex), bool(mem_read_id_ex),
-                      bool(mem_write_id_ex), bool(alu_src_id_ex), bool(reg_write_id_ex), bool(reg_dst_id_ex),
-                      bool(mem_to_reg_id_ex), bool(pc_write), bin(alu_op_id_ex, width=4), bin(result, width=32),
-                      bin(op1_out), bin(op2_final)))
-        print("\n")
-=======
-        yield clock.posedge
-        print("\n\nCYCLE: {}".format(cycle))
-        print("IF STAGE: CurPC: {}, NxtPC: {}\n CurInst: {}"
-              .format(int(cur_pc), int(nxt_inst), bin(inst_out, width=32)))
-        print("MUX A: psrc: {}, nxt_pc: {}, imm_jmp_addr: {}, out: {}"
-              .format(bool(pc_src), int(nxt_pc), int(imm_jmp_addr), int(nxt_inst_mux_a)))
-        print("MUX B: jctrl: {}, Ainput: {}, jmp_addr: {}, jmp_reg: {} out: {}"
-              .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(jmp_reg), int(nxt_inst)))
-        print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {}\npc_out: {}\ntarget_out: {}"
-              .format(cycle-1, bool(if_id_write), bool(reset_ctrl), bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6), bin(top4, width=4),
-                      hex(pc_id), bin(target_out, width=26)))
-        # print("CTRL: jmp: {}, branch: {}, mem_read: {}, mem_to_reg: {}. mem_write: {}, alu_src: {}, reg_write: {}. reg_dst: {}, reset_out: {}"
-        #       .format(int(jmp_ctrl), bool(branch_ctrl), bool(mem_read_ctrl), int(mem_to_reg_ctrl), bool(mem_write_ctrl), bool(alu_src_ctrl), bool(reg_write_ctrl), int(reg_dst_ctrl), bool(reset_ctrl)))
-        print("EX STAGE: ({}): RD1: {}, RD2: {}, RS: {}, RT: {}, RD: {}, PC: {}"
-              .format(cycle-2, int(r_data1_id_ex), int(r_data2_id_ex), bin(rs_id_ex, width=5),
-                      bin(rt_id_ex, width=5), bin(rd_id_ex, width=5), hex(pc_id_ex)))
-        print("ctrls: branch: {}, mem_read: {}, mem_write: {}, alu_src: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}, jmp_imm_out: {}"
-              .format(bool(branch_id_ex), bool(mem_read_id_ex), bool(mem_write_id_ex), bool(alu_src_id_ex),
-                      bool(reg_write_id_ex), int(reg_dst_id_ex), int(mem_to_reg_id_ex), bin(jmp_imm_id_ex)))
-        cycle += 1
 
->>>>>>> f077b83d4b0eb81ae5ff76116511809cb492c279
+        # print("Cycle: {}, NxtInst: {}, \nPC: {}, \nR1: {}, \nR2: {}, \nrs: {}, \nrt: {}, \nrd: {}, \nimm: {}, \nJump: {}, \nBranch: {},"
+        #     "\nMemRead: {}, \nMemWrite: {}, \nAluSrc: {}, \nRegWrite: {}, \nRegDest: {}, \nMemToReg: {}, \nPcWrite: {}, "
+        #     "\nALU: {}, \nresult: {}, \nop1: {}, \nop2: {}"
+        #   # We are looking at values for 2 cycles ago
+        #     .format(int(cycle), int(nxt_inst),
+        #           hex(pc_id_ex), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
+        #           bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
+        #           bin(imm_id_ex, width=16), bool(jmp_ctrl), bool(branch_id_ex), bool(mem_read_id_ex),
+        #           bool(mem_write_id_ex), bool(alu_src_id_ex), bool(reg_write_id_ex), bool(reg_dst_id_ex),
+        #           bool(mem_to_reg_id_ex), bool(pc_write), bin(alu_op_id_ex, width=4), bin(result, width=32),
+        #           bin(op1_out), bin(op2_final)))
+        # yield clock.posedge
+        # print("\n\nCYCLE: {}".format(cycle))
+        # print("IF STAGE: CurPC: {}, NxtPC: {}\n CurInst: {}"
+        #           .format(int(cur_pc), int(nxt_inst), bin(inst_out, width=32)))
+        # print("MUX A: psrc: {}, nxt_pc: {}, imm_jmp_addr: {}, out: {}"
+        #           .format(bool(pc_src), int(nxt_pc), int(imm_jmp_addr), int(nxt_inst_mux_a)))
+        # print("MUX B: jctrl: {}, Ainput: {}, jmp_addr: {}, jmp_reg: {} out: {}"
+        #           .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(jmp_reg), int(nxt_inst)))
+        # print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {}\npc_out: {}\ntarget_out: {}"
+        #           .format(cycle-1, bool(if_id_write), bool(reset_ctrl), bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6), bin(top4, width=4),
+        #                   hex(pc_id), bin(target_out, width=26)))
+        #     # print("CTRL: jmp: {}, branch: {}, mem_read: {}, mem_to_reg: {}. mem_write: {}, alu_src: {}, reg_write: {}. reg_dst: {}, reset_out: {}"
+        #     #       .format(int(jmp_ctrl), bool(branch_ctrl), bool(mem_read_ctrl), int(mem_to_reg_ctrl), bool(mem_write_ctrl), bool(alu_src_ctrl), bool(reg_write_ctrl), int(reg_dst_ctrl), bool(reset_ctrl)))
+        # print("EX STAGE: ({}): RD1: {}, RD2: {}, RS: {}, RT: {}, RD: {}, PC: {}"
+        #           .format(cycle-2, int(r_data1_id_ex), int(r_data2_id_ex), bin(rs_id_ex, width=5),
+        #                   bin(rt_id_ex, width=5), bin(rd_id_ex, width=5), hex(pc_id_ex)))
+        # print("ctrls: branch: {}, mem_read: {}, mem_write: {}, alu_src: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}, jmp_imm_out: {}"
+        #           .format(bool(branch_id_ex), bool(mem_read_id_ex), bool(mem_write_id_ex), bool(alu_src_id_ex),
+        #                   bool(reg_write_id_ex), int(reg_dst_id_ex), int(mem_to_reg_id_ex), bin(jmp_imm_id_ex)))
+        
+        if cycle_pause == cycle:
+            cycle_pause = print_regs(cycle)
+        cycle += 1
+        print("\n")
 
 def monitor():
     """Monitoring output"""
@@ -379,7 +381,7 @@ def monitor():
 
 def main():
     """Run the simulation!!"""
-    Simulation(top(), stim()).run(duration=100000)
+    Simulation(top(), stim()).run(duration=100)
 
 
 if __name__ == '__main__':
