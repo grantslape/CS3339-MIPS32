@@ -17,7 +17,7 @@ def data_mem(clk, address, write_wire, read_wire, write_data, read_data):
     :return: module logic
     """
 
-    mem_array = [Signal(intbv()[32:]) for _ in range(2**sf['MEMORY_WIDTH'])]
+    mem_array = [intbv()[32:] for _ in range(2**sf['MEMORY_WIDTH'])]
 
     @always(clk.posedge)
     def logic():
