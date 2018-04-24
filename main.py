@@ -38,8 +38,6 @@ from src.commons.clock import clock_gen
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 
-print("Please wait...")
-
 clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
     branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, \
     mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate, \
@@ -433,8 +431,9 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
     return instances()
 
 
-def stim():
+def stim(start):
     """Test stimulus"""
+    cur_pc.next = start
     cycle = 1
     while 1:
         yield clock.posedge
@@ -499,14 +498,14 @@ def getDUT():
 
 def main():
     """Run the simulation!!"""
+    start = input("starting PC Value: ")
     clock_inst = clock_gen(clock)
-    sim = Simulation(getDUT(), stim(), clock_inst)
-    choice = 10
-    while str(choice) != "quit":
-        sim.run(duration=int(choice))
-        choice = input("Enter ticks to run for or type quit: ")
-
-
+    print("Loading Instructions...")
+    sim = Simulation(getDUT(), stim(start), clock_inst)
+    choice = 1
+    while choice != "quit":
+        sim.run(duration=int(choice) * 10)
+        choice = input("Enter cycles to run for or type quit: ")
 
 
 if __name__ == '__main__':
