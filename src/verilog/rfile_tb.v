@@ -1,7 +1,6 @@
 module rfile_tb;
 
 reg [0:0] clock;
-reg reset;
 reg [0:0] reg_write;
 reg [4:0] r_addr1;
 reg [4:0] r_addr2;
@@ -13,7 +12,6 @@ wire [31:0] r_data2;
 initial begin
     $from_myhdl(
         clock,
-        reset,
         reg_write,
         r_addr1,
         r_addr2,
@@ -28,7 +26,6 @@ end
 
 rfile dut(
     clock,
-    reset,
     reg_write,
     r_addr1,
     r_addr2,

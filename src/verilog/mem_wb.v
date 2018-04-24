@@ -7,7 +7,6 @@
 
 module mem_wb (
     clk,
-    reset,
     w_reg_ctl_in,
     mem_to_reg_in,
     mem_data_in,
@@ -23,7 +22,6 @@ module mem_wb (
 );
 // mem_wb: Memory/Writeback pipeline latch
 // :param clk: clock (input)
-// :param reset: reset signal
 // :param mem_to_reg_(in/out): ctrl signal to select data to write (input 3) to 32bit 3:1 mux
 // :param w_reg_ctl_(in/out): write register control signal
 // :param mem_data_(in/out): data from mem stage
@@ -33,7 +31,6 @@ module mem_wb (
 // :return: module latch
 
 input [0:0] clk;
-input [0:0] reset;
 input [0:0] w_reg_ctl_in;
 input [1:0] mem_to_reg_in;
 input signed [31:0] mem_data_in;
@@ -53,16 +50,8 @@ reg [4:0] w_reg_addr_out;
 output [31:0] pc_value_out;
 reg [31:0] pc_value_out;
 
-always @(posedge clk, posedge reset) begin: MEM_WB_LATCH
-    if ((reset == 1)) begin
-        w_reg_ctl_out <= 0;
-        mem_data_out <= 0;
-        alu_result_out <= 0;
-        w_reg_addr_out <= 0;
-        mem_to_reg_out <= 0;
-        pc_value_out <= 0;
-    end
-    else begin
+always @(posedge clk) begin: MEM_WB_LATCH
+    begin
         w_reg_ctl_out <= w_reg_ctl_in;
         mem_data_out <= mem_data_in;
         pc_value_out <= pc_value_in;
