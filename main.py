@@ -10,7 +10,8 @@
 """
 from __future__ import print_function
 from os import system
-from myhdl import Simulation, bin, StopSimulation, ResetSignal, join, toVerilog, instance, instances, Cosimulation
+from myhdl import Simulation, bin, StopSimulation, ResetSignal, join, toVerilog, instance, instances, Cosimulation, \
+    delay
 
 from src.python.branch_unit import branch_unit
 from src.python.data_mem import data_mem
@@ -34,7 +35,7 @@ from src.python.pc_adder import pc_adder
 from src.python.inst_mem import inst_mem
 from src.python.program_counter import program_counter
 from src.python.if_id import if_id
-from src.commons.clock import clock_gen
+from src.commons.clock import clock_gen, half_period
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 

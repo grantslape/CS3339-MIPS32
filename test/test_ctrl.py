@@ -575,6 +575,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut_v, dut).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftLeftInstructionPython(self):
         """Testing ShiftLeft instructions python"""
         stim = self.sll_test(python=True)
@@ -582,6 +583,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftLeftInstructionVerilog(self):
         """Testing ShiftLeft instructions Verilog"""
         stim = self.sll_test(verilog=True)
@@ -589,6 +591,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut_v).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftLeftInstructionTogether(self):
         """Testing ShiftLeft instructions Together"""
         stim = self.sll_test(verilog=True, python=True)
@@ -597,6 +600,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut_v, dut).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftRightInstructionPython(self):
         """Testing ShiftRight instructions python"""
         stim = self.srl_test(python=True)
@@ -604,6 +608,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftRightInstructionVerilog(self):
         """Testing ShiftRight instructions Verilog"""
         stim = self.srl_test(verilog=True)
@@ -611,6 +616,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut_v).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftRightInstructionTogether(self):
         """Testing ShiftRight instructions Together"""
         stim = self.srl_test(verilog=True, python=True)

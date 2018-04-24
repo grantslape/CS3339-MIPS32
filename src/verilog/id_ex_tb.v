@@ -15,7 +15,7 @@ reg [4:0] rs;
 reg [4:0] rt;
 reg [4:0] rd;
 reg [31:0] pc_value_in;
-reg [31:0] imm;
+reg [15:0] imm;
 wire [1:0] reg_dst_out;
 wire [0:0] reg_write_out;
 wire [0:0] alu_src_out;
