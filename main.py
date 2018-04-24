@@ -245,6 +245,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                          forward_b=forward_b_out)
 
     shifter = shift_unit(imm_in=jmp_imm_id_ex, imm_out=jmp_imm_shift)
+
     branch_adder_ = branch_adder(pc_in=pc_id_ex,
                                  imm_in=jmp_imm_shift,
                                  addr_out=b_addr_out)
