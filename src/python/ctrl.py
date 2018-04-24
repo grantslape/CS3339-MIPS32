@@ -131,7 +131,7 @@ def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src
     return logic
 
 
-def ctrl_v(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src,
+def ctrl_v(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src,
            reg_write, reg_dst, alu_op, reset_out):
     """
     Verilog logic
@@ -142,7 +142,6 @@ def ctrl_v(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write
     system(cmd)
 
     return Cosimulation("vvp -m lib/myhdl.vpi bin/ctrl.out",
-                        clock=clock,
                         funct_in=funct_in,
                         op_in=op_in,
                         jump=jump,

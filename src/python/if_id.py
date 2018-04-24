@@ -45,7 +45,7 @@ def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_o
 
 
 def if_id_v(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4,
-            target_out, reset):
+            target_out):
     """
     IF/ID state register
     :param clock system clock
@@ -80,5 +80,4 @@ def if_id_v(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct
                         funct_out=funct_out,
                         pc_out=pc_out,
                         top4=top4,
-                        target_out=target_out,
-                        reset=reset)
+                        target_out=target_out)
