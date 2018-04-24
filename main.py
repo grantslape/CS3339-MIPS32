@@ -315,20 +315,24 @@ def stim():
     cycle = 1
     while 1:
         yield clock.posedge
-        print("CYCLE: {}".format(cycle))
+        print("\n\nCYCLE: {}".format(cycle))
         print("IF STAGE: CurPC: {}, NxtPC: {}\n CurInst: {}"
               .format(int(cur_pc), int(nxt_inst), bin(inst_out, width=32)))
         print("MUX A: psrc: {}, nxt_pc: {}, imm_jmp_addr: {}, out: {}"
               .format(bool(pc_src), int(nxt_pc), int(imm_jmp_addr), int(nxt_inst_mux_a)))
         print("MUX B: jctrl: {}, Ainput: {}, jmp_addr: {}, jmp_reg: {} out: {}"
               .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(jmp_reg), int(nxt_inst)))
-        print("\n")
         print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {}\npc_out: {}\ntarget_out: {}"
               .format(cycle-1, bool(if_id_write), bool(reset_ctrl), bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6), bin(top4, width=4),
-                      bin(pc_id, width=32), bin(target_out, width=26)))
-        print("CTRL: jmp: {}, branch: {}, mem_read: {}, mem_to_reg: {}. mem_write: {}, alu_src: {}, reg_write: {}. reg_dst: {}, reset_out: {}"
-              .format(int(jmp_ctrl), bool(branch_ctrl), bool(mem_read_ctrl), int(mem_to_reg_ctrl), bool(mem_write_ctrl), bool(alu_src_ctrl), bool(reg_write_ctrl), int(reg_dst_ctrl), bool(reset_ctrl)))
-        print("\n")
+                      hex(pc_id), bin(target_out, width=26)))
+        # print("CTRL: jmp: {}, branch: {}, mem_read: {}, mem_to_reg: {}. mem_write: {}, alu_src: {}, reg_write: {}. reg_dst: {}, reset_out: {}"
+        #       .format(int(jmp_ctrl), bool(branch_ctrl), bool(mem_read_ctrl), int(mem_to_reg_ctrl), bool(mem_write_ctrl), bool(alu_src_ctrl), bool(reg_write_ctrl), int(reg_dst_ctrl), bool(reset_ctrl)))
+        print("EX STAGE: ({}): RD1: {}, RD2: {}, RS: {}, RT: {}, RD: {}, PC: {}"
+              .format(cycle-2, int(r_data1_id_ex), int(r_data2_id_ex), bin(rs_id_ex, width=5),
+                      bin(rt_id_ex, width=5), bin(rd_id_ex, width=5), hex(pc_id_ex)))
+        print("ctrls: branch: {}, mem_read: {}, mem_write: {}, alu_src: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}, jmp_imm_out: {}"
+              .format(bool(branch_id_ex), bool(mem_read_id_ex), bool(mem_write_id_ex), bool(alu_src_id_ex),
+                      bool(reg_write_id_ex), int(reg_dst_id_ex), int(mem_to_reg_id_ex), bin(jmp_imm_id_ex)))
         cycle += 1
 
 
@@ -341,7 +345,7 @@ def monitor():
 
 def main():
     """Run the simulation!!"""
-    Simulation(top(), stim()).run(duration=1000)
+    Simulation(top(), stim()).run(duration=100000)
 
 
 if __name__ == '__main__':

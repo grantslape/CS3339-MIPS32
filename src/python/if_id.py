@@ -4,7 +4,7 @@ from myhdl import always, Cosimulation
 
 
 def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4,
-          target_out, reset):
+          target_out):
     """
     IF/ID state register
     :param clock system clock
@@ -27,14 +27,14 @@ def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_o
         # if if_id_write is true then do not update the state Register
         if if_id_write == 1:
             pass
-        elif reset == 1:
-            op_code.next = 0
-            rs.next = 0
-            rt.next = 0
-            rd.next = 0
-            funct_out.next = 0
-            imm.next = 0
-            target_out.next = 0
+        # elif reset == 1:
+        #     op_code.next = 0
+        #     rs.next = 0
+        #     rt.next = 0
+        #     rd.next = 0
+        #     funct_out.next = 0
+        #     imm.next = 0
+        #     target_out.next = 0
         else:
             # program counter logic
             pc_out.next = nxt_pc
