@@ -38,6 +38,8 @@ from src.commons.clock import clock_gen
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 
+print("Please wait...")
+
 clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
     branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, \
     mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate, \
@@ -444,12 +446,13 @@ def stim():
         print("MUX B: jctrl: {}, input: {}, jmp_addr: {}, jmp_reg: {} out: {}\n"
               .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(r_data1), int(nxt_inst)))
 
-        print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {} pc_out: {}\ntarget_out: {}\n"
-              .format(cycle-1, bool(if_id_write), bool(reset_ctrl), bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6), bin(top4, width=4),
-                      int(pc_id), bin(target_out, width=26)))
+        print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {} pc_out: {}\ntarget_out: {}, int: {}\n"
+              .format(cycle-1, bool(if_id_write), bool(reset_ctrl), bin(op_code, width=6), bin(rs, width=5), bin(rt, width=5),
+                      bin(rd, width=5), bin(funct_out, width=6), bin(top4, width=4),
+                      int(pc_id), bin(jmp_addr_last, width=32), int(jmp_addr_last)))
 
-        print("RFILE: R1: {}, R2: {}, WADDR: {}, WDATA: {}"
-              .format(int(r_data1), int(r_data2), bin(w_addr), int(w_data)))
+        print("RFILE-READ: R1: {}, R2: {}; WRITE ({}): WADDR: {}, WDATA: {}"
+              .format(int(r_data1), int(r_data2), cycle-4, bin(w_addr, width=5), int(w_data)))
         # print("CTRL: jmp: {}, branch: {}, mem_read: {}, mem_to_reg: {}. mem_write: {}, alu_src: {}, reg_write: {}. reg_dst: {}, reset_out: {}"
         #       .format(int(jmp_ctrl), bool(branch_ctrl), bool(mem_read_ctrl), int(mem_to_reg_ctrl), bool(mem_write_ctrl), bool(alu_src_ctrl), bool(reg_write_ctrl), int(reg_dst_ctrl), bool(reset_ctrl)))
 
@@ -457,18 +460,18 @@ def stim():
               .format(cycle-2, bin(alu_op_id_ex, width=4), int(r_data1_id_ex), int(r_data2_id_ex), bin(rs_id_ex, width=5),
                       bin(rt_id_ex, width=5), bin(rd_id_ex, width=5), int(pc_id_ex)))
 
-        print("ctrls: branch: {}, mem_read: {}, mem_write: {}, alu_src: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}, jmp_imm_out: {}\n"
+        print("ctrls: branch: {}, mem_read: {}, mem_write: {}, alu_src: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}\n"
               .format(bool(branch_id_ex), bool(mem_read_id_ex), bool(mem_write_id_ex), bool(alu_src_id_ex),
-                      bool(reg_write_id_ex), int(reg_dst_id_ex), int(mem_to_reg_id_ex), bin(jmp_imm_id_ex)))
+                      bool(reg_write_id_ex), int(reg_dst_id_ex), int(mem_to_reg_id_ex)))
 
         print("MEM STAGE: ({}): Result: {}, RT: {}, Z: {}, b_addr: {}"
               .format(cycle-3, int(result), int(wdata_mem), bool(zero_flag_ex_mem), bin(imm_jmp_addr, width=32)))
         print("ctrl: branch: {}, mem_read: {}, mem_write: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}\n"
               .format(bool(branch_ex_mem), bool(mem_read_ex_mem), bool(mem_write_ex_mem),
-                      bool(reg_write_final), bin(rd_mem), int(mem_to_reg_ex_mem)))
+                      bool(reg_write_final), bin(rd_mem, width=5), int(mem_to_reg_ex_mem)))
 
         print ("WB_STAGE: ({}): mem_data: {}, result: {}, wreg: {}, pc_out: {}"
-               .format(cycle-4, int(read_data_mem_wb), int(result_mem_wb), bin(w_addr), int(pc_value_mem_wb)))
+               .format(cycle-4, int(read_data_mem_wb), int(result_mem_wb), bin(w_addr, width=5), int(pc_value_mem_wb)))
         print("wb_mux: ctrl: {}, input1: {}, input2: {}, input3: {}, out: {}\n"
               .format(int(mem_to_reg_mem_wb), int(read_data_mem_wb), int(result_mem_wb), int(pc_value_mem_wb), int(w_data)))
         cycle += 1
@@ -497,7 +500,13 @@ def getDUT():
 def main():
     """Run the simulation!!"""
     clock_inst = clock_gen(clock)
-    Simulation(getDUT(), stim(), clock_inst).run(duration=100040)
+    sim = Simulation(getDUT(), stim(), clock_inst)
+    choice = 10
+    while str(choice) != "quit":
+        sim.run(duration=int(choice))
+        choice = input("Enter ticks to run for or type quit: ")
+
+
 
 
 if __name__ == '__main__':
