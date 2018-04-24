@@ -1,7 +1,7 @@
 """Memory writeback module"""
 from os import system
 from myhdl import always, Cosimulation
-def mem_wb(clk, reset,
+def mem_wb(clk,
            w_reg_ctl_in,
            mem_to_reg_in,
            mem_data_in,
@@ -27,16 +27,8 @@ def mem_wb(clk, reset,
     :return: module latch
     """
 
-    @always(clk.posedge, reset.posedge)
+    @always(clk.posedge)
     def latch():
-        if reset == 1:
-            w_reg_ctl_out.next = 0
-            mem_to_reg_out.next = 0
-            mem_data_out.next = 0
-            alu_result_out.next = 0
-            w_reg_addr_out.next = 0
-            pc_value_out.next = 0
-        else:
             w_reg_ctl_out.next = w_reg_ctl_in
             mem_to_reg_out.next = mem_to_reg_in
             pc_value_out.next = pc_value_in

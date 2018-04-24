@@ -9,7 +9,7 @@
 # Huan Wu
 """
 from __future__ import print_function
-from myhdl import Simulation, bin, StopSimulation, ResetSignal, join
+from myhdl import Simulation, bin, StopSimulation, ResetSignal, join, toVerilog, instance
 
 from src.python.branch_unit import branch_unit
 from src.python.data_mem import data_mem
@@ -45,15 +45,15 @@ clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
     zero_flag_ex_mem, pc_write \
     = unsigned_signal_set(27, width=1)
 
-cur_pc = Signal(unsigned_intbv(value=0))
+cur_pc = Signal(unsigned_intbv())
 
 mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb, \
     forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate \
     = unsigned_signal_set(12, width=2)
 
-nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
-pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, nxt_inst_if = \
-    unsigned_signal_set(14)
+nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, \
+pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, ZERO = \
+    unsigned_signal_set(13)
 
 imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem, \
     result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, \
@@ -72,7 +72,13 @@ target_out = Signal(unsigned_intbv(width=26))
 op_code, funct_out = unsigned_signal_set(2, width=6)
 
 
-def top():
+def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
+    branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl,
+    mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
+    alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
+    reg_write_mem_wb, ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
+    forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem,
+    result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, rd_wb, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO):
     """Instantiate modules"""
     pc = program_counter(clock=clock, pc_write=pc_write, nxt_inst=nxt_inst, cur_pc=cur_pc)
     pc_mux_a = mux32bit2to1(ctrl_line=pc_src,
@@ -96,7 +102,7 @@ def top():
 
     inst_mem_mux = mux32bit2to1(ctrl_line=jmp_ctrl,
                                 input1=inst_out,
-                                input2=Signal(unsigned_intbv()),
+                                input2=ZERO,
                                 out=inst_if)
 
     if_id_pipe = if_id(if_id_write=if_id_write,
@@ -116,8 +122,6 @@ def top():
     extender = sign_extender(imm_in=imm, imm_out=imm_out)
 
     registers = rfile(clock=clock,
-                      # dummy for now
-                      reset=ResetSignal(sf['INACTIVE_HIGH'], active=sf['ACTIVE_LOW'], async=True),
                       r_addr1=rs,
                       r_addr2=rt,
                       w_addr=w_addr,
@@ -282,7 +286,6 @@ def top():
                            read_data=read_data)
 
     mem_wb_pipe = mem_wb(clk=clock,
-                         reset=Signal(intbv()),
                          w_reg_ctl_in=reg_write_ex_mem,
                          mem_data_in=read_data,
                          alu_result_in=result_ex_mem,
@@ -303,7 +306,7 @@ def top():
 
     clock_inst = clock_gen(clock)
 
-    return clock_inst, pc, pc_mux_a, pc_mux_b, pc_add, inst_memory, inst_mem_mux, if_id_pipe, \
+    return  pc, pc_mux_a, pc_mux_b, pc_add, inst_memory, inst_mem_mux, if_id_pipe, \
         extender, registers, id_shifter, ctrl_unit, ctrl_gate, hzd, id_ex_pipe, alu_mux_a, \
         alu_mux_b, alu_mux_imm, alu_, ex_mux_, forwarder, shifter, branch_adder_,  \
         brancher, data_memory, mem_wb_pipe, wb_mux, ex_mem_pipe
@@ -343,9 +346,20 @@ def monitor():
     print("Inst: {}".format(intbv(nxt_inst)))
 
 
+def convert():
+    toVerilog(top, clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
+    branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl,
+    mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
+    alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
+    reg_write_mem_wb, ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
+    forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem,
+    result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, rd_wb, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
+
+
 def main():
     """Run the simulation!!"""
-    Simulation(top(), stim()).run(duration=100000)
+    convert()
+    # Simulation(top(), stim()).run(duration=100000)
 
 
 if __name__ == '__main__':
