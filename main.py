@@ -312,18 +312,9 @@ def top():
 
 def stim():
     """Test stimulus"""
-    # Hack for now to get things moving
-    # cur_pc.next = 4
     cycle = 1
     while 1:
-        # print(nxt_inst, pc_src)
         yield clock.posedge
-        # print("Cycle: {}, NxtInst: {}, \nPC: {}, \nR1: {}, \nR2: {}, \nrs: {}, \nrt: {}, \nrd: {}, \nimm: {}, \nJump: {}, \nBranch: {},"
-        #     "\nMemRead: {}, \nMemWrite: {}, \nAluSrc: {}, \nRegWrite: {}, \nRegDest: {}, \nMemToReg: {}, \nPcWrite: {}, "
-        #       "\nALU: {}, \nresult: {}, \nop1: {}, \nop2: {}"
-        #       # We are looking at values for 2 cycles ago
-        #       .format(cycle, int(nxt_inst),
-        #               hex(cur_pc)))
         print("CYCLE: {}".format(cycle))
         print("IF STAGE: CurPC: {}, NxtPC: {}\n CurInst: {}"
               .format(int(cur_pc), int(nxt_inst), bin(inst_out, width=32)))
