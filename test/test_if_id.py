@@ -34,8 +34,7 @@ class TestIfIdRegister(TestCase):
                          rd=self.rd,
                          imm=self.imm,
                          top4=self.top4,
-                         target_out=self.target_out,
-                         reset=self.reset)
+                         target_out=self.target_out)
 
     def getVerilog(self):
         """Return Verilog design under test"""
@@ -51,8 +50,7 @@ class TestIfIdRegister(TestCase):
                        rd=self.rd_v,
                        imm=self.imm_v,
                        top4=self.top4_v,
-                       target_out=self.target_out_v,
-                       reset=self.reset)
+                       target_out=self.target_out_v)
 
     def deassert(self, python=False, verilog=False):
         """Test when stall line is off (normal op)"""
@@ -123,34 +121,6 @@ class TestIfIdRegister(TestCase):
                 self.assertEqual(bin(old_inst[26:0]), bin(self.target_out_v))
         raise StopSimulation
 
-    def flush(self, python=False, verilog=False):
-        """Test flushing with reset"""
-        self.if_id_write.next = 0
-        old_inst = Signal(random_unsigned_intbv())
-        old_pc = Signal(random_unsigned_intbv())
-        self.inst_in.next = old_inst
-        self.nxt_pc.next = old_pc
-        yield self.clock.negedge
-        self.reset.next = 1
-        yield self.clock.negedge
-        if python:
-            self.assertEqual(bin(0), bin(self.op_code))
-            self.assertEqual(bin(0), bin(self.rs))
-            self.assertEqual(bin(0), bin(self.rt))
-            self.assertEqual(bin(0), bin(self.rd))
-            self.assertEqual(bin(0), bin(self.imm))
-            self.assertEqual(bin(0), bin(self.funct_out))
-            self.assertEqual(bin(0), bin(self.target_out))
-        if verilog:
-            self.assertEqual(bin(0), bin(self.op_code_v))
-            self.assertEqual(bin(0), bin(self.rs_v))
-            self.assertEqual(bin(0), bin(self.rt_v))
-            self.assertEqual(bin(0), bin(self.rd_v))
-            self.assertEqual(bin(0), bin(self.imm_v))
-            self.assertEqual(bin(0), bin(self.funct_out_v))
-            self.assertEqual(bin(0), bin(self.target_out_v))
-        raise StopSimulation
-
     def testIfIdDeassertedPython(self):
         """Test normal functionality Python"""
         clk = clock_gen(self.clock)
@@ -190,27 +160,6 @@ class TestIfIdRegister(TestCase):
         stim = self.asserted(python=True, verilog=True)
         dut_v = self.getVerilog()
         Simulation(dut_v, stim, self.dut, clk).run(quiet=1)
-
-    def testIfIdFlushPython(self):
-        """Testing flush python"""
-        clk = clock_gen(self.clock)
-        stim = self.flush(python=True)
-        Simulation(stim, clk, self.dut).run(quiet=1)
-
-    def testIfIdFlushVerilog(self):
-        """Testing flush Verilog"""
-        clk = clock_gen(self.clock)
-        stim = self.flush(verilog=True)
-        dut_v = self.getVerilog()
-        Simulation(stim, clk, dut_v).run(quiet=1)
-
-    def testIfIdFlushTogether(self):
-        """Testing flush Together"""
-        clk = clock_gen(self.clock)
-        stim = self.flush(verilog=True, python=True)
-        dut_v = self.getVerilog()
-        Simulation(stim, clk, dut_v, self.dut).run(quiet=1)
-
 
 
 if __name__ == '__main__':
