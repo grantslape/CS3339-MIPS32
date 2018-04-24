@@ -16,15 +16,6 @@ class TestPcAdder(TestCase):
         self.cur_pc, self.nxt_pc, self.nxt_pc_v = unsigned_signal_set(3)
         self.dut = pc_adder(self.cur_pc, self.nxt_pc)
 
-    def zeroTest(self):
-        """Test when value held at zero"""
-        self.cur_pc.next = intbv()[32:]
-        for _ in range(sf['DEFAULT_TEST_LENGTH']):
-            yield half_period()
-            self.assertEqual(bin(self.nxt_pc), bin(intbv()[32:]))
-            self.assertEqual(bin(self.nxt_pc_v), bin(intbv()[32:]))
-        raise StopSimulation
-
     def dynamic(self, python=False, verilog=False):
         """Test dynamic values"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
@@ -35,20 +26,6 @@ class TestPcAdder(TestCase):
             if verilog:
                 self.assertEqual(bin(self.nxt_pc_v), bin(self.cur_pc + 4))
         raise StopSimulation
-
-    def testPcAdderZeroPython(self):
-        """test pc adder hold zero Python"""
-        Simulation(self.dut, self.zeroTest()).run(quiet=1)
-
-    def testPcAdderZeroVerilog(self):
-        """test pc adder hold zero Verilog"""
-        dut_v = pc_adder_v(self.cur_pc, self.nxt_pc_v)
-        Simulation(dut_v, self.zeroTest()).run(quiet=1)
-
-    def testPcAdderZeroTogether(self):
-        """test pc adder hold zero together"""
-        dut_v = pc_adder_v(self.cur_pc, self.nxt_pc_v)
-        Simulation(self.dut, dut_v, self.zeroTest()).run(quiet=1)
 
     def testPcAdderDynamicPython(self):
         """test pc adder adds 4 Python"""
