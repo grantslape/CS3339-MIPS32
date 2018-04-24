@@ -13,7 +13,7 @@ def inst_mem(inst_reg, inst_out):
     :return: module logic
     """
     TB_SIZE = 0
-    mem_file = open('lib/instructions',)
+    mem_file = open('lib/instructions', 'r')
     try:
         raw_mem = [Signal(intbv(line)[32:]) for line in mem_file]
     except IOError:

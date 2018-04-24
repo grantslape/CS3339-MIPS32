@@ -1,6 +1,6 @@
 """Data memory module"""
 from os import system
-from myhdl import always, Cosimulation
+from myhdl import always, Cosimulation, intbv, Signal
 
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import unsigned_intbv
@@ -17,7 +17,7 @@ def data_mem(clk, address, write_wire, read_wire, write_data, read_data):
     :return: module logic
     """
 
-    mem_array = [unsigned_intbv()] * 2**sf['MEMORY_WIDTH']
+    mem_array = [Signal(intbv()[32:]) for _ in range(2**sf['MEMORY_WIDTH'])]
 
     @always(clk.posedge)
     def logic():

@@ -304,9 +304,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                           input2=result_mem_wb,
                           out=w_data)
 
-    clock_inst = clock_gen(clock)
-
-    return  pc, pc_mux_a, pc_mux_b, pc_add, inst_memory, inst_mem_mux, if_id_pipe, \
+    return pc, pc_mux_a, pc_mux_b, pc_add, inst_memory, inst_mem_mux, if_id_pipe, \
         extender, registers, id_shifter, ctrl_unit, ctrl_gate, hzd, id_ex_pipe, alu_mux_a, \
         alu_mux_b, alu_mux_imm, alu_, ex_mux_, forwarder, shifter, branch_adder_,  \
         brancher, data_memory, mem_wb_pipe, wb_mux, ex_mem_pipe
@@ -359,7 +357,8 @@ def convert():
 def main():
     """Run the simulation!!"""
     convert()
-    # Simulation(top(), stim()).run(duration=100000)
+    clock_inst = clock_gen(clock)
+    # Simulation(top(), stim(), clock_inst).run(duration=100000)
 
 
 if __name__ == '__main__':
