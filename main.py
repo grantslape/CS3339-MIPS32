@@ -109,7 +109,7 @@ op_code_v, funct_out_v = unsigned_signal_set(2, width=6)
 
 def top_v():
     """Instantiate Verilog design"""
-    cmd = "iverilog -o bin/mips.out -Ptop_tb.TBSIZE={} top.v top_tb.v".format(2 ** sf['MEMORY_WIDTH'])
+    cmd = "iverilog -o bin/mips.out -Ptop_tb.TBSIZE={} src/verilog/top.v src/verilog/top_tb.v".format(2 ** sf['MEMORY_WIDTH'])
     system(cmd)
 
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/mips.out",
@@ -434,6 +434,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
 def stim(start):
     """Test stimulus"""
     cur_pc.next = start
+    cur_pc_v.next = start
     cycle = 1
     while 1:
         yield clock.posedge
@@ -501,7 +502,7 @@ def main():
     start = input("starting PC Value: ")
     clock_inst = clock_gen(clock)
     print("Loading Instructions...")
-    sim = Simulation(getDUT(), stim(start), clock_inst)
+    sim = Simulation(getDUT(), stim(start), clock_inst, top_v())
     choice = 1
     while choice != "quit":
         sim.run(duration=int(choice) * 10)
