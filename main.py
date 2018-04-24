@@ -330,8 +330,8 @@ def stim():
         print("MUX A: psrc: {}, nxt_pc: {}, imm_jmp_addr: {}, out: {}".format(bool(pc_src), int(nxt_pc), int(imm_jmp_addr), int(nxt_inst_mux_a)))
         print("MUX B: jmpctrl: {}, input: {}, jmp_addr: {}, jmp_reg: {} out: {}".format(bin(jmp_ctrl), int(nxt_inst_mux_a),
                                                                               int(jmp_addr_last), int(jmp_reg), int(nxt_inst)))
-        print("ID (LAST): op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}\npc_out: {}\ntarget_out: {}"
-              .format(bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6),
+        print("ID ({}): op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}\npc_out: {}\ntarget_out: {}"
+              .format(cycle-1, bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6),
                       bin(pc_id, width=32), bin(target_out, width=26)))
         print("\n")
         cycle += 1
