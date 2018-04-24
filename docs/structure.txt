@@ -6,7 +6,7 @@ cpu:
 	 	input clock: system clock
 		input pc_write: 1 to stall (repeat instruction), from hazard_unit.pc_write
 		input [31:0] nxt_inst: next instruction address from pc_mux_b
-		output [31:0] cur_pc: next instruction address goes to inst_mem, pc_mux_c
+		output [31:0] cur_pc: next instruction address goes to inst_mem
 	pc_mux_a: 2:1 Mux for program_counter input: instance of 32 bit 2:1 mux
 		input pc_src: which input to use. 0 for nxt_pc, 1, for imm_jmp_addr. From branch predictor
 		input [31:0] imm_jmp_addr: a new PC value from the EX/MEM register
