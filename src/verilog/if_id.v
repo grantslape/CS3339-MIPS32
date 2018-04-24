@@ -37,7 +37,7 @@ module if_id (
 // :param target_out: 26 bit jump immediate
 
 input [0:0] clock;
-input [31:0] if_id_write;
+input [0:0] if_id_write;
 input [31:0] nxt_pc;
 input [31:0] inst_in;
 output [5:0] op_code;
