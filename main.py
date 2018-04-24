@@ -71,6 +71,10 @@ top4 = Signal(unsigned_intbv(width=4))
 target_out = Signal(unsigned_intbv(width=26))
 op_code, funct_out = unsigned_signal_set(2, width=6)
 
+# r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15,r16,r17,r18,r19,r20\
+# r21,r22,r23,r24,r25,r26,r27,r28,r29,r30,r31,r32 = unsigned_signal_set(32)
+
+register_file = unsigned_signal_set(32)
 
 def top():
     """Instantiate modules"""
@@ -310,20 +314,47 @@ def print_regs(cycle):
     # this is a dummy for now, we need to be able to access the registers From
     # the instantiation above
     print("REGISTER FILE CYCLE: " + str(cycle))
-    for i in xrange(0,31,2):
-        j = i + 1
-        reg1 = 0
-        reg2 = 0
-        regs = rfile(clock=clock,
-                     reset=ResetSignal(sf['INACTIVE_HIGH'], active=sf['ACTIVE_LOW'], async=True),
-                     r_addr1=i,
-                     r_addr2=j,
-                     w_addr=0,
-                     w_data=0,
-                     r_data1=reg1,
-                     r_data2=reg2,
-                     reg_write=0)
-        print("{}: {}, \n{}: {}," .format(i, reg1, j, reg2))
+    # for i in xrange(0,31,2):
+    #     j = i + 1
+    #     reg1 = 0
+    #     reg2 = 0
+    #     regs = rfile(clock=clock,
+    #                  reset=ResetSignal(sf['INACTIVE_HIGH'], active=sf['ACTIVE_LOW'], async=True),
+    #                  r_addr1=i,
+    #                  r_addr2=j,
+    #                  w_addr=0,
+    #                  w_data=0,
+    #                  r_data1=reg1,
+    #                  r_data2=reg2,
+    #                  reg_write=0)
+    #     print("{}: {}, \n{}: {}," .format(i, reg1, j, reg2))
+    # clock_stash = 0
+    # reset_stash = 0
+    # r_addr1_stash = 0
+    # r_addr2_stash = 0
+    # w_addr_stash = 0
+    # w_data_stash = 0
+    # r_data1_stash = 0
+    # r_data2_stash = 0
+    # clock_stash = clock
+    # reset_stash = reset
+    # r_addr1_stash = r_addr1
+    # r_addr2_stash =r_addr2
+    # w_addr_stash = w_addr
+    # w_data_stash = w_data
+    # r_data1_stash = r_data1
+    # r_data2_stash = r_data2
+    # while 1:
+    #     yield clock.negedge
+    #
+    #     for i in xrange(0,31,2):
+    #         j = i + 1
+    #         r_addr1 = i
+    #         r_addr2 = j
+    #
+    for i in range(1,32):
+        print("{}: {}" .format(i,bin(register_file[i])))
+
 
     cycle = input("What cycle would you like to pause at next? ")
     return cycle
@@ -331,22 +362,26 @@ def print_regs(cycle):
 def stim():
     """Test stimulus"""
     cycle = 1
-    cycle_pause = input("What cycle would you like to pause at? ")
+    # cycle_pause = input("What cycle would you like to pause at? ")
     while 1:
         # print(nxt_inst, pc_src)
-        yield join(clock.negedge)
+        yield join(clock.negedge, rs)
 
-        # print("Cycle: {}, NxtInst: {}, \nPC: {}, \nR1: {}, \nR2: {}, \nrs: {}, \nrt: {}, \nrd: {}, \nimm: {}, \nJump: {}, \nBranch: {},"
-        #     "\nMemRead: {}, \nMemWrite: {}, \nAluSrc: {}, \nRegWrite: {}, \nRegDest: {}, \nMemToReg: {}, \nPcWrite: {}, "
-        #     "\nALU: {}, \nresult: {}, \nop1: {}, \nop2: {}"
-        #   # We are looking at values for 2 cycles ago
-        #     .format(int(cycle), int(nxt_inst),
-        #           hex(pc_id_ex), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
-        #           bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
-        #           bin(imm_id_ex, width=16), bool(jmp_ctrl), bool(branch_id_ex), bool(mem_read_id_ex),
-        #           bool(mem_write_id_ex), bool(alu_src_id_ex), bool(reg_write_id_ex), bool(reg_dst_id_ex),
-        #           bool(mem_to_reg_id_ex), bool(pc_write), bin(alu_op_id_ex, width=4), bin(result, width=32),
-        #           bin(op1_out), bin(op2_final)))
+        register_file[int(rs_id_ex)] = r_data1_id_ex
+        register_file[int(rt)] = r_data2_id_ex
+        print("REGISTER FILE:\n{}: {}\n{}: {}".format(int(rs), r_data1,int(rt), r_data2))
+
+        print("Cycle: {}, NxtInst: {}, \nPC: {}, \nR1: {}, \nR2: {}, \nrs: {}, \nrt: {}, \nrd: {}, \nimm: {}, \nJump: {}, \nBranch: {},"
+            "\nMemRead: {}, \nMemWrite: {}, \nAluSrc: {}, \nRegWrite: {}, \nRegDest: {}, \nMemToReg: {}, \nPcWrite: {}, "
+            "\nALU: {}, \nresult: {}, \nop1: {}, \nop2: {}"
+          # We are looking at values for 2 cycles ago
+            .format(int(cycle), int(nxt_inst),
+                  hex(pc_id_ex), bin(r_data1_id_ex, width=32), bin(r_data2_id_ex, width=32),
+                  bin(rs_id_ex, width=5), bin(rt_id_ex, width=5), bin(rd_id_ex, width=5),
+                  bin(imm_id_ex, width=16), bool(jmp_ctrl), bool(branch_id_ex), bool(mem_read_id_ex),
+                  bool(mem_write_id_ex), bool(alu_src_id_ex), bool(reg_write_id_ex), bool(reg_dst_id_ex),
+                  bool(mem_to_reg_id_ex), bool(pc_write), bin(alu_op_id_ex, width=4), bin(result, width=32),
+                  bin(op1_out), bin(op2_final)))
         # yield clock.posedge
         # print("\n\nCYCLE: {}".format(cycle))
         # print("IF STAGE: CurPC: {}, NxtPC: {}\n CurInst: {}"
@@ -366,9 +401,9 @@ def stim():
         # print("ctrls: branch: {}, mem_read: {}, mem_write: {}, alu_src: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}, jmp_imm_out: {}"
         #           .format(bool(branch_id_ex), bool(mem_read_id_ex), bool(mem_write_id_ex), bool(alu_src_id_ex),
         #                   bool(reg_write_id_ex), int(reg_dst_id_ex), int(mem_to_reg_id_ex), bin(jmp_imm_id_ex)))
-        
-        if cycle_pause == cycle:
-            cycle_pause = print_regs(cycle)
+
+        # if cycle_pause == cycle:
+        #     cycle_pause = print_regs(cycle)
         cycle += 1
         print("\n")
 
@@ -381,7 +416,7 @@ def monitor():
 
 def main():
     """Run the simulation!!"""
-    Simulation(top(), stim()).run(duration=100)
+    Simulation(top(), stim()).run(duration=1000)
 
 
 if __name__ == '__main__':
