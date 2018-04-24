@@ -89,6 +89,28 @@ def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src
             mem_write.next = 0
             reset_out.next = 1
             alu_op.next = 0
+        elif op_in == 8:
+            # ADDI
+            alu_op.next = 0b0001
+            jump.next = 0
+            branch.next = 0
+            mem_read.next = 0
+            mem_to_reg.next = 0
+            mem_write.next = 0
+            alu_src.next = 1
+            reg_write.next = 1
+            reg_dst.next = 0
+        elif op_in == 24:
+            # SUBI
+            alu_op.next = 0b0010
+            jump.next = 0
+            branch.next = 0
+            mem_read.next = 0
+            mem_to_reg.next = 0
+            mem_write.next = 0
+            alu_src.next = 1
+            reg_write.next = 1
+            reg_dst.next = 0
         elif op_in == 0:
             # R STYLE INSTRUCTIONS
             jump.next = 0

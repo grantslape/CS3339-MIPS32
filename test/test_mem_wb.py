@@ -18,7 +18,7 @@ class TestMemWb(TestCase):
         self.rdata_in, self.result_in, self.pc_value_in, self.pc_value_out, self.pc_value_out_v, self.rdata_out, self.rdata_out_v, self.result_out, \
             self.result_out_v = signed_signal_set(9)
         self.rt_in, self.rt_out, self.rt_out_v = unsigned_signal_set(3, width=5)
-        self.dut = mem_wb(self.clock, self.reset,
+        self.dut = mem_wb(self.clock,
                           w_reg_ctl_in=self.reg_write_in,
                           mem_to_reg_in=self.mem_to_reg_in,
                           mem_data_in=self.rdata_in,
@@ -34,7 +34,7 @@ class TestMemWb(TestCase):
 
     def getVerilog(self):
         """Return verilog design under test"""
-        return mem_wb_v(self.clock, self.reset,
+        return mem_wb_v(self.clock,
                         w_reg_ctl_in=self.reg_write_in,
                         mem_to_reg=self.mem_to_reg_in,
                         mem_data_in=self.rdata_in,
