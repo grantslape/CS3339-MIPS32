@@ -1,7 +1,7 @@
 module top_tb;
 parameter TBSIZE = 0;
 
-wire [0:0] clock;
+reg [0:0] clock;
 wire [0:0] pc_src;
 wire [0:0] reset_ctrl;
 wire [0:0] branch_ctrl;
@@ -49,8 +49,8 @@ wire [31:0] pc_id;
 wire [31:0] pc_id_ex;
 wire [31:0] pc_value_ex_mem;
 wire [31:0] pc_value_mem_wb;
-wire [31:0] if_id_write;
-wire [31:0] reg_write_final;
+wire [0:0] if_id_write;
+wire [0:0] reg_write_final;
 wire [31:0] nxt_inst;
 wire signed [31:0] imm_out;
 wire signed [31:0] w_data;
@@ -84,7 +84,7 @@ wire [3:0] alu_op_code;
 wire [3:0] alu_op_gate;
 wire [3:0] alu_op_id_ex;
 wire signed [15:0] imm;
-wire signed [15:0] imm_id_ex;
+wire signed [31:0] imm_id_ex;
 wire [3:0] top4;
 wire [25:0] target_out;
 wire [5:0] op_code;

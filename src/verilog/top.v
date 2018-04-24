@@ -200,7 +200,7 @@ output [3:0] alu_op_code;
 output [3:0] alu_op_gate;
 output [3:0] alu_op_id_ex;
 output signed [15:0] imm;
-output signed [15:0] imm_id_ex;
+output signed [31:0] imm_id_ex;
 output [3:0] top4;
 output [25:0] target_out;
 output [5:0] op_code;
@@ -251,7 +251,7 @@ ctrl_mux ctrl_gate(.ex_stall(ex_stall), .jump(jmp_ctrl), .branch(branch_ctrl), .
 hazard_unit hzd(.if_id_rs(rs), .if_id_rt(rt), .id_ex_rt(rt_id_ex), .mem_read(mem_read_id_ex),
                 .pc_write(pc_write), .if_id_write(if_id_write), .ex_stall(ex_stall));
 
-id_ex id_pipe(.clock(clock), .branch_in(branch_gate), .alu_op_in(alu_code_gate), .mem_read_in(mem_read_gate),
+id_ex id_pipe(.clock(clock), .branch_in(branch_gate), .alu_op_in(alu_op_code), .mem_read_in(mem_read_gate),
               .mem_write_in(mem_write_gate), .alu_src_in(alu_src_gate), .reg_write_in(reg_write_gate),
               .reg_dst_in(reg_dst_gate), .pc_value_in(pc_id), .mem_to_reg_in(mem_to_reg_gate),
               .r_data1(r_data1), .r_data2(r_data2), .rs(rs), .rt(rt), .rd(rd), .imm(imm), .jmp_imm(imm_out),

@@ -191,7 +191,17 @@ def top_v():
                         target_out=target_out_v,
                         op_code=op_code_v,
                         funct_out=funct_out_v,
-                        ZERO=ZERO_v)
+                        ZERO=ZERO_v,
+                        ex_stall=ex_stall_v,
+                        zero_flag=zero_flag_v,
+                        zero_flag_ex_mem=zero_flag_ex_mem_v,
+                        cur_pc=cur_pc_v,
+                        pc_write=pc_write_v,
+                        mem_to_reg_ctrl=mem_to_reg_ctrl_v,
+                        mem_to_reg_gate=mem_to_reg_gate_v,
+                        mem_to_reg_id_ex=mem_to_reg_id_ex_v,
+                        mem_to_reg_ex_mem=mem_to_reg_ex_mem_v,
+                        mem_to_reg_mem_wb=mem_to_reg_mem_wb_v)
 
 
 def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
@@ -498,14 +508,15 @@ def getDUT():
 
 def main():
     """Run the simulation!!"""
-    start = input("starting PC Value: ")
+    start = int(input("starting PC Value: "))
     clock_inst = clock_gen(clock)
     print("Loading Instructions...")
-    sim = Simulation(getDUT(), stim(start), clock_inst, top_v())
-    choice = 1
-    while choice != "quit":
-        sim.run(duration=int(choice) * 10)
-        choice = input("Enter cycles to run for or type quit: ")
+
+    # TODO: Why does Verilog not function properly?
+    sim = Simulation(getDUT(), stim(start), clock_inst)
+    while 1:
+        length = int(raw_input("How many clock cycles to run for?: "))
+        sim.run(duration=length)
 
 
 if __name__ == '__main__':
