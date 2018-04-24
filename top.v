@@ -94,6 +94,8 @@ module top (
 );
 // Instantiate modules
 
+parameter SIZE = 0;
+
 input [0:0] clock;
 output [0:0] pc_src;
 wire [0:0] pc_src;
@@ -287,7 +289,7 @@ mux32bit3to1 pc_mux_b(.ctrl_line(jmp_ctrl), .data1(nxt_inst_mux_a), .data2(jmp_a
 
 pc_adder pc_add(.cur_pc(cur_pc), .next_pc(nxt_pc))
 
-inst_mem memory(.inst_reg(cur_pc), .inst_out(inst_out))
+inst_mem #(SIZE) memory(.inst_reg(cur_pc), .inst_out(inst_out))
 
 mux32bit2to1 inst_mem_mux(.ctrl_line(jmp_ctrl), .input1(inst_out), .input2(ZERO), .out(inst_if))
 
