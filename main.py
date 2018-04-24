@@ -42,9 +42,9 @@ clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
     branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, \
     mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate, \
     alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem, \
-    reg_write_mem_wb, ex_stall, zero_flag, \
+    ex_stall, zero_flag, \
     zero_flag_ex_mem, pc_write \
-    = unsigned_signal_set(27, width=1)
+    = unsigned_signal_set(26, width=1)
 
 cur_pc = Signal(unsigned_intbv())
 
@@ -76,9 +76,9 @@ pc_src_v, reset_ctrl_v, branch_ctrl_v, branch_gate_v, branch_id_ex_v, \
     branch_ex_mem_v, mem_read_ctrl_v, mem_read_gate_v, mem_read_ex_mem_v, mem_write_ctrl_v, \
     mem_read_id_ex_v, mem_write_gate_v, mem_write_id_ex_v, mem_write_ex_mem_v, alu_src_ctrl_v, alu_src_gate_v, \
     alu_src_id_ex_v, reg_write_ctrl_v, reg_write_gate_v, reg_write_id_ex_v, reg_write_ex_mem_v, \
-    reg_write_mem_wb_v, ex_stall_v, zero_flag_v, \
+    ex_stall_v, zero_flag_v, \
     zero_flag_ex_mem_v, pc_write_v \
-    = unsigned_signal_set(26, width=1)
+    = unsigned_signal_set(25, width=1)
 
 cur_pc_v = Signal(unsigned_intbv())
 
@@ -135,7 +135,6 @@ def top_v():
                         reg_write_gate=reg_write_gate_v,
                         reg_write_id_ex=reg_write_id_ex_v,
                         reg_write_ex_mem=reg_write_ex_mem_v,
-                        reg_write_mem_wb=reg_write_mem_wb_v,
                         forward_a_out=forward_a_out_v,
                         forward_b_out=forward_b_out_v,
                         reg_dst_ctrl=reg_dst_ctrl_v,
@@ -199,7 +198,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
     branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl,
     mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
     alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
-    reg_write_mem_wb, ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
+    ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
     forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem,
     result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO):
     """Instantiate modules"""
@@ -363,7 +362,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                          ex_rd=rd_ex,
                          mem_rd=rd_mem,
                          mem_reg_write=reg_write_ex_mem,
-                         wb_reg_write=reg_write_mem_wb,
+                         wb_reg_write=reg_write_final,
                          forward_a=forward_a_out,
                          forward_b=forward_b_out)
 
@@ -482,7 +481,7 @@ def convert():
     branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl,
     mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
     alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
-    reg_write_mem_wb, ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
+    ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
     forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem,
     result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
 
@@ -492,7 +491,7 @@ def getDUT():
                branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl,
                mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
                alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
-               reg_write_mem_wb, ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
+               ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
                forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem,
                result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
 

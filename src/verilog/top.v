@@ -45,7 +45,6 @@ module top (
     reg_write_gate,
     reg_write_id_ex,
     reg_write_ex_mem,
-    reg_write_mem_wb,
     ex_stall,
     zero_flag,
     zero_flag_ex_mem,
@@ -140,7 +139,6 @@ output [0:0] reg_write_ctrl;
 output [0:0] reg_write_gate;
 output [0:0] reg_write_id_ex;
 output [0:0] reg_write_ex_mem;
-output [0:0] reg_write_mem_wb;
 output [0:0] ex_stall;
 output [0:0] zero_flag;
 output [0:0] zero_flag_ex_mem;
@@ -167,8 +165,8 @@ output [31:0] pc_id;
 output [31:0] pc_id_ex;
 output [31:0] pc_value_ex_mem;
 output [31:0] pc_value_mem_wb;
-output [31:0] if_id_write;
-output [31:0] reg_write_final;
+output [0:0] if_id_write;
+output [0:0] reg_write_final;
 output [31:0] nxt_inst;
 output signed [31:0] imm_out;
 output signed [31:0] w_data;
@@ -234,7 +232,7 @@ if_id if_pipe(.if_id_write(if_id_write), .clock(clock), .nxt_pc(nxt_pc), .inst_i
 
 sign_extender extender(.imm_in(imm), .imm_out(imm_out));
 
-rfile registers(.clock(clock), .r_addr1(rs), .raddr2(rt), .w_addr(w_addr), .w_data(w_data), .r_data1(r_data1),
+rfile registers(.clock(clock), .r_addr1(rs), .r_addr2(rt), .w_addr(w_addr), .w_data(w_data), .r_data1(r_data1),
                 .r_data2(r_data2), .reg_write(reg_write_final));
 
 id_shift_left id_shifter(.top4(top4), .target(target_out), .jaddr_out(jmp_addr_last));
@@ -256,7 +254,7 @@ hazard_unit hzd(.if_id_rs(rs), .if_id_rt(rt), .id_ex_rt(rt_id_ex), .mem_read(mem
 id_ex id_pipe(.clock(clock), .branch_in(branch_gate), .alu_op_in(alu_code_gate), .mem_read_in(mem_read_gate),
               .mem_write_in(mem_write_gate), .alu_src_in(alu_src_gate), .reg_write_in(reg_write_gate),
               .reg_dst_in(reg_dst_gate), .pc_value_in(pc_id), .mem_to_reg_in(mem_to_reg_gate),
-              .r_data1(r_data1), .r_data2(r_data2), .rs(rs), .rt(rt), .rd(rd), .imm(imm), .jmp_mm(imm_out),
+              .r_data1(r_data1), .r_data2(r_data2), .rs(rs), .rt(rt), .rd(rd), .imm(imm), .jmp_imm(imm_out),
               .r_data1_out(r_data1_id_ex), .r_data2_out(r_data2_id_ex), .imm_out(imm_id_ex),
               .rs_out(rs_id_ex), .rt_out(rt_id_ex), .rd_out(rd_id_ex), .pc_value_out(pc_id_ex),
               .branch_out(branch_id_ex), .alu_op_out(alu_op_id_ex), .mem_read_out(mem_read_id_ex),
@@ -276,7 +274,7 @@ alu alu_dut(.op_1(op1_out), .op_2(op2_final), .alu_op(alu_op_id_ex), .result(res
 ex_mux dest_mux(.reg_dst(reg_dst_id_ex), .rt_in(rt_id_ex), .rd_in(rd_id_ex), .dest(rd_ex));
 
 fwd_unit fwd(.rt_in(rt_id_ex), .rs_in(rs_id_ex), .ex_rd(rd_ex), .mem_rd(rd_mem), .forward_b(forward_b_out),
-                 .mem_reg_write(reg_write_ex_mem), .wb_reg_write(reg_write_mem_wb), .forward_a(forward_a_out));
+                 .mem_reg_write(reg_write_ex_mem), .wb_reg_write(reg_write_final), .forward_a(forward_a_out));
 
 shift_unit shifter(.imm_in(jmp_imm_id_ex), .imm_out(jmp_imm_shift));
 
