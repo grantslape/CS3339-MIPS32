@@ -292,15 +292,16 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                          mem_to_reg_in=mem_to_reg_ex_mem,
                          mem_data_out=read_data_mem_wb,
                          alu_result_out=result_mem_wb,
-                         w_reg_addr_out=rd_wb,
-                         w_reg_ctl_out=reg_write_mem_wb,
+                         w_reg_addr_out=w_addr,
+                         w_reg_ctl_out=reg_write_final,
                          mem_to_reg_out=mem_to_reg_mem_wb,
                          pc_value_in=pc_value_ex_mem,
                          pc_value_out=pc_value_mem_wb)
 
-    wb_mux = mux32bit2to1(ctrl_line=mem_to_reg_mem_wb,
-                          input1=read_data_mem_wb,
-                          input2=result_mem_wb,
+    wb_mux = mux32bit3to1(ctrl_line=mem_to_reg_mem_wb,
+                          data1=read_data_mem_wb,
+                          data2=result_mem_wb,
+                          data3=pc_value_mem_wb,
                           out=w_data)
 
     return instances()
@@ -322,6 +323,9 @@ def stim():
         print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {} pc_out: {}\ntarget_out: {}\n"
               .format(cycle-1, bool(if_id_write), bool(reset_ctrl), bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6), bin(top4, width=4),
                       int(pc_id), bin(target_out, width=26)))
+
+        print("RFILE: R1: {}, R2: {}, WADDR: {}, WDATA: {}"
+              .format(int(r_data1), int(r_data2), bin(w_addr), int(w_data)))
         # print("CTRL: jmp: {}, branch: {}, mem_read: {}, mem_to_reg: {}. mem_write: {}, alu_src: {}, reg_write: {}. reg_dst: {}, reset_out: {}"
         #       .format(int(jmp_ctrl), bool(branch_ctrl), bool(mem_read_ctrl), int(mem_to_reg_ctrl), bool(mem_write_ctrl), bool(alu_src_ctrl), bool(reg_write_ctrl), int(reg_dst_ctrl), bool(reset_ctrl)))
 
@@ -337,7 +341,12 @@ def stim():
               .format(cycle-3, int(result), int(wdata_mem), bool(zero_flag_ex_mem), bin(imm_jmp_addr, width=32)))
         print("ctrl: branch: {}, mem_read: {}, mem_write: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}\n"
               .format(bool(branch_ex_mem), bool(mem_read_ex_mem), bool(mem_write_ex_mem),
-                      bool(reg_write_ex_mem), bin(rd_mem), int(mem_to_reg_ex_mem)))
+                      bool(reg_write_final), bin(rd_mem), int(mem_to_reg_ex_mem)))
+
+        print ("WB_STAGE: ({}): mem_data: {}, result: {}, wreg: {}, pc_out: {}"
+               .format(cycle-4, int(read_data_mem_wb), int(result_mem_wb), bin(w_addr), int(pc_value_mem_wb)))
+        print("wb_mux: ctrl: {}, input1: {}, input2: {}, input3: {}, out: {}\n"
+              .format(int(mem_to_reg_mem_wb), int(read_data_mem_wb), int(result_mem_wb), int(pc_value_mem_wb), int(w_data)))
         cycle += 1
 
 
@@ -371,7 +380,7 @@ def getDUT():
 def main():
     """Run the simulation!!"""
     clock_inst = clock_gen(clock)
-    Simulation(getDUT(), stim(), clock_inst).run(duration=100000)
+    Simulation(getDUT(), stim(), clock_inst).run(duration=700)
 
 
 if __name__ == '__main__':
