@@ -1,5 +1,6 @@
 """EX/MEM Pioeline Register Unit tests"""
 import unittest
+from random import randint
 from unittest import TestCase
 from myhdl import Simulation, StopSimulation, bin
 
@@ -10,7 +11,6 @@ from src.commons.signal_generator import unsigned_signal_set, signed_signal_set,
 from src.commons.settings import settings as sf
 
 
-@unittest.skip("EX/MEM Register not implemented")
 class TestExMemRegister(TestCase):
     """Testing functionality of EX/MEM Pipeline Register"""
 
@@ -47,7 +47,7 @@ class TestExMemRegister(TestCase):
             'z_in': self.z_in,
             'result_in': self.result_in,
             'rt_in': self.rt_in,
-            'reg_dst': self.reg_dst_in,
+            'reg_dst_in': self.reg_dst_in,
             'jmp_addr_out': self.jmp_addr_out_v if verilog else self.jmp_addr_out,
             'z_out': self.z_out_v if verilog else self.z_out,
             'result_out': self.result_out_v if verilog else self.result_out,
@@ -58,7 +58,6 @@ class TestExMemRegister(TestCase):
             'mem_write_out': self.mem_write_out_v if verilog else self.mem_write_out,
             'reg_write_out': self.reg_write_out_v if verilog else self.reg_write_out,
             'reg_dst_out': self.reg_dst_out_v if verilog else self.reg_dst_out,
-            'mem_to_reg': self.mem_to_reg_in,
             'mem_to_reg_out': self.mem_to_reg_out_v if verilog else self.mem_to_reg_out
         }
 
@@ -99,7 +98,8 @@ class TestExMemRegister(TestCase):
         """Testing dynamic functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.branch_in.next, self.mem_read_in.next, self.reg_write_in.next, \
-                self.z_in.next, self.mem_to_reg_in.next = rand_unsigned_signal_set(5, width=2)
+                self.z_in.next = rand_unsigned_signal_set(4, width=1)
+            self.mem_to_reg_in.next = randint(0, 2)
             self.rt_in.next, self.result_in.next, self.pc_value_in.next = rand_signed_signal_set(3)
             self.jmp_addr_in.next = random_unsigned_intbv()
             self.reg_dst_in.next = random_unsigned_intbv(width=5)
