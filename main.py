@@ -52,8 +52,8 @@ mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_re
     = unsigned_signal_set(12, width=2)
 
 nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
-pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst = \
-    unsigned_signal_set(13)
+pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, nxt_inst_if = \
+    unsigned_signal_set(14)
 
 imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem, \
     result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, \
@@ -80,12 +80,12 @@ def top():
                             input2=imm_jmp_addr,
                             out=nxt_inst_mux_a)
 
-    # function needed to assign value to jmp_reg below
-    # would we be calling rfile under certain conditions inside of main?
+    # Our JR format is 01100111111000000000000000000000, so we just need r_data1 to go to data3
+    # would we be calling rfile under certain conditions inside of main? yes
     pc_mux_b = mux32bit3to1(ctrl_line=jmp_ctrl,
                             data1=nxt_inst_mux_a,
                             data2=jmp_addr_last,
-                            data3=jmp_reg,
+                            data3=r_data1,
                             out=nxt_inst)
 
     pc_add = pc_adder(cur_pc=cur_pc,
@@ -111,8 +111,7 @@ def top():
                        funct_out=funct_out,
                        pc_out=pc_id,
                        top4=top4,
-                       target_out=target_out,
-                       reset=reset_ctrl)
+                       target_out=target_out)
 
     extender = sign_extender(imm_in=imm, imm_out=imm_out)
 
@@ -131,8 +130,7 @@ def top():
                                target=target_out,
                                jaddr_out=jmp_addr_last)
 
-    ctrl_unit = ctrl(clock=clock,
-                     funct_in=funct_out,
+    ctrl_unit = ctrl(funct_in=funct_out,
                      op_in=op_code,
                      jump=jmp_ctrl,
                      branch=branch_ctrl,
@@ -326,13 +324,19 @@ def stim():
         #       # We are looking at values for 2 cycles ago
         #       .format(cycle, int(nxt_inst),
         #               hex(cur_pc)))
-        print("Cycle: {}, CurPC: {}, Instreg: {}\n Inst: {}".format(cycle, int(cur_pc), int(nxt_inst), bin(inst_out, width=32)))
-        print("MUX A: psrc: {}, nxt_pc: {}, imm_jmp_addr: {}, out: {}".format(bool(pc_src), int(nxt_pc), int(imm_jmp_addr), int(nxt_inst_mux_a)))
-        print("MUX B: jmpctrl: {}, input: {}, jmp_addr: {}, jmp_reg: {} out: {}".format(bin(jmp_ctrl), int(nxt_inst_mux_a),
-                                                                              int(jmp_addr_last), int(jmp_reg), int(nxt_inst)))
-        print("ID ({}): op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}\npc_out: {}\ntarget_out: {}"
-              .format(cycle-1, bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6),
+        print("CYCLE: {}".format(cycle))
+        print("IF STAGE: CurPC: {}, NxtPC: {}\n CurInst: {}"
+              .format(int(cur_pc), int(nxt_inst), bin(inst_out, width=32)))
+        print("MUX A: psrc: {}, nxt_pc: {}, imm_jmp_addr: {}, out: {}"
+              .format(bool(pc_src), int(nxt_pc), int(imm_jmp_addr), int(nxt_inst_mux_a)))
+        print("MUX B: jctrl: {}, Ainput: {}, jmp_addr: {}, jmp_reg: {} out: {}"
+              .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(jmp_reg), int(nxt_inst)))
+        print("\n")
+        print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {}\npc_out: {}\ntarget_out: {}"
+              .format(cycle-1, bool(if_id_write), bool(reset_ctrl), bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6), bin(top4, width=4),
                       bin(pc_id, width=32), bin(target_out, width=26)))
+        print("CTRL: jmp: {}, branch: {}, mem_read: {}, mem_to_reg: {}. mem_write: {}, alu_src: {}, reg_write: {}. reg_dst: {}, reset_out: {}"
+              .format(int(jmp_ctrl), bool(branch_ctrl), bool(mem_read_ctrl), int(mem_to_reg_ctrl), bool(mem_write_ctrl), bool(alu_src_ctrl), bool(reg_write_ctrl), int(reg_dst_ctrl), bool(reset_ctrl)))
         print("\n")
         cycle += 1
 
