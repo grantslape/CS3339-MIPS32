@@ -44,6 +44,6 @@ def mux32bit3to1_v(ctrl_line, data1, data2, data3, out):
     return Cosimulation("vvp -m  lib/myhdl.vpi bin/mux32bit3to1.out",
                         ctrl_line=ctrl_line,
                         data1=data1,
-                        mem_rd=data2,
-                        wb_rd=data3,
+                        data2=data2,
+                        data3=data3,
                         out=out)
