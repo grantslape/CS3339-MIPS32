@@ -321,9 +321,9 @@ def stim():
               .format(int(cur_pc), int(nxt_inst), bin(inst_out, width=32)))
         print("MUX A: psrc: {}, nxt_pc: {}, imm_jmp_addr: {}, out: {}"
               .format(bool(pc_src), int(nxt_pc), int(imm_jmp_addr), int(nxt_inst_mux_a)))
-        print("MUX B: jctrl: {}, Ainput: {}, jmp_addr: {}, jmp_reg: {} out: {}"
-              .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(jmp_reg), int(nxt_inst)))
-        print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {}\npc_out: {}\ntarget_out: {}"
+        print("MUX B: jctrl: {}, Ainput: {}, jmp_addr: {}, jmp_reg: {} out: {}\n"
+              .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(r_data1), int(nxt_inst)))
+        print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {}\npc_out: {}\ntarget_out: {}\n"
               .format(cycle-1, bool(if_id_write), bool(reset_ctrl), bin(op_code, width=6), int(rs), int(rt), int(rd), bin(funct_out, width=6), bin(top4, width=4),
                       hex(pc_id), bin(target_out, width=26)))
         # print("CTRL: jmp: {}, branch: {}, mem_read: {}, mem_to_reg: {}. mem_write: {}, alu_src: {}, reg_write: {}. reg_dst: {}, reset_out: {}"
@@ -345,7 +345,7 @@ def monitor():
 
 
 def convert():
-    toVerilog(top, clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
+    return toVerilog(top, clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
     branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl,
     mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
     alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
@@ -356,9 +356,9 @@ def convert():
 
 def main():
     """Run the simulation!!"""
-    convert()
+    dut = convert()
     clock_inst = clock_gen(clock)
-    # Simulation(top(), stim(), clock_inst).run(duration=100000)
+    Simulation(dut, stim(), clock_inst).run(duration=100000)
 
 
 if __name__ == '__main__':
