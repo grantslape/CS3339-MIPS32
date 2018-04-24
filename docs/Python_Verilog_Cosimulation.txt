@@ -1,0 +1,98 @@
+Install Oracle VirtualBox
+
+(1) Navigate to https://www.virtualbox.org/wiki/Download_Old_Builds_5_1.  VM 5.2.10 is still in development and is unavailable for Windows.  
+(2) Select x86/MAD64, for VirtualBox 5.1.34. Save the exe to a location, where you can access it. Run the exe as an Administrator.
+(3) Take the default options, navigate through the screens, and click Install.
+
+
+Install Ubuntu on an oracle VM
+
+(1) Navigate to https://www.ubuntu.com/download/desktop.  Click Download. Click “Not now. Take me to the download.”
+(2) Save the iso, to a directory, where you can access it. The download may take a couple of minutes.
+(3) Launch Oracle VirtualBox, if you haven’t done so already.
+(4) Click New, in the upper left corner.  Enter a name for the VM: Team-White
+(5) Type: Linux, Version: ubuntu (64-bit)
+(6) Memory: 4096 MB
+(7) Hard Disk File Type: VHD
+(8) Storage: Fixed Size
+(9) File Size: 20.00 GB
+(10)  Click Create
+(11)   After the VM has been created, right click the VM and click Settings
+(12)  Select System and move optical to the top of the boot order
+(13)  Select the processor tab and give the VM two processors. Click OK
+(14)  Highlight the VM and click Start.
+(15)  Click the folder icon and navigate to the directory where the Ubuntu ISO is located.
+(16)  Select the file. Click Open. Click Start.
+(17)  Click the X to close any informational messages that may appear. Maximize the window.
+(18)  Click Install Ubuntu
+(19)  Check “Download updates while installing Ubuntu”. Click Continue.
+(20)  Select “Erase disk and install Ubuntu.” Click Install Now.
+(21)  On “Write the changes to disks?”, click Continue.
+(22)  In “Where Are you?”, enter Austin. Select Austin, TX, from the menu options.  Click Continue.
+(23)  “Keyboard Layout”: Click Continue.
+(24)  Your Name: TMWhite
+(25)  Enter a password: Anything you want. Click Continue
+(26)  When the installation completes, click Restart Now.
+(27)  Click File, close, and select power off the machine.
+(28)  Right Click Settings. Select Storage and move Hard Disk to the top of the boot order. Click Ok.
+(29)  Start the machine.
+(30)  Enter your password and logon to the VM.
+
+
+Terminal Windows
+
+(1) Select the Search Your Computer icon in the upper left corner.
+(2) Type terminal
+(3) Select Terminal
+(4) Right Click the Terminal Icon towards the bottom left corner and select “Lock to Launcher.”
+(5) In the terminal window, enter cd Documents, to navigate to the Documents folder
+(6) Enter “sudo apt-get update” (no quotation marks. Enter your password. Wait for the install to complete.
+
+
+Python
+
+(1) Enter “which python” (no double quotes), and you should see /usr/bin/python
+(2) Enter “python –version”, and you should see 2.7.12
+
+Git
+
+(1) Enter “sudo apt-get install git-core. Enter your password and enter Y.
+(2) Verify the install by typing git –version, and you should see git version 2.7.4
+
+Icarus Verilog
+
+(1) Navigate to http://iverilog.wikia.com/wiki/Installation_Guide  
+(2) Follow the instructions for “Obtaining Source From Git”
+(3) To compile the source codefor iverilog v10, you will need to install autoconf and gperf
+(4) sudo apt-get install autoconf
+(5) sudo apt-get install gperf
+(6) Follow the instructions for “Compiling on Linux/Unix”
+(7) To install iverilog from source, you will need to install bison and flex. Gcc and g++ should already be installed.
+(8) Sudo apt-get install flex
+(9) Sudo apt-get install bison
+(10)  Verify the install by typing which iverilog. You should see /usr/bin/iverilog
+
+Download the project to your Documents folder (ONLY IF YOU DO NOT HAVE A LOCAL COPY)
+(1) From the terminal window, enter: git config –global http.sslverify false.
+(2) In the terminal window, enter: git clone https://github.com/grantslape/CS3339-MIPS32.git  
+(3) Enter your username and password. Wait for the download to finish.
+
+
+Project Setup
+
+(1) Sudo apt-get install python-pip. This will install PIP. Enter your password and enter Y to continue.
+(2) Make sure to navigate to the project root 
+(3) Type cd CS3339-MIPS32 and press enter.
+(4) Type: pip install virtualenv. Enter your password and enter Y. Press Enter. This will install virtualenv.
+(5) Type virtualenv venv and press enter. This will create a virtual environment for running python
+(6) Type: source venv/bin/activate. This will activate the virtual environment for python.
+(7) Type: pip install -r requirements.txt, to install the prerequisites for the project.
+(8) At the project root,  cd venv/share/myhdl/cosimulation/Icarus. Press enter.
+(9) Type “Make.”  Press enter
+(10)  Type cd ../../../../..  Press enter.
+(11)  Type mv venv/share/myhdl/cosimulation/Icarus/myhdl.vpi ./lib   Press enter.
+(12)  Type: export PYTHONPATH=’/home/<username>/Documents/CS3339-MIPS32/’  Press enter.
+(13) Verify the path by typing “echo $PYTHONPATH.” You should see the current working directory.
+(14)  Type: test/test_all_modules.py
+
+
