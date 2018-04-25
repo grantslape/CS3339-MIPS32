@@ -73,39 +73,39 @@ top4 = Signal(unsigned_intbv(width=4))
 target_out = Signal(unsigned_intbv(width=26))
 op_code, funct_out = unsigned_signal_set(2, width=6)
 
-# pc_src_v, branch_ctrl_v, branch_gate_v, branch_id_ex_v, \
-#     branch_ex_mem_v, mem_read_ctrl_v, mem_read_gate_v, mem_read_ex_mem_v, mem_write_ctrl_v, \
-#     mem_read_id_ex_v, mem_write_gate_v, mem_write_id_ex_v, mem_write_ex_mem_v, alu_src_ctrl_v, alu_src_gate_v, \
-#     alu_src_id_ex_v, reg_write_ctrl_v, reg_write_gate_v, reg_write_id_ex_v, reg_write_ex_mem_v, \
-#     ex_stall_v, zero_flag_v, \
-#     zero_flag_ex_mem_v, pc_write_v \
-#     = unsigned_signal_set(24, width=1)
-#
-# cur_pc_v = Signal(unsigned_intbv())
-#
-# mem_to_reg_ctrl_v, mem_to_reg_gate_v, mem_to_reg_id_ex_v, mem_to_reg_ex_mem_v, mem_to_reg_mem_wb_v, \
-#     forward_a_out_v, forward_b_out_v, reg_dst_ctrl_v, reg_dst_gate_v, reg_dst_id_ex_v, jmp_ctrl_v, jump_gate_v \
-#     = unsigned_signal_set(12, width=2)
-#
-# nxt_pc_v, nxt_inst_mux_a_v, jmp_addr_last_v, inst_out_v, inst_if_v, \
-# pc_id_v, pc_id_ex_v, pc_value_ex_mem_v, pc_value_mem_wb_v, if_id_write_v, reg_write_final_v, nxt_inst_v, ZERO_v = \
-#     unsigned_signal_set(13)
-#
-# imm_out_v, w_data_v, r_data1_v, r_data1_id_ex_v, r_data2_v, r_data2_id_ex_v, result_v, result_ex_mem_v, \
-#     result_mem_wb_v, op1_out_v, op2_out_v, op2_final_v, jmp_imm_id_ex_v, jmp_imm_shift_v, b_addr_out_v, \
-#     wdata_mem_v, read_data_v, read_data_mem_wb_v, imm_jmp_addr_v = signed_signal_set(19)
-#
-# rs_v, rs_id_ex_v, rt_v, rt_id_ex_v, rd_v, rd_id_ex_v, rd_ex_v, rd_mem_v, rd_wb_v, w_addr_v \
-#     = unsigned_signal_set(10, width=5)
-#
-# alu_op_code_v, alu_op_gate_v, alu_op_id_ex_v = unsigned_signal_set(3, width=sf['ALU_CODE_SIZE'])
-#
-# imm_v, imm_id_ex_v = [
-#     Signal(intbv(min=sf['16_SIGNED_MIN_VALUE'], max=sf['16_SIGNED_MAX_VALUE'])) for _ in range(2)
-# ]
-# top4_v = Signal(unsigned_intbv(width=4))
-# target_out_v = Signal(unsigned_intbv(width=26))
-# op_code_v, funct_out_v = unsigned_signal_set(2, width=6)
+pc_src_v, branch_ctrl_v, branch_gate_v, branch_id_ex_v, \
+    branch_ex_mem_v, mem_read_ctrl_v, mem_read_gate_v, mem_read_ex_mem_v, mem_write_ctrl_v, \
+    mem_read_id_ex_v, mem_write_gate_v, mem_write_id_ex_v, mem_write_ex_mem_v, alu_src_ctrl_v, alu_src_gate_v, \
+    alu_src_id_ex_v, reg_write_ctrl_v, reg_write_gate_v, reg_write_id_ex_v, reg_write_ex_mem_v, \
+    ex_stall_v, zero_flag_v, \
+    zero_flag_ex_mem_v, pc_write_v \
+    = unsigned_signal_set(24, width=1)
+
+cur_pc_v = Signal(unsigned_intbv())
+
+mem_to_reg_ctrl_v, mem_to_reg_gate_v, mem_to_reg_id_ex_v, mem_to_reg_ex_mem_v, mem_to_reg_mem_wb_v, \
+    forward_a_out_v, forward_b_out_v, reg_dst_ctrl_v, reg_dst_gate_v, reg_dst_id_ex_v, jmp_ctrl_v, jump_gate_v \
+    = unsigned_signal_set(12, width=2)
+
+nxt_pc_v, nxt_inst_mux_a_v, jmp_addr_last_v, inst_out_v, inst_if_v, \
+pc_id_v, pc_id_ex_v, pc_value_ex_mem_v, pc_value_mem_wb_v, if_id_write_v, reg_write_final_v, nxt_inst_v, ZERO_v = \
+    unsigned_signal_set(13)
+
+imm_out_v, w_data_v, r_data1_v, r_data1_id_ex_v, r_data2_v, r_data2_id_ex_v, result_v, result_ex_mem_v, \
+    result_mem_wb_v, op1_out_v, op2_out_v, op2_final_v, jmp_imm_id_ex_v, jmp_imm_shift_v, b_addr_out_v, \
+    wdata_mem_v, read_data_v, read_data_mem_wb_v, imm_jmp_addr_v = signed_signal_set(19)
+
+rs_v, rs_id_ex_v, rt_v, rt_id_ex_v, rd_v, rd_id_ex_v, rd_ex_v, rd_mem_v, rd_wb_v, w_addr_v \
+    = unsigned_signal_set(10, width=5)
+
+alu_op_code_v, alu_op_gate_v, alu_op_id_ex_v = unsigned_signal_set(3, width=sf['ALU_CODE_SIZE'])
+
+imm_v, imm_id_ex_v = [
+    Signal(intbv(min=sf['16_SIGNED_MIN_VALUE'], max=sf['16_SIGNED_MAX_VALUE'])) for _ in range(2)
+]
+top4_v = Signal(unsigned_intbv(width=4))
+target_out_v = Signal(unsigned_intbv(width=26))
+op_code_v, funct_out_v = unsigned_signal_set(2, width=6)
 
 
 def top_v():
@@ -166,7 +166,6 @@ def top_v():
                         op1_out=op1_out_v,
                         op2_out=op2_out_v,
                         op2_final=op2_final_v,
-                        jmp_imm_id_ex=jmp_imm_id_ex_v,
                         jmp_imm_shift=jmp_imm_shift_v,
                         b_addr_out=b_addr_out_v,
                         wdata_mem=wdata_mem_v,
@@ -511,13 +510,15 @@ def main():
     clock_inst = clock_gen(clock)
 
     # TODO: Why does Verilog not function properly?
-    choice = raw_input("Would you like to generate waveforms? (Y/N): ")
+    choice = raw_input("Would you like to generate waveforms for Python? (Y/N): ")
     if choice.upper() == "Y":
         print("Loading Simulation...thank you for your patience...")
         dut = traceSignals(top)
     else:
         print("Loading Simulation...thank you for your patience...")
         dut = top()
+
+    dut_v = top_v()
 
     debug = raw_input("Cycle by Cycle output? (Y/N): ")
 
@@ -526,7 +527,7 @@ def main():
     else:
         DEBUG = False
 
-    sim = Simulation(dut, stim(start, DEBUG), clock_inst)
+    sim = Simulation(dut, dut_v, stim(start, DEBUG), clock_inst)
     while 1:
         length = int(input("How many clock cycles to run for? (^C to quit): ") * 10)
         sim.run(duration=length)

@@ -91,6 +91,8 @@ wire [5:0] funct_out;
 wire [31:0] ZERO;
 
 initial begin
+    $dumpfile("top_v.vcd");
+    $dumpvars(0,test);
     $from_myhdl(
         clock
     );
@@ -273,5 +275,9 @@ top #(TBSIZE) dut(
     funct_out,
     ZERO
 );
+
+always @(posedge clock) begin
+    $display("Verilog: cur pc: %d\nWBDATA: %d\n", cur_pc, w_data)
+end
 
 endmodule
