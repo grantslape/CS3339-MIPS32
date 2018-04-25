@@ -11,7 +11,6 @@ wire [0:0] alu_src;
 wire [0:0] reg_write;
 wire [1:0] reg_dst;
 wire [3:0] alu_op;
-wire [0:0] reset_out;
 
 initial begin
     $from_myhdl(
@@ -27,8 +26,7 @@ initial begin
         alu_src,
         reg_write,
         reg_dst,
-        alu_op,
-        reset_out
+        alu_op
     );
 end
 
@@ -43,8 +41,7 @@ ctrl dut(
     alu_src,
     reg_write,
     reg_dst,
-    alu_op,
-    reset_out
+    alu_op
 );
 
 endmodule

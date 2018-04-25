@@ -5,7 +5,7 @@ from myhdl import Cosimulation, always, always_comb
 
 
 def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src, reg_write,
-         reg_dst, alu_op, reset_out):
+         reg_dst, alu_op):
     """
     :param clock: system clock maybe
     :param funct_in: from if_id.funct_out
@@ -26,7 +26,6 @@ def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src
 
     @always_comb
     def logic():
-        reset_out.next = 0
         if op_in == 35:
             # LOAD WORD
             jump.next = 0
@@ -61,7 +60,6 @@ def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src
             # JUMP
             jump.next = 1
             branch.next = 0
-            reset_out.next = 1
             mem_write.next = 0
             reg_write.next = 0
             mem_read.next = 0
@@ -71,7 +69,6 @@ def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src
             # JAL
             jump.next = 1
             branch.next = 0
-            reset_out.next = 1
             mem_write.next = 0
             reg_write.next = 1
             mem_read.next = 0
@@ -87,7 +84,6 @@ def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src
             alu_src.next = 0
             reg_write.next = 0
             mem_write.next = 0
-            reset_out.next = 1
             alu_op.next = 0
         elif op_in == 8:
             # ADDI
@@ -154,7 +150,7 @@ def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src
 
 
 def ctrl_v(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src,
-           reg_write, reg_dst, alu_op, reset_out):
+           reg_write, reg_dst, alu_op):
     """
     Verilog logic
     :param kwargs: See above.
@@ -174,5 +170,4 @@ def ctrl_v(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_s
                         alu_src=alu_src,
                         reg_write=reg_write,
                         reg_dst=reg_dst,
-                        alu_op=alu_op,
-                        reset_out=reset_out)
+                        alu_op=alu_op)
