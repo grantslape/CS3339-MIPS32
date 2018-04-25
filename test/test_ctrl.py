@@ -21,7 +21,6 @@ class TestControlUnit(TestCase):
             unsigned_signal_set(10, width=1)
         self.mem_to_reg, self.mem_to_reg_v, self.reg_dst, self.reg_dst_v = unsigned_signal_set(4, width=2)
         self.alu_op, self.alu_op_v = unsigned_signal_set(2, width=sf['ALU_CODE_SIZE'])
-        self.reset_out, self.reset_out_v = unsigned_signal_set(2, width=1)
 
     def get_module(self, which="python"):
         """Return module under test"""
@@ -44,8 +43,7 @@ class TestControlUnit(TestCase):
             'alu_src': self.alu_src if which == "python" else self.alu_src_v,
             'reg_write': self.reg_write if which == "python" else self.reg_write_v,
             'reg_dst': self.reg_dst if which == "python" else self.reg_dst_v,
-            'alu_op': self.alu_op if which == "python" else self.alu_op_v,
-            'reset_out': self.reset_out if which == "python" else self.reset_out_v
+            'alu_op': self.alu_op if which == "python" else self.alu_op_v
         }
 
     def mem_inst_test(self, python=False, verilog=False):
@@ -62,7 +60,6 @@ class TestControlUnit(TestCase):
             self.assertEqual(1, self.alu_src)
             self.assertEqual(1, self.reg_write)
             self.assertEqual(0, self.reg_dst)
-            self.assertEqual(0, self.reset_out)
             self.assertEqual(1, self.alu_op)
         if verilog:
             self.assertEqual(0, self.jump_v)
@@ -73,7 +70,6 @@ class TestControlUnit(TestCase):
             self.assertEqual(1, self.alu_src_v)
             self.assertEqual(1, self.reg_write_v)
             self.assertEqual(0, self.reg_dst_v)
-            self.assertEqual(0, self.reset_out_v)
             self.assertEqual(1, self.alu_op_v)
         # 43 is op code for sw
         self.op_in.next = intbv(43)[6:]
@@ -85,7 +81,6 @@ class TestControlUnit(TestCase):
             self.assertEqual(1, self.mem_write)
             self.assertEqual(1, self.alu_src)
             self.assertEqual(0, self.reg_write)
-            self.assertEqual(0, self.reset_out)
             self.assertEqual(1, self.alu_op)
         if verilog:
             self.assertEqual(0, self.jump_v)
@@ -94,7 +89,6 @@ class TestControlUnit(TestCase):
             self.assertEqual(1, self.mem_write_v)
             self.assertEqual(1, self.alu_src_v)
             self.assertEqual(0, self.reg_write_v)
-            self.assertEqual(0, self.reset_out_v)
             self.assertEqual(1, self.alu_op_v)
         raise StopSimulation
 
@@ -111,7 +105,6 @@ class TestControlUnit(TestCase):
             self.assertEqual(0, self.mem_write)
             self.assertEqual(0, self.alu_src)
             self.assertEqual(0, self.reg_write)
-            self.assertEqual(0, self.reset_out)
         if verilog:
             self.assertEqual(bin(0b0010), bin(self.alu_op_v))
             self.assertEqual(0, self.jump_v)
@@ -120,7 +113,6 @@ class TestControlUnit(TestCase):
             self.assertEqual(0, self.mem_write_v)
             self.assertEqual(0, self.alu_src_v)
             self.assertEqual(0, self.reg_write_v)
-            self.assertEqual(0, self.reset_out_v)
         raise StopSimulation
 
     def j_lbl_test(self, python=False, verilog=False):
@@ -132,7 +124,6 @@ class TestControlUnit(TestCase):
         if python:
             self.assertEqual(1, self.jump)
             self.assertEqual(0, self.branch)
-            self.assertEqual(1, self.reset_out)
             self.assertEqual(0, self.mem_write)
             self.assertEqual(0, self.reg_write)
             self.assertEqual(0, self.mem_read)
@@ -141,7 +132,6 @@ class TestControlUnit(TestCase):
         if verilog:
             self.assertEqual(1, self.jump_v)
             self.assertEqual(0, self.branch_v)
-            self.assertEqual(1, self.reset_out_v)
             self.assertEqual(0, self.mem_write_v)
             self.assertEqual(0, self.reg_write_v)
             self.assertEqual(0, self.mem_read_v)
@@ -157,7 +147,6 @@ class TestControlUnit(TestCase):
         if python:
             self.assertEqual(1, self.jump)
             self.assertEqual(0, self.branch)
-            self.assertEqual(1, self.reset_out)
             # we may want to "write" here and drop PC+4 value into the flow.
             self.assertEqual(1, self.reg_write)
             self.assertEqual(0, self.mem_read)
@@ -170,7 +159,6 @@ class TestControlUnit(TestCase):
         if verilog:
             self.assertEqual(1, self.jump_v)
             self.assertEqual(0, self.branch_v)
-            self.assertEqual(1, self.reset_out_v)
             # we may want to "write" here and drop PC+4 value into the flow.
             self.assertEqual(1, self.reg_write_v)
             self.assertEqual(0, self.mem_read_v)
@@ -191,7 +179,6 @@ class TestControlUnit(TestCase):
             # might need to do some massaging here with special flow
             self.assertEqual(bin(0b10), bin(self.jump))
             self.assertEqual(0, self.branch)
-            self.assertEqual(1, self.reset_out)
             self.assertEqual(0, self.mem_read)
             self.assertEqual(0, self.alu_src)
             self.assertEqual(0, self.reg_write)
@@ -200,7 +187,6 @@ class TestControlUnit(TestCase):
         if verilog:
             self.assertEqual(bin(0b10), bin(self.jump_v))
             self.assertEqual(0, self.branch_v)
-            self.assertEqual(1, self.reset_out_v)
             self.assertEqual(0, self.mem_read_v)
             self.assertEqual(0, self.alu_src_v)
             self.assertEqual(0, self.reg_write_v)
@@ -218,7 +204,6 @@ class TestControlUnit(TestCase):
         self.assertEqual(0, self.alu_src)
         self.assertEqual(1, self.reg_write)
         self.assertEqual(1, self.reg_dst)
-        self.assertEqual(0, self.reset_out)
 
     def r_type_verilog(self):
         """Common R-type assertions verilog"""
@@ -230,7 +215,6 @@ class TestControlUnit(TestCase):
         self.assertEqual(0, self.alu_src_v)
         self.assertEqual(1, self.reg_write_v)
         self.assertEqual(1, self.reg_dst_v)
-        self.assertEqual(0, self.reset_out_v)
 
     def add_test(self, python=False, verilog=False):
         """Test R style addition"""
@@ -575,6 +559,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut_v, dut).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftLeftInstructionPython(self):
         """Testing ShiftLeft instructions python"""
         stim = self.sll_test(python=True)
@@ -582,6 +567,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftLeftInstructionVerilog(self):
         """Testing ShiftLeft instructions Verilog"""
         stim = self.sll_test(verilog=True)
@@ -589,6 +575,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut_v).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftLeftInstructionTogether(self):
         """Testing ShiftLeft instructions Together"""
         stim = self.sll_test(verilog=True, python=True)
@@ -597,6 +584,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut_v, dut).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftRightInstructionPython(self):
         """Testing ShiftRight instructions python"""
         stim = self.srl_test(python=True)
@@ -604,6 +592,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftRightInstructionVerilog(self):
         """Testing ShiftRight instructions Verilog"""
         stim = self.srl_test(verilog=True)
@@ -611,6 +600,7 @@ class TestControlUnit(TestCase):
         
         Simulation(stim, dut_v).run(quiet=1)
 
+    @unittest.skip("shift not implemented")
     def testShiftRightInstructionTogether(self):
         """Testing ShiftRight instructions Together"""
         stim = self.srl_test(verilog=True, python=True)

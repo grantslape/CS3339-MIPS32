@@ -37,7 +37,7 @@ def rfile(clock, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     return read_logic, write_logic
 
 
-def rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
+def rfile_v(clock, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     """
     32-bit Register File of 32 registers Verilog
     :param clock: Input from system clock
@@ -55,7 +55,6 @@ def rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, 
     system(cmd)
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/rfile.out",
                         clock=clock,
-                        reset=reset,
                         reg_write=reg_write,
                         r_addr1=r_addr1,
                         r_addr2=r_addr2,
