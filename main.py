@@ -11,7 +11,7 @@
 from __future__ import print_function
 from os import system
 from myhdl import Simulation, bin, StopSimulation, ResetSignal, join, toVerilog, instance, instances, Cosimulation, \
-    delay
+    delay, traceSignals
 
 from src.python.branch_unit import branch_unit
 from src.python.data_mem import data_mem
@@ -73,39 +73,39 @@ top4 = Signal(unsigned_intbv(width=4))
 target_out = Signal(unsigned_intbv(width=26))
 op_code, funct_out = unsigned_signal_set(2, width=6)
 
-pc_src_v, branch_ctrl_v, branch_gate_v, branch_id_ex_v, \
-    branch_ex_mem_v, mem_read_ctrl_v, mem_read_gate_v, mem_read_ex_mem_v, mem_write_ctrl_v, \
-    mem_read_id_ex_v, mem_write_gate_v, mem_write_id_ex_v, mem_write_ex_mem_v, alu_src_ctrl_v, alu_src_gate_v, \
-    alu_src_id_ex_v, reg_write_ctrl_v, reg_write_gate_v, reg_write_id_ex_v, reg_write_ex_mem_v, \
-    ex_stall_v, zero_flag_v, \
-    zero_flag_ex_mem_v, pc_write_v \
-    = unsigned_signal_set(24, width=1)
-
-cur_pc_v = Signal(unsigned_intbv())
-
-mem_to_reg_ctrl_v, mem_to_reg_gate_v, mem_to_reg_id_ex_v, mem_to_reg_ex_mem_v, mem_to_reg_mem_wb_v, \
-    forward_a_out_v, forward_b_out_v, reg_dst_ctrl_v, reg_dst_gate_v, reg_dst_id_ex_v, jmp_ctrl_v, jump_gate_v \
-    = unsigned_signal_set(12, width=2)
-
-nxt_pc_v, nxt_inst_mux_a_v, jmp_addr_last_v, inst_out_v, inst_if_v, \
-pc_id_v, pc_id_ex_v, pc_value_ex_mem_v, pc_value_mem_wb_v, if_id_write_v, reg_write_final_v, nxt_inst_v, ZERO_v = \
-    unsigned_signal_set(13)
-
-imm_out_v, w_data_v, r_data1_v, r_data1_id_ex_v, r_data2_v, r_data2_id_ex_v, result_v, result_ex_mem_v, \
-    result_mem_wb_v, op1_out_v, op2_out_v, op2_final_v, jmp_imm_id_ex_v, jmp_imm_shift_v, b_addr_out_v, \
-    wdata_mem_v, read_data_v, read_data_mem_wb_v, imm_jmp_addr_v = signed_signal_set(19)
-
-rs_v, rs_id_ex_v, rt_v, rt_id_ex_v, rd_v, rd_id_ex_v, rd_ex_v, rd_mem_v, rd_wb_v, w_addr_v \
-    = unsigned_signal_set(10, width=5)
-
-alu_op_code_v, alu_op_gate_v, alu_op_id_ex_v = unsigned_signal_set(3, width=sf['ALU_CODE_SIZE'])
-
-imm_v, imm_id_ex_v = [
-    Signal(intbv(min=sf['16_SIGNED_MIN_VALUE'], max=sf['16_SIGNED_MAX_VALUE'])) for _ in range(2)
-]
-top4_v = Signal(unsigned_intbv(width=4))
-target_out_v = Signal(unsigned_intbv(width=26))
-op_code_v, funct_out_v = unsigned_signal_set(2, width=6)
+# pc_src_v, branch_ctrl_v, branch_gate_v, branch_id_ex_v, \
+#     branch_ex_mem_v, mem_read_ctrl_v, mem_read_gate_v, mem_read_ex_mem_v, mem_write_ctrl_v, \
+#     mem_read_id_ex_v, mem_write_gate_v, mem_write_id_ex_v, mem_write_ex_mem_v, alu_src_ctrl_v, alu_src_gate_v, \
+#     alu_src_id_ex_v, reg_write_ctrl_v, reg_write_gate_v, reg_write_id_ex_v, reg_write_ex_mem_v, \
+#     ex_stall_v, zero_flag_v, \
+#     zero_flag_ex_mem_v, pc_write_v \
+#     = unsigned_signal_set(24, width=1)
+#
+# cur_pc_v = Signal(unsigned_intbv())
+#
+# mem_to_reg_ctrl_v, mem_to_reg_gate_v, mem_to_reg_id_ex_v, mem_to_reg_ex_mem_v, mem_to_reg_mem_wb_v, \
+#     forward_a_out_v, forward_b_out_v, reg_dst_ctrl_v, reg_dst_gate_v, reg_dst_id_ex_v, jmp_ctrl_v, jump_gate_v \
+#     = unsigned_signal_set(12, width=2)
+#
+# nxt_pc_v, nxt_inst_mux_a_v, jmp_addr_last_v, inst_out_v, inst_if_v, \
+# pc_id_v, pc_id_ex_v, pc_value_ex_mem_v, pc_value_mem_wb_v, if_id_write_v, reg_write_final_v, nxt_inst_v, ZERO_v = \
+#     unsigned_signal_set(13)
+#
+# imm_out_v, w_data_v, r_data1_v, r_data1_id_ex_v, r_data2_v, r_data2_id_ex_v, result_v, result_ex_mem_v, \
+#     result_mem_wb_v, op1_out_v, op2_out_v, op2_final_v, jmp_imm_id_ex_v, jmp_imm_shift_v, b_addr_out_v, \
+#     wdata_mem_v, read_data_v, read_data_mem_wb_v, imm_jmp_addr_v = signed_signal_set(19)
+#
+# rs_v, rs_id_ex_v, rt_v, rt_id_ex_v, rd_v, rd_id_ex_v, rd_ex_v, rd_mem_v, rd_wb_v, w_addr_v \
+#     = unsigned_signal_set(10, width=5)
+#
+# alu_op_code_v, alu_op_gate_v, alu_op_id_ex_v = unsigned_signal_set(3, width=sf['ALU_CODE_SIZE'])
+#
+# imm_v, imm_id_ex_v = [
+#     Signal(intbv(min=sf['16_SIGNED_MIN_VALUE'], max=sf['16_SIGNED_MAX_VALUE'])) for _ in range(2)
+# ]
+# top4_v = Signal(unsigned_intbv(width=4))
+# target_out_v = Signal(unsigned_intbv(width=26))
+# op_code_v, funct_out_v = unsigned_signal_set(2, width=6)
 
 
 def top_v():
@@ -204,19 +204,7 @@ def top_v():
                         mem_to_reg_mem_wb=mem_to_reg_mem_wb_v)
 
 
-def top(clock, pc_src, branch_ctrl, branch_gate, branch_id_ex, branch_ex_mem,
-        mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, mem_read_id_ex,
-        mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
-        alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
-        ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate,
-        mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,forward_a_out, forward_b_out,
-        reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a,
-        jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb,
-        if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2,
-        r_data2_id_ex, result, result_ex_mem,result_mem_wb, op1_out, op2_out, op2_final,
-        jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs,
-        rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate,
-        alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO):
+def top():
     """Instantiate modules"""
     pc = program_counter(clock=clock, pc_write=pc_write, nxt_inst=nxt_inst, cur_pc=cur_pc)
     pc_mux_a = mux32bit2to1(ctrl_line=pc_src,
@@ -235,8 +223,8 @@ def top(clock, pc_src, branch_ctrl, branch_gate, branch_id_ex, branch_ex_mem,
     pc_add = pc_adder(cur_pc=cur_pc,
                       next_pc=nxt_pc)
 
-    # inst_memory = inst_mem(inst_reg=cur_pc,
-    #                        inst_out=inst_out)
+    inst_memory = inst_mem(inst_reg=cur_pc,
+                           inst_out=inst_out)
 
     inst_mem_mux = mux32bit2to1(ctrl_line=jmp_ctrl,
                                 input1=inst_out,
@@ -443,47 +431,47 @@ def top(clock, pc_src, branch_ctrl, branch_gate, branch_id_ex, branch_ex_mem,
     return instances()
 
 
-def stim(start):
+def stim(start, DEBUG):
     """Test stimulus"""
     cur_pc.next = start
-    cur_pc_v.next = start
     cycle = 1
     while 1:
         yield clock.posedge
-        print("\nCYCLE: {}".format(cycle))
-        print("IF STAGE: CurPC: {}, NxtPC: {}\n CurInst: {}"
-              .format(int(cur_pc), int(nxt_inst), bin(inst_out, width=32)))
-        print("MUX A: psrc: {}, nxt_pc: {}, imm_jmp_addr: {}, out: {}"
-              .format(bool(pc_src), int(nxt_pc), int(imm_jmp_addr), int(nxt_inst_mux_a)))
-        print("MUX B: jctrl: {}, input: {}, jmp_addr: {}, jmp_reg: {} out: {}\n"
-              .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(r_data1), int(nxt_inst)))
+        if DEBUG:
+            print("\nCYCLE: {}".format(cycle))
+            print("IF STAGE: CurPC: {}, NxtPC: {}\n CurInst: {}"
+                  .format(int(cur_pc), int(nxt_inst), bin(inst_out, width=32)))
+            print("MUX A: psrc: {}, nxt_pc: {}, imm_jmp_addr: {}, out: {}"
+                  .format(bool(pc_src), int(nxt_pc), int(imm_jmp_addr), int(nxt_inst_mux_a)))
+            print("MUX B: jctrl: {}, input: {}, jmp_addr: {}, jmp_reg: {} out: {}\n"
+                  .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(r_data1), int(nxt_inst)))
 
-        print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {} pc_out: {}\ntarget_out: {}, int: {}\n"
-              .format(cycle-1, bool(if_id_write), int(jmp_ctrl), bin(op_code, width=6), bin(rs, width=5), bin(rt, width=5),
-                      bin(rd, width=5), bin(funct_out, width=6), bin(top4, width=4),
-                      int(pc_id), bin(jmp_addr_last, width=32), int(jmp_addr_last)))
+            print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {} pc_out: {}\ntarget_out: {}, int: {}\n"
+                  .format(cycle-1, bool(if_id_write), int(jmp_ctrl), bin(op_code, width=6), bin(rs, width=5), bin(rt, width=5),
+                          bin(rd, width=5), bin(funct_out, width=6), bin(top4, width=4),
+                          int(pc_id), bin(jmp_addr_last, width=32), int(jmp_addr_last)))
 
-        print("RFILE-READ: R1: {}, R2: {}; WRITE ({}): WADDR: {}, WDATA: {}"
-              .format(int(r_data1), int(r_data2), cycle-4, bin(w_addr, width=5), int(w_data)))
+            print("RFILE-READ: R1: {}, R2: {}; WRITE ({}): WADDR: {}, WDATA: {}"
+                  .format(int(r_data1), int(r_data2), cycle-4, bin(w_addr, width=5), int(w_data)))
 
-        print("EX STAGE: ({}): ALU_OP: {} RD1: {}, RD2: {}, RS: {}, RT: {}, RD: {}, PC: {}"
-              .format(cycle-2, bin(alu_op_id_ex, width=4), int(r_data1_id_ex), int(r_data2_id_ex), bin(rs_id_ex, width=5),
-                      bin(rt_id_ex, width=5), bin(rd_id_ex, width=5), int(pc_id_ex)))
+            print("EX STAGE: ({}): ALU_OP: {} RD1: {}, RD2: {}, RS: {}, RT: {}, RD: {}, PC: {}"
+                  .format(cycle-2, bin(alu_op_id_ex, width=4), int(r_data1_id_ex), int(r_data2_id_ex), bin(rs_id_ex, width=5),
+                          bin(rt_id_ex, width=5), bin(rd_id_ex, width=5), int(pc_id_ex)))
 
-        print("ctrls: branch: {}, mem_read: {}, mem_write: {}, alu_src: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}\n"
-              .format(bool(branch_id_ex), bool(mem_read_id_ex), bool(mem_write_id_ex), bool(alu_src_id_ex),
-                      bool(reg_write_id_ex), int(reg_dst_id_ex), int(mem_to_reg_id_ex)))
+            print("ctrls: branch: {}, mem_read: {}, mem_write: {}, alu_src: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}\n"
+                  .format(bool(branch_id_ex), bool(mem_read_id_ex), bool(mem_write_id_ex), bool(alu_src_id_ex),
+                          bool(reg_write_id_ex), int(reg_dst_id_ex), int(mem_to_reg_id_ex)))
 
-        print("MEM STAGE: ({}): Result: {}, RT: {}, Z: {}, b_addr: {}"
-              .format(cycle-3, int(result), int(wdata_mem), bool(zero_flag_ex_mem), bin(imm_jmp_addr, width=32)))
-        print("ctrl: branch: {}, mem_read: {}, mem_write: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}\n"
-              .format(bool(branch_ex_mem), bool(mem_read_ex_mem), bool(mem_write_ex_mem),
-                      bool(reg_write_final), bin(rd_mem, width=5), int(mem_to_reg_ex_mem)))
+            print("MEM STAGE: ({}): Result: {}, RT: {}, Z: {}, b_addr: {}"
+                  .format(cycle-3, int(result), int(wdata_mem), bool(zero_flag_ex_mem), bin(imm_jmp_addr, width=32)))
+            print("ctrl: branch: {}, mem_read: {}, mem_write: {}, reg_write: {}, reg_dst: {}, mem_to_reg: {}\n"
+                  .format(bool(branch_ex_mem), bool(mem_read_ex_mem), bool(mem_write_ex_mem),
+                          bool(reg_write_final), bin(rd_mem, width=5), int(mem_to_reg_ex_mem)))
 
-        print ("WB_STAGE: ({}): mem_data: {}, result: {}, wreg: {}, pc_out: {}"
-               .format(cycle-4, int(read_data_mem_wb), int(result_mem_wb), bin(w_addr, width=5), int(pc_value_mem_wb)))
-        print("wb_mux: ctrl: {}, input1: {}, input2: {}, input3: {}, out: {}\n"
-              .format(int(mem_to_reg_mem_wb), int(read_data_mem_wb), int(result_mem_wb), int(pc_value_mem_wb), int(w_data)))
+            print ("WB_STAGE: ({}): mem_data: {}, result: {}, wreg: {}, pc_out: {}"
+                   .format(cycle-4, int(read_data_mem_wb), int(result_mem_wb), bin(w_addr, width=5), int(pc_value_mem_wb)))
+            print("wb_mux: ctrl: {}, input1: {}, input2: {}, input3: {}, out: {}\n"
+                  .format(int(mem_to_reg_mem_wb), int(read_data_mem_wb), int(result_mem_wb), int(pc_value_mem_wb), int(w_data)))
         cycle += 1
 
 
@@ -502,31 +490,46 @@ def convert():
                      rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate,
                      alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
 
-def getDUT():
-    return top(clock, pc_src, branch_ctrl, branch_gate, branch_id_ex, branch_ex_mem,
-               mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, mem_read_id_ex,
-               mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
-               alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
-               ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate,
-               mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,forward_a_out, forward_b_out,
-               reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a,
-               jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb,
-               if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2,
-               r_data2_id_ex, result, result_ex_mem,result_mem_wb, op1_out, op2_out, op2_final,
-               jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs,
-               rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate,
-               alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
+# def getDUT():
+#     return top(clock, pc_src, branch_ctrl, branch_gate, branch_id_ex, branch_ex_mem,
+#                mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, mem_read_id_ex,
+#                mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
+#                alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
+#                ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate,
+#                mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,forward_a_out, forward_b_out,
+#                reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a,
+#                jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb,
+#                if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2,
+#                r_data2_id_ex, result, result_ex_mem,result_mem_wb, op1_out, op2_out, op2_final,
+#                jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs,
+#                rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate,
+#                alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
 
 def main():
     """Run the simulation!!"""
     start = int(input("starting PC Value: "))
     clock_inst = clock_gen(clock)
-    print("Loading Instructions...")
 
     # TODO: Why does Verilog not function properly?
-    sim = Simulation(getDUT(), stim(start), clock_inst)
+    choice = raw_input("Would you like to generate waveforms? (Y/N): ")
+    if choice == "Y":
+        print("Loading Simulation...thank you for your patience...")
+        dut = traceSignals(top)
+    else:
+        print("Loading Simulation...thank you for your patience...")
+        dut = top()
+
+
+    debug = raw_input("Cycle by Cycle  output? (Y/N): ")
+
+    if debug == "Y":
+        DEBUG = True
+    else:
+        DEBUG = False
+
+    sim = Simulation(dut, stim(start, DEBUG), clock_inst)
     while 1:
-        length = int(raw_input("How many clock cycles to run for?: ") * 10)
+        length = int(input("How many clock cycles to run for? (^C to quit): ") * 10)
         sim.run(duration=length)
 
 
