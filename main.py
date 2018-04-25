@@ -211,7 +211,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
     alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
     ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
     forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem,
-    result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO):
+    result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO):
     """Instantiate modules"""
     pc = program_counter(clock=clock, pc_write=pc_write, nxt_inst=nxt_inst, cur_pc=cur_pc)
     pc_mux_a = mux32bit2to1(ctrl_line=pc_src,
@@ -323,8 +323,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                        rs=rs,
                        rt=rt,
                        rd=rd,
-                       imm=imm,
-                       jmp_imm=imm_out,
+                       imm=imm_out,
                        r_data1_out=r_data1_id_ex,
                        r_data2_out=r_data2_id_ex,
                        imm_out=imm_id_ex,
@@ -339,8 +338,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                        alu_src_out=alu_src_id_ex,
                        reg_write_out=reg_write_id_ex,
                        reg_dst_out=reg_dst_id_ex,
-                       mem_to_reg_out=mem_to_reg_id_ex,
-                       jmp_imm_out=jmp_imm_id_ex)
+                       mem_to_reg_out=mem_to_reg_id_ex)
 
     alu_mux_a = mux32bit3to1(ctrl_line=forward_a_out,
                              data1=r_data1_id_ex,
@@ -377,7 +375,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                          forward_a=forward_a_out,
                          forward_b=forward_b_out)
 
-    shifter = shift_unit(imm_in=jmp_imm_id_ex, imm_out=jmp_imm_shift)
+    shifter = shift_unit(imm_in=imm_id_ex, imm_out=jmp_imm_shift)
 
     branch_adder_ = branch_adder(pc_in=pc_id_ex,
                                  imm_in=jmp_imm_shift,
