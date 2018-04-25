@@ -23,10 +23,11 @@ class TestIdExRegister(TestCase):
         self.alu_op_in, self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(3, width=sf['ALU_CODE_SIZE'])
         self.pc_value_in, self.pc_value_out, self.pc_value_out_v = unsigned_signal_set(3)
         self.r_data1, self.r_data1_out, self.r_data1_out_v, self.r_data2, self.r_data2_out, \
-            self.r_data2_out_v, self.imm, self.imm_out, self.imm_out_v, self.jmp_imm, \
-            self.jmp_imm_out_v, self.jmp_imm_out = signed_signal_set(12)
+            self.r_data2_out_v, self.imm_out, self.imm_out_v, self.jmp_imm, \
+            self.jmp_imm_out_v, self.jmp_imm_out = signed_signal_set(11)
         self.rs, self.rt, self.rd, self.rs_out, self.rs_out_v, self.rt_out, self.rt_out_v, \
             self.rd_out, self.rd_out_v = unsigned_signal_set(9, width=5)
+        self.imm = Signal(intbv(min=sf['16_SIGNED_MIN_VALUE'], max=sf['16_SIGNED_MAX_VALUE']))
 
     def get_module(self, which="python"):
         """Return module instantiation"""
@@ -77,7 +78,6 @@ class TestIdExRegister(TestCase):
     def deassert(self, python=False, verilog=False):
         """test deassert functionality"""
         for _ in range(sf['DEFAULT_TEST_LENGTH'] / 2):
-            yield self.clock.posedge
             yield self.clock.negedge
             if python:
                 self.assertEqual(bin(self.branch_out), bin(0b0))
@@ -123,13 +123,14 @@ class TestIdExRegister(TestCase):
             self.mem_to_reg_in.next, self.reg_dst_in.next = unsigned_signal_set(2, randint(0,2), 1)
             self.alu_op_in = Signal(intbv()[sf['ALU_CODE_SIZE']:])
             self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
-            self.r_data1.next, self.r_data2.next, self.imm.next, self.jmp_imm.next = [
-                Signal(random_signed_intbv()) for _ in range(4)
+            self.r_data1.next, self.r_data2.next, self.jmp_imm.next = [
+                Signal(random_signed_intbv()) for _ in range(3)
             ]
             self.rs.next, self.rt.next, self.rd.next = [
                 Signal(intbv(randint(0, sf['WIDTH'] - 1))[5:]) for _ in range(3)
             ]
-            yield self.clock.posedge
+            self.imm.next = randint(sf['16_SIGNED_MIN_VALUE'], sf['16_SIGNED_MAX_VALUE'] - 1)
+            # yield self.clock.posedge
             yield self.clock.negedge
             if python:
                 self.assertEqual(bin(self.branch_out), bin(self.branch_in))

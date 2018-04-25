@@ -57,7 +57,7 @@ input [4:0] rs;
 input [4:0] rt;
 input [4:0] rd;
 input [31:0] pc_value_in;
-input signed [31:0] imm;
+input signed [15:0] imm;
 output [1:0] reg_dst_out;
 reg [1:0] reg_dst_out;
 output [0:0] reg_write_out;

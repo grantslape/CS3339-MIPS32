@@ -3,7 +3,7 @@ import os
 twoExp15 = 32768
 twoExp15MinusOne = 32767
 negativeTwoExp15 = -32768
-maxInstructions = 2**20
+maxInstructions = (2**20) - 1
 debug = 0
 INSTRUCTION_PATH = "lib/instructions"
 PARAM_PATH = "lib/Parameters.txt"
@@ -224,6 +224,11 @@ def driver():
     if debug == 1:
       print("Data Dependency: You attempted to enter an invalid character. The default data dependency will be 0. Please enter a whole number next time.")
 
+  if branchFrequency != 0.0 and branchFrequency != 0.1 and branchFrequency != 0.25 and branchFrequency != 0.35:
+    branchFrequency = 0.0
+    if debug == 1:
+      print("Branch Frequency: You attempted to enter an invalid value. The default branch frequency is zero. The only acceptable values are 0, 10, 25, and 35.")
+  
   if dataDependency == 0.0:
     lowerRegister = 4
   elif dataDependency == 0.25:
@@ -260,6 +265,8 @@ def driver():
     branchInstructions = ''
     forLoopNonBranch += counterNonBranch
     forLoopBranch += counterBranch
+    #print(str(forLoopNonBranch))
+    #print(str(forLoopBranch))
     counterBranch = 0
     counterNonBranch = 0
     myRandInt = 0
@@ -302,6 +309,58 @@ def driver():
       counterBranch = counterBranch + 1
     instructionList = nonBranchInstructions + "," + branchInstructions
     writeInstructions(instructionList)
+    ######################################TEST
+  while (forLoopNonBranch < int(numberOfInstructions)):
+    nonBranchInstructions = ''
+    branchInstructions = ''
+    forLoopNonBranch += counterNonBranch
+    forLoopBranch += counterBranch
+    #print(str(forLoopNonBranch))
+    #print(str(forLoopBranch))
+    counterBranch = 0
+    counterNonBranch = 0
+    myRandInt = 0
+    if (forLoopNonBranch < int(numberOfInstructions)):
+      for x in range(forLoopNonBranch,int(numberOfInstructions)):
+        if (counterNonBranch > 0 and (counterNonBranch % 10000 == 0)):
+	      break
+        myRandInt = randint(1,11)
+        if myRandInt == 1 or myRandInt == 2 or myRandInt == 3 or myRandInt == 4 or myRandInt == 5 or myRandInt == 6 or myRandInt == 7:
+          #call the R-format function
+          myInstruction = rFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
+          if nonBranchInstructions == '':
+            nonBranchInstructions = myInstruction
+          else:
+            nonBranchInstructions = nonBranchInstructions + "," + myInstruction
+          if debug == 1:
+            print(myInstruction)
+        elif myRandInt == 8 or myRandInt == 9 or myRandInt == 10 or myRandInt == 11:
+          myInstruction = immediateFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
+          if nonBranchInstructions == '':
+            nonBranchInstructions = myInstruction
+          else:
+            nonBranchInstructions = nonBranchInstructions + "," + myInstruction
+          if debug == 1:
+            print(myInstruction)
+        counterNonBranch = counterNonBranch + 1
+    
+    for x in range(forLoopBranch,int(numberOfBranchInstructions)):
+      if (counterBranch > 0 and (counterBranch % 1000 == 0)):
+	    break
+      myRandInt = randint(12,15)
+      if myRandInt == 12 or myRandInt == 13 or myRandInt == 14 or myRandInt == 15:
+        myInstruction = jumpFormat(myRandInt,convertedToInstArray,lowerRegister,upperRegister)
+        if branchInstructions == '':
+          branchInstructions = myInstruction
+        else:
+          branchInstructions = branchInstructions + "," + myInstruction
+        if debug == 1:
+          print(myInstruction)
+      counterBranch = counterBranch + 1
+    instructionList = nonBranchInstructions + "," + branchInstructions
+    writeInstructions(instructionList)
+  ####################END TEST
+
   #cleanup and reset instructions
   out = open(INSTRUCTION_PATH,'r')
   lines = out.readlines()

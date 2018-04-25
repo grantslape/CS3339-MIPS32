@@ -8,8 +8,8 @@
 module mux32bit3to1 (
     ctrl_line,
     data1,
-    mem_rd,
-    wb_rd,
+    data2,
+    data3,
     out
 );
 // 3:1 Mux for forwarding results from 2 cycles ago
@@ -22,8 +22,8 @@ module mux32bit3to1 (
 
 input [1:0] ctrl_line;
 input signed [31:0] data1;
-input signed [31:0] mem_rd;
-input signed [31:0] wb_rd;
+input signed [31:0] data2;
+input signed [31:0] data3;
 output [31:0] out;
 reg signed [31:0] out;
 
@@ -32,13 +32,13 @@ reg signed [31:0] out;
 
 
 
-always @(mem_rd, data1, wb_rd, ctrl_line) begin: MUX32BIT3TO1_LOGIC
+always @(data2, data1, data3, ctrl_line) begin: MUX32BIT3TO1_LOGIC
     case (ctrl_line)
         'h2: begin
-            out = wb_rd;
+            out = data3;
         end
         'h1: begin
-            out = mem_rd;
+            out = data2;
         end
         'h0: begin
             out = data1;

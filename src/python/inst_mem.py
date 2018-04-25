@@ -15,7 +15,7 @@ def inst_mem(inst_reg, inst_out):
     TB_SIZE = 0
     mem_file = open('lib/instructions',)
     try:
-        raw_mem = [Signal(intbv(line)[32:]) for line in mem_file]
+        raw_mem = [intbv(line)[32:]for line in mem_file]
     except IOError:
         # EOF exception is thrown when there are less than n elements to read from the file
         # the contents are still read into the array. Do nothing
