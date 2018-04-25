@@ -25,7 +25,6 @@
 module top (
     clock,
     pc_src,
-    reset_ctrl,
     branch_ctrl,
     branch_gate,
     branch_id_ex,
@@ -86,7 +85,6 @@ module top (
     op1_out,
     op2_out,
     op2_final,
-    jmp_imm_id_ex,
     jmp_imm_shift,
     b_addr_out,
     wdata_mem,
@@ -119,7 +117,6 @@ parameter SIZE = 0;
 
 input [0:0] clock;
 inout [0:0] pc_src;
-inout [0:0] reset_ctrl;
 inout [0:0] branch_ctrl;
 inout [0:0] branch_gate;
 inout [0:0] branch_id_ex;
@@ -180,7 +177,6 @@ inout signed [31:0] result_mem_wb;
 inout signed [31:0] op1_out;
 inout signed [31:0] op2_out;
 inout signed [31:0] op2_final;
-inout signed [31:0] jmp_imm_id_ex;
 inout signed [31:0] jmp_imm_shift;
 inout signed [31:0] b_addr_out;
 inout signed [31:0] wdata_mem;
@@ -239,7 +235,7 @@ id_shift_left id_shifter(.top4(top4), .target(target_out), .jaddr_out(jmp_addr_l
 
 ctrl ctrl_unit(.funct_in(funct_out), .op_in(op_code), .jump(jmp_ctrl), .branch(branch_ctrl), .alu_op(alu_op_code),
                .mem_read(mem_read_ctrl), .mem_to_reg(mem_to_reg_ctrl), .mem_write(mem_write_ctrl), .alu_src(alu_src_ctrl),
-               .reg_write(reg_write_ctrl), .reg_dst(reg_dst_ctrl), .reset_out(reset_ctrl));
+               .reg_write(reg_write_ctrl), .reg_dst(reg_dst_ctrl));
 
 ctrl_mux ctrl_gate(.ex_stall(ex_stall), .jump(jmp_ctrl), .branch(branch_ctrl), .mem_read(mem_read_ctrl),
                    .mem_to_reg(mem_to_reg_ctrl), .mem_write(mem_write_ctrl), .alu_src(alu_src_ctrl),
@@ -254,12 +250,12 @@ hazard_unit hzd(.if_id_rs(rs), .if_id_rt(rt), .id_ex_rt(rt_id_ex), .mem_read(mem
 id_ex id_pipe(.clock(clock), .branch_in(branch_gate), .alu_op_in(alu_op_code), .mem_read_in(mem_read_gate),
               .mem_write_in(mem_write_gate), .alu_src_in(alu_src_gate), .reg_write_in(reg_write_gate),
               .reg_dst_in(reg_dst_gate), .pc_value_in(pc_id), .mem_to_reg_in(mem_to_reg_gate),
-              .r_data1(r_data1), .r_data2(r_data2), .rs(rs), .rt(rt), .rd(rd), .imm(imm), .jmp_imm(imm_out),
+              .r_data1(r_data1), .r_data2(r_data2), .rs(rs), .rt(rt), .rd(rd), .imm(imm),
               .r_data1_out(r_data1_id_ex), .r_data2_out(r_data2_id_ex), .imm_out(imm_id_ex),
               .rs_out(rs_id_ex), .rt_out(rt_id_ex), .rd_out(rd_id_ex), .pc_value_out(pc_id_ex),
               .branch_out(branch_id_ex), .alu_op_out(alu_op_id_ex), .mem_read_out(mem_read_id_ex),
               .mem_write_out(mem_write_id_ex), .alu_src_out(alu_src_id_ex), .reg_write_out(reg_write_id_ex),
-              .reg_dst_out(reg_dst_id_ex), .mem_to_reg_out(mem_to_reg_id_ex), .jmp_imm_out(jmp_imm_id_ex));
+              .reg_dst_out(reg_dst_id_ex), .mem_to_reg_out(mem_to_reg_id_ex));
 
 mux32bit3to1 alu_mux_a(.ctrl_line(forward_a_out), .data1(r_data1_id_ex), .data2(result_ex_mem),
                        .data3(result_mem_wb), .out(op1_out));
@@ -276,7 +272,7 @@ ex_mux dest_mux(.reg_dst(reg_dst_id_ex), .rt_in(rt_id_ex), .rd_in(rd_id_ex), .de
 fwd_unit fwd(.rt_in(rt_id_ex), .rs_in(rs_id_ex), .ex_rd(rd_ex), .mem_rd(rd_mem), .forward_b(forward_b_out),
                  .mem_reg_write(reg_write_ex_mem), .wb_reg_write(reg_write_final), .forward_a(forward_a_out));
 
-shift_unit shifter(.imm_in(jmp_imm_id_ex), .imm_out(jmp_imm_shift));
+shift_unit shifter(.imm_in(imm_id_ex), .imm_out(jmp_imm_shift));
 
 branch_adder b_addr(.pc_in(pc_id_ex), .imm_in(jmp_imm_shift), .addr_out(b_addr_out));
 
