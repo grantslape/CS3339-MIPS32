@@ -78,7 +78,7 @@ cpu:
 		output branch: activate branch unit, to id_ex.branch_in after ctrl_mux
 		output [4:0] alu_op: multi-bit alu op code.  see table. to id_ex.alu_op_in after ctrl_mux
 		output mem_read: activate read from memory, to id_ex.mem_read_in after ctrl_mux
-		output mem_to_reg: 0 for Alu result writeback, 1 for data writeback. to id_ex.mem_to_reg after ctrl_mux
+		output mem_to_reg: 0 for Alu result writeback, 1 for data writeback. 2 for pc value to id_ex.mem_to_reg after ctrl_mux
 		output mem_write: activate to write to memory. to id_ex after ctrl_mux
 		output alu_src: 0 for register input, 1 for immediate. to id_ex.alu_src_in
 		output reg_write: activate to write to register.  to id_ex.reg_write_in
@@ -130,6 +130,7 @@ cpu:
 		output alu_src_out: 0 for register input, 1 for immediate. To alu_mux_imm.alu_src
 		output reg_write_out: reg_write ctrl signal.  to ex_mem.reg_write_in
 		output reg_dst_out: reg_dst ctrl signal. to ex_mux.reg_dst
+                output [1:0] mem_to_reg_out: to ex_mem
 
 	mux32bit3to1 alu_mux_a: 3:1 Mux for forwarding results from 2 cycles ago
 		input [1:0] forward_a: two bit input selector from fwd_unit
