@@ -508,8 +508,8 @@ def main():
     """Run the simulation!!"""
     start = int(input("starting PC Value: "))
     clock_inst = clock_gen(clock)
+    dut_v = top_v()
 
-    # TODO: Why does Verilog not function properly?
     choice = raw_input("Would you like to generate waveforms for Python? (Y/N): ")
     if choice.upper() == "Y":
         print("Loading Simulation...thank you for your patience...")
@@ -518,8 +518,6 @@ def main():
         print("Loading Simulation...thank you for your patience...")
         dut = top()
 
-    dut_v = top_v()
-
     debug = raw_input("Cycle by Cycle output? (Y/N): ")
 
     if debug.upper() == "Y":
@@ -527,6 +525,7 @@ def main():
     else:
         DEBUG = False
 
+    # TODO: Why does Verilog not function properly?
     sim = Simulation(dut, dut_v, stim(start, DEBUG), clock_inst)
     while 1:
         length = int(input("How many clock cycles to run for? (^C to quit): ") * 10)

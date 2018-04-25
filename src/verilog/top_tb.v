@@ -277,8 +277,4 @@ initial begin
     );
 end
 
-always @(posedge clock) begin
-    $display("Verilog: cur pc: %d\nWBDATA: %d\n", cur_pc, w_data);
-end
-
 endmodule
