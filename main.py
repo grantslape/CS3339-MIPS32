@@ -47,15 +47,15 @@ clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
     zero_flag_ex_mem, pc_write \
     = unsigned_signal_set(26, width=1)
 
-cur_pc = Signal(unsigned_intbv())
+cur_pc = Signal(unsigned_intbv(value=0))
 
 mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb, \
     forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate \
     = unsigned_signal_set(12, width=2)
 
-nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, \
-pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, ZERO = \
-    unsigned_signal_set(13)
+nxt_pc, nxt_inst_mux_a, jmp_addr_last, jmp_reg, inst_out, inst_if, \
+pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, nxt_inst_if = \
+    unsigned_signal_set(14)
 
 imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem, \
     result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, \
@@ -219,8 +219,6 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                             input2=imm_jmp_addr,
                             out=nxt_inst_mux_a)
 
-    # Our JR format is 01100111111000000000000000000000, so we just need r_data1 to go to data3
-    # would we be calling rfile under certain conditions inside of main? yes
     pc_mux_b = mux32bit3to1(ctrl_line=jmp_ctrl,
                             data1=nxt_inst_mux_a,
                             data2=jmp_addr_last,
@@ -235,7 +233,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
 
     inst_mem_mux = mux32bit2to1(ctrl_line=jmp_ctrl,
                                 input1=inst_out,
-                                input2=ZERO,
+                                input2=Signal(unsigned_intbv()),
                                 out=inst_if)
 
     if_id_pipe = if_id(if_id_write=if_id_write,
@@ -255,6 +253,8 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
     extender = sign_extender(imm_in=imm, imm_out=imm_out)
 
     registers = rfile(clock=clock,
+                      # dummy for now
+                      reset=ResetSignal(sf['INACTIVE_HIGH'], active=sf['ACTIVE_LOW'], async=True),
                       r_addr1=rs,
                       r_addr2=rt,
                       w_addr=w_addr,
@@ -419,6 +419,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                            read_data=read_data)
 
     mem_wb_pipe = mem_wb(clk=clock,
+                         reset=Signal(intbv()),
                          w_reg_ctl_in=reg_write_ex_mem,
                          mem_data_in=read_data,
                          alu_result_in=result_ex_mem,
@@ -446,6 +447,7 @@ def stim(start):
     cur_pc.next = start
     cur_pc_v.next = start
     cycle = 1
+    # cycle_pause = input("What cycle would you like to pause at? ")
     while 1:
         yield clock.posedge
         print("\nCYCLE: {}".format(cycle))

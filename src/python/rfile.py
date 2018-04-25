@@ -6,7 +6,7 @@ from myhdl import Cosimulation, always_seq, always
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import signed_signal_set
 
-def rfile(clock, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
+def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     """
     32-bit Register File of 32 registers
     :param clock: Input from system clock

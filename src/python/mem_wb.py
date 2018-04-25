@@ -1,7 +1,7 @@
 """Memory writeback module"""
 from os import system
 from myhdl import always, Cosimulation
-def mem_wb(clk,
+def mem_wb(clk, reset,
            w_reg_ctl_in,
            mem_to_reg_in,
            mem_data_in,
