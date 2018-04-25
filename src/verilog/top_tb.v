@@ -247,7 +247,6 @@ top #(TBSIZE) dut(
     op1_out,
     op2_out,
     op2_final,
-    jmp_imm_id_ex,
     jmp_imm_shift,
     b_addr_out,
     wdata_mem,
