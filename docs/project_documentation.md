@@ -1,10 +1,43 @@
 # MIPS Processor Implemented with Python and Icarus Verilog
 ## CS3339 Semester Project Spring 2018
+[![Build Status](https://semaphoreci.com/api/v1/projects/60cb7614-3fe5-40f7-9c80-8cf79916ae93/1881968/badge.svg)](https://semaphoreci.com/grantslape-61/cs3339-mips32)
+[![CodeFactor](https://www.codefactor.io/repository/github/grantslape/cs3339-mips32/badge)](https://www.codefactor.io/repository/github/grantslape/cs3339-mips32)
 
 This project simulates a MIPS-like 5 stage pipeline through co-simulation between Python and Icarus Verilog.
 The machine is implemented with a 32-bit architecture through the myHDL library.
+### Execution :rocket:
+From the project root:
+1. Make sure Icarus Verilog is installed. Available on Homebrew for MacOS.  For Ubuntu:
+```shell
+    $ sudo apt-get install iverilog
+```
+2. Create a virtual env if you don't already have one:
+```shell
+    $ pip install virtualenv
+    $ virtualenv venv
+```
+3. Activate and install MyHDL:
+```shell
+    $ source venv/bin/activate
+    $ pip install -r requirements.txt
+```
+4. Set up Cosimulation:
+```shell
+    $ cd venv/share/myhdl/cosimulation/icarus
+    $ make
+    $ cd ../../../../..
+    $ mv venv/share/myhdl/cosimulation/icarus/myhdl.vpi ./lib
+```
+5. Add modules to PYTHONPATH:
+```shell
+    $ export PYTHONPATH=`pwd`
+```
+6. Execute processor!
+```shell
+    $ python main.py
+```
 
-### Step-By-Step Explanation of Repository
+### Repository Explained :mag_right:
 - docs/:
 Find in depth instructions on how to run this repository through an Oracle virtual box.
 Other files such as structure of modules and the operation codes for the arithmetic logic unit used in the machine.
@@ -17,7 +50,7 @@ To kick off the simulation we start by running the main.py file at the root of t
 This is the driver to the simulation. Inside of main.py will be the code that initializes all of the components
 of our processor so that we can also begin the simulation within this same file.
 
-	Main.py also includes a series of output statements that tell us all our signals and modules are
+	- Main.py also includes a series of output statements that tell us all our signals and modules are
 working together properly. The output gives us a clear idea of the 5 stages of the pipeline.
 *** insert picture of output ***
 
@@ -44,3 +77,23 @@ To test a specific module (from root):
 python test/test_module_name.py
 ```
 >run these commands only after you've gone through the Execution steps.
+
+### Links :key:
+- [myHDL Download](myhdl.org)
+- [myHDL Documentation](http://docs.myhdl.org/en/master/index.html)
+
+- [iverilog Download](http://iverilog.wikia.com/wiki/Installation_Guide)
+
+- [virtualenv Download](https://virtualenv.pypa.io/en/stable/)
+
+### Contributors :computer:
+- Grant Slape
+- Isaac Jaimes
+- Patrick Vinas
+- Mark Gitthens
+- Serena Gutierrez
+- Natalie Garza
+- Huan Wu
+
+### Acknowledgements :book:
+Computer Organization and Design: The Hardware/Software Interface *by David Patterson and John Hennessy*
