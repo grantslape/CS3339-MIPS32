@@ -512,17 +512,16 @@ def main():
 
     # TODO: Why does Verilog not function properly?
     choice = raw_input("Would you like to generate waveforms? (Y/N): ")
-    if choice == "Y":
+    if choice.upper() == "Y":
         print("Loading Simulation...thank you for your patience...")
         dut = traceSignals(top)
     else:
         print("Loading Simulation...thank you for your patience...")
         dut = top()
 
+    debug = raw_input("Cycle by Cycle output? (Y/N): ")
 
-    debug = raw_input("Cycle by Cycle  output? (Y/N): ")
-
-    if debug == "Y":
+    if debug.upper() == "Y":
         DEBUG = True
     else:
         DEBUG = False
