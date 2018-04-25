@@ -1,11 +1,11 @@
 """Main Ctrl unit"""
 from os import system
 
-from myhdl import Cosimulation, always
+from myhdl import Cosimulation, always, always_comb
 
 
-def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src, reg_write,
-         reg_dst, alu_op, reset_out):
+def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src, reg_write,
+         reg_dst, alu_op):
     """
     :param clock: system clock maybe
     :param funct_in: from if_id.funct_out
@@ -20,13 +20,12 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
     :param alu_src: 0 for register input, 1 for immediate. to id_ex.alu_src_in
     :param reg_write: activate to write to register.  to id_ex.reg_write_in
     :param reg_dst: 0 to write to Rt ([20:16]), 1 to write to Rd ([15:11]). to id_ex.reg_dst_in, 2 for ra register (pc_value)
-    :param reset_out: 1 to insert a 1 cycle stall in the pipeline.  to id_ex.reset_in
+    :param reset_out: 1 to insert a 1 cycle stall in the pipeline.  to if_id.reset_in
     :return: module logic
     """
 
-    @always(clock.posedge)
+    @always_comb
     def logic():
-        reset_out.next = 0
         if op_in == 35:
             # LOAD WORD
             jump.next = 0
@@ -59,10 +58,8 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
         # we may want to "reg_write" here and drop PC+4 value into the flow.
         elif op_in == 2:
             # JUMP
-            # TODO: break JAL out because we need to handle it differently
             jump.next = 1
             branch.next = 0
-            reset_out.next = 1
             mem_write.next = 0
             reg_write.next = 0
             mem_read.next = 0
@@ -70,10 +67,8 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
             alu_op.next = 0
         elif op_in == 3:
             # JAL
-            # TODO: break JAL out because we need to handle it differently
             jump.next = 1
             branch.next = 0
-            reset_out.next = 1
             mem_write.next = 0
             reg_write.next = 1
             mem_read.next = 0
@@ -89,8 +84,29 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
             alu_src.next = 0
             reg_write.next = 0
             mem_write.next = 0
-            reset_out.next = 1
             alu_op.next = 0
+        elif op_in == 8:
+            # ADDI
+            alu_op.next = 0b0001
+            jump.next = 0
+            branch.next = 0
+            mem_read.next = 0
+            mem_to_reg.next = 0
+            mem_write.next = 0
+            alu_src.next = 1
+            reg_write.next = 1
+            reg_dst.next = 0
+        elif op_in == 24:
+            # SUBI
+            alu_op.next = 0b0010
+            jump.next = 0
+            branch.next = 0
+            mem_read.next = 0
+            mem_to_reg.next = 0
+            mem_write.next = 0
+            alu_src.next = 1
+            reg_write.next = 1
+            reg_dst.next = 0
         elif op_in == 0:
             # R STYLE INSTRUCTIONS
             jump.next = 0
@@ -133,8 +149,8 @@ def ctrl(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, 
     return logic
 
 
-def ctrl_v(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src,
-           reg_write, reg_dst, alu_op, reset_out):
+def ctrl_v(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src,
+           reg_write, reg_dst, alu_op):
     """
     Verilog logic
     :param kwargs: See above.
@@ -144,7 +160,6 @@ def ctrl_v(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write
     system(cmd)
 
     return Cosimulation("vvp -m lib/myhdl.vpi bin/ctrl.out",
-                        clock=clock,
                         funct_in=funct_in,
                         op_in=op_in,
                         jump=jump,
@@ -155,5 +170,4 @@ def ctrl_v(clock, funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write
                         alu_src=alu_src,
                         reg_write=reg_write,
                         reg_dst=reg_dst,
-                        alu_op=alu_op,
-                        reset_out=reset_out)
+                        alu_op=alu_op)

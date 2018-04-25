@@ -1,5 +1,6 @@
-import os
+from os import system
 from myhdl import always_comb, Cosimulation
+
 
 def alu(op_1, op_2, alu_op, z, result):
     """
@@ -44,7 +45,7 @@ def alu(op_1, op_2, alu_op, z, result):
 def alu_v(op_1, op_2, alu_op, z, result):
 
     cmd = "iverilog -o bin/alu.out src/verilog/alu.v src/verilog/alu_tb.v"
-    os.system(cmd)
+    system(cmd)
     return Cosimulation("vvp -m  lib/myhdl.vpi bin/alu.out",
                         op_1=op_1,
                         op_2=op_2,

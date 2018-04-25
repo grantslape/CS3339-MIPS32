@@ -11,7 +11,7 @@ from src.commons.clock import clock_gen
 class TestIfIdRegister(TestCase):
     """Test IF/ID Register"""
     def setUp(self):
-        self.if_id_write, self.clock = unsigned_signal_set(2, width=1)
+        self.if_id_write, self.clock, self.reset = unsigned_signal_set(3, width=1)
         self.nxt_pc, self.inst_in, self.pc_out, self.pc_out_v = unsigned_signal_set(4)
         self.op_code, self.op_code_v, self.funct_out, self.funct_out_v = \
             unsigned_signal_set(4, width=6)

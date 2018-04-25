@@ -5,7 +5,7 @@ from myhdl import Cosimulation, always
 def id_ex(clock, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_in, mem_to_reg_in, alu_op_in,
           branch_in, r_data1, r_data2, rs, rt, rd, pc_value_in, imm, reg_dst_out, reg_write_out, alu_src_out,
           mem_read_out, mem_write_out, mem_to_reg_out, alu_op_out, branch_out, r_data1_out, r_data2_out, rs_out, rt_out,
-          rd_out, pc_value_out, imm_out):
+          rd_out, pc_value_out, imm_out, jmp_imm, jmp_imm_out):
     @always(clock.posedge)
     def seq_logic():
         reg_dst_out.next = reg_dst_in
@@ -23,6 +23,7 @@ def id_ex(clock, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_in
         rd_out.next = rd
         pc_value_out.next = pc_value_in
         imm_out.next = imm
+        jmp_imm_out.next = jmp_imm
 
     return seq_logic
 
@@ -30,7 +31,7 @@ def id_ex(clock, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_in
 def id_ex_v(clock, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_in, mem_to_reg_in, alu_op_in,
             branch_in, r_data1, r_data2, rs, rt, rd, pc_value_in, imm, reg_dst_out, reg_write_out, alu_src_out,
             mem_read_out, mem_write_out, mem_to_reg_out, alu_op_out, branch_out, r_data1_out, r_data2_out, rs_out,
-            rt_out, rd_out, pc_value_out, imm_out):
+            rt_out, rd_out, pc_value_out, imm_out, jmp_imm, jmp_imm_out):
     cmd = "iverilog -o bin/id_ex.out src/verilog/id_ex.v src/verilog/id_ex_tb.v"
     os.system(cmd)
 
@@ -65,4 +66,6 @@ def id_ex_v(clock, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_
                         rt_out=rt_out,
                         rd_out=rd_out,
                         pc_value_out=pc_value_out,
-                        imm_out=imm_out)
+                        imm_out=imm_out,
+                        jmp_imm=jmp_imm,
+                        jmp_imm_out=jmp_imm_out)

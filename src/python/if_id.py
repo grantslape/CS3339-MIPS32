@@ -9,6 +9,7 @@ def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_o
     IF/ID state register
     :param clock system clock
     :param if_id_write: from hazard unit.  activate to stall by keeping same outputs as last cycle
+    :param reset: clear it all out (flush) from ctrl
     :param nxt_pc: next sequential instruction address
     :param inst_in: Instruction input from inst_mem.inst_out
     :param op_code: sliced from inst_in, Forward to ctrl.funct_in
@@ -60,6 +61,7 @@ def if_id_v(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct
     :param pc_out: nxt_pc.  to id_ex
     :param top4: top 4 bits of nxt_pc. From pc_adder
     :param target_out: 26 bit jump immediate
+    :param reset: clear it all out (flush) from ctrl
     """
 
     cmd = "iverilog -o bin/if_id.out src/verilog/if_id.v src/verilog/if_id_tb.v"

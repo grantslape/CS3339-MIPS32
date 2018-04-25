@@ -8,6 +8,8 @@ Mark Gitthens:
     wb_mux genericized 2018-04-05
     inst_mem_mux genericized 2018-04-05
     pc_adder DONE 2018-04-05
+    branch_adder DONE
+    ex_mem DONE
 Huan Wu:
     sign_extender DONE
     id_ex DONE
@@ -19,16 +21,12 @@ Serena Gutierrez:
     alu IN PROGRESS
     alu_mux_a DONE
     alu_mux_b DONE
-Jihan Roujiel:
 Isaac Jaimes:
     inst_mem DONE
     fwd_unit DONE 2018-04-03
     shift_unit DONE 2018-04-03
     instruction generator: DONE/UPDATING
-    jal mux IN PROGRESS
-Robert Tomlinson:
-    ex_mem IN PROGRESS
-    branch_adder IN PROGRESS
+    Mux update for JAL
 Patrick Vinas:
     data_mem DONE 2018-04-13
     mem_wb DONE 2018-04-13

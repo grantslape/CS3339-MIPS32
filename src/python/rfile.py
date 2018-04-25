@@ -1,12 +1,12 @@
 """ Register file """
 from os import system
 
-from myhdl import Cosimulation, always_seq
+from myhdl import Cosimulation, always_seq, always
 
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import signed_signal_set
 
-def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
+def rfile(clock, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     """
     32-bit Register File of 32 registers
     :param clock: Input from system clock
@@ -22,13 +22,13 @@ def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_
     """
     reg_file = signed_signal_set(sf['WIDTH'], value=0)
 
-    @always_seq(clock.negedge, reset=reset)
+    @always(clock.negedge)
     def read_logic():
         """ Read logic triggered on negative edge of clock """
         r_data1.next = reg_file[r_addr1]
         r_data2.next = reg_file[r_addr2]
 
-    @always_seq(clock.posedge, reset=reset)
+    @always(clock.posedge)
     def write_logic():
         """ Write logic triggered on positive edge of clock """
         if reg_write == 1:
@@ -37,7 +37,7 @@ def rfile(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_
     return read_logic, write_logic
 
 
-def rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
+def rfile_v(clock, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     """
     32-bit Register File of 32 registers Verilog
     :param clock: Input from system clock
@@ -55,7 +55,6 @@ def rfile_v(clock, reset, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, 
     system(cmd)
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/rfile.out",
                         clock=clock,
-                        reset=reset,
                         reg_write=reg_write,
                         r_addr1=r_addr1,
                         r_addr2=r_addr2,

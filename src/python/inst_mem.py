@@ -1,6 +1,6 @@
 from os import system
 
-from myhdl import always_comb, intbv, Cosimulation
+from myhdl import always_comb, intbv, Cosimulation, Signal
 from src.commons.settings import settings as sf
 
 
@@ -13,10 +13,9 @@ def inst_mem(inst_reg, inst_out):
     :return: module logic
     """
     TB_SIZE = 0
-    raw_mem = []
     mem_file = open('lib/instructions',)
     try:
-        raw_mem = [intbv(line) for line in mem_file]
+        raw_mem = [intbv(line)[32:]for line in mem_file]
     except IOError:
         # EOF exception is thrown when there are less than n elements to read from the file
         # the contents are still read into the array. Do nothing

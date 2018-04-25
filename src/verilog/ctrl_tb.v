@@ -1,6 +1,5 @@
 module tb_ctrl;
 
-reg [0:0] clock;
 reg [5:0] funct_in;
 reg [5:0] op_in;
 wire [1:0] jump;
@@ -12,11 +11,9 @@ wire [0:0] alu_src;
 wire [0:0] reg_write;
 wire [1:0] reg_dst;
 wire [3:0] alu_op;
-wire [0:0] reset_out;
 
 initial begin
     $from_myhdl(
-        clock,
         funct_in,
         op_in
     );
@@ -29,13 +26,11 @@ initial begin
         alu_src,
         reg_write,
         reg_dst,
-        alu_op,
-        reset_out
+        alu_op
     );
 end
 
 ctrl dut(
-    clock,
     funct_in,
     op_in,
     jump,
@@ -46,8 +41,7 @@ ctrl dut(
     alu_src,
     reg_write,
     reg_dst,
-    alu_op,
-    reset_out
+    alu_op
 );
 
 endmodule
