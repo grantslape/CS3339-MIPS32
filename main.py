@@ -39,13 +39,13 @@ from src.commons.clock import clock_gen, half_period
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import *
 
-clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex, \
+clock, pc_src, branch_ctrl, branch_gate, branch_id_ex, \
     branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, \
     mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate, \
     alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem, \
     ex_stall, zero_flag, \
     zero_flag_ex_mem, pc_write \
-    = unsigned_signal_set(26, width=1)
+    = unsigned_signal_set(25, width=1)
 
 cur_pc = Signal(unsigned_intbv())
 
@@ -73,13 +73,13 @@ top4 = Signal(unsigned_intbv(width=4))
 target_out = Signal(unsigned_intbv(width=26))
 op_code, funct_out = unsigned_signal_set(2, width=6)
 
-pc_src_v, reset_ctrl_v, branch_ctrl_v, branch_gate_v, branch_id_ex_v, \
+pc_src_v, branch_ctrl_v, branch_gate_v, branch_id_ex_v, \
     branch_ex_mem_v, mem_read_ctrl_v, mem_read_gate_v, mem_read_ex_mem_v, mem_write_ctrl_v, \
     mem_read_id_ex_v, mem_write_gate_v, mem_write_id_ex_v, mem_write_ex_mem_v, alu_src_ctrl_v, alu_src_gate_v, \
     alu_src_id_ex_v, reg_write_ctrl_v, reg_write_gate_v, reg_write_id_ex_v, reg_write_ex_mem_v, \
     ex_stall_v, zero_flag_v, \
     zero_flag_ex_mem_v, pc_write_v \
-    = unsigned_signal_set(25, width=1)
+    = unsigned_signal_set(24, width=1)
 
 cur_pc_v = Signal(unsigned_intbv())
 
@@ -116,7 +116,6 @@ def top_v():
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/mips.out",
                         clock=clock,
                         pc_src=pc_src_v,
-                        reset_ctrl=reset_ctrl_v,
                         branch_ctrl=branch_ctrl_v,
                         branch_gate=branch_gate_v,
                         branch_id_ex=branch_id_ex_v,
@@ -205,13 +204,19 @@ def top_v():
                         mem_to_reg_mem_wb=mem_to_reg_mem_wb_v)
 
 
-def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
-    branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl,
-    mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
-    alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
-    ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
-    forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem,
-    result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO):
+def top(clock, pc_src, branch_ctrl, branch_gate, branch_id_ex, branch_ex_mem,
+        mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, mem_read_id_ex,
+        mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
+        alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
+        ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate,
+        mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,forward_a_out, forward_b_out,
+        reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a,
+        jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb,
+        if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2,
+        r_data2_id_ex, result, result_ex_mem,result_mem_wb, op1_out, op2_out, op2_final,
+        jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs,
+        rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate,
+        alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO):
     """Instantiate modules"""
     pc = program_counter(clock=clock, pc_write=pc_write, nxt_inst=nxt_inst, cur_pc=cur_pc)
     pc_mux_a = mux32bit2to1(ctrl_line=pc_src,
@@ -230,8 +235,8 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
     pc_add = pc_adder(cur_pc=cur_pc,
                       next_pc=nxt_pc)
 
-    inst_memory = inst_mem(inst_reg=cur_pc,
-                           inst_out=inst_out)
+    # inst_memory = inst_mem(inst_reg=cur_pc,
+    #                        inst_out=inst_out)
 
     inst_mem_mux = mux32bit2to1(ctrl_line=jmp_ctrl,
                                 input1=inst_out,
@@ -277,8 +282,7 @@ def top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
                      mem_write=mem_write_ctrl,
                      alu_src=alu_src_ctrl,
                      reg_write=reg_write_ctrl,
-                     reg_dst=reg_dst_ctrl,
-                     reset_out=reset_ctrl)
+                     reg_dst=reg_dst_ctrl)
 
     ctrl_gate = ctrl_mux(ex_stall=ex_stall,
                          jump=jmp_ctrl,
@@ -455,14 +459,12 @@ def stim(start):
               .format(bin(jmp_ctrl), int(nxt_inst_mux_a), int(jmp_addr_last), int(r_data1), int(nxt_inst)))
 
         print("ID STAGE: ({}): stall: {}, Flush: {}, op_code: {}, rs: {}, rt: {}, rd:{}, funct_out: {}, top4: {} pc_out: {}\ntarget_out: {}, int: {}\n"
-              .format(cycle-1, bool(if_id_write), bool(reset_ctrl), bin(op_code, width=6), bin(rs, width=5), bin(rt, width=5),
+              .format(cycle-1, bool(if_id_write), int(jmp_ctrl), bin(op_code, width=6), bin(rs, width=5), bin(rt, width=5),
                       bin(rd, width=5), bin(funct_out, width=6), bin(top4, width=4),
                       int(pc_id), bin(jmp_addr_last, width=32), int(jmp_addr_last)))
 
         print("RFILE-READ: R1: {}, R2: {}; WRITE ({}): WADDR: {}, WDATA: {}"
               .format(int(r_data1), int(r_data2), cycle-4, bin(w_addr, width=5), int(w_data)))
-        # print("CTRL: jmp: {}, branch: {}, mem_read: {}, mem_to_reg: {}. mem_write: {}, alu_src: {}, reg_write: {}. reg_dst: {}, reset_out: {}"
-        #       .format(int(jmp_ctrl), bool(branch_ctrl), bool(mem_read_ctrl), int(mem_to_reg_ctrl), bool(mem_write_ctrl), bool(alu_src_ctrl), bool(reg_write_ctrl), int(reg_dst_ctrl), bool(reset_ctrl)))
 
         print("EX STAGE: ({}): ALU_OP: {} RD1: {}, RD2: {}, RS: {}, RT: {}, RD: {}, PC: {}"
               .format(cycle-2, bin(alu_op_id_ex, width=4), int(r_data1_id_ex), int(r_data2_id_ex), bin(rs_id_ex, width=5),
@@ -486,24 +488,34 @@ def stim(start):
 
 
 def convert():
-    return toVerilog(top, clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
-    branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl,
-    mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
-    alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
-    ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
-    forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem,
-    result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
-
+    return toVerilog(top, clock, pc_src, branch_ctrl, branch_gate, branch_id_ex, branch_ex_mem,
+                     mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, mem_read_id_ex,
+                     mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
+                     alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
+                     ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate,
+                     mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,forward_a_out, forward_b_out,
+                     reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a,
+                     jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb,
+                     if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2,
+                     r_data2_id_ex, result, result_ex_mem,result_mem_wb, op1_out, op2_out, op2_final,
+                     jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs,
+                     rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate,
+                     alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
 
 def getDUT():
-    return top(clock, pc_src, reset_ctrl, branch_ctrl, branch_gate, branch_id_ex,
-               branch_ex_mem, mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl,
-               mem_read_id_ex, mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
+    return top(clock, pc_src, branch_ctrl, branch_gate, branch_id_ex, branch_ex_mem,
+               mem_read_ctrl, mem_read_gate, mem_read_ex_mem, mem_write_ctrl, mem_read_id_ex,
+               mem_write_gate, mem_write_id_ex, mem_write_ex_mem, alu_src_ctrl, alu_src_gate,
                alu_src_id_ex, reg_write_ctrl, reg_write_gate, reg_write_id_ex, reg_write_ex_mem,
-               ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate, mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,
-               forward_a_out, forward_b_out, reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a, jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb, if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2, r_data2_id_ex, result, result_ex_mem,
-               result_mem_wb, op1_out, op2_out, op2_final, jmp_imm_id_ex, jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs, rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate, alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
-
+               ex_stall, zero_flag, zero_flag_ex_mem, pc_write, cur_pc, mem_to_reg_ctrl, mem_to_reg_gate,
+               mem_to_reg_id_ex, mem_to_reg_ex_mem, mem_to_reg_mem_wb,forward_a_out, forward_b_out,
+               reg_dst_ctrl, reg_dst_gate, reg_dst_id_ex, jmp_ctrl, jump_gate, nxt_pc, nxt_inst_mux_a,
+               jmp_addr_last, inst_out, inst_if, pc_id, pc_id_ex, pc_value_ex_mem, pc_value_mem_wb,
+               if_id_write, reg_write_final, nxt_inst, imm_out, w_data, r_data1, r_data1_id_ex, r_data2,
+               r_data2_id_ex, result, result_ex_mem,result_mem_wb, op1_out, op2_out, op2_final,
+               jmp_imm_shift, b_addr_out, wdata_mem, read_data, read_data_mem_wb, imm_jmp_addr, rs,
+               rs_id_ex, rt, rt_id_ex, rd, rd_id_ex, rd_ex, rd_mem, w_addr, alu_op_code, alu_op_gate,
+               alu_op_id_ex, imm, imm_id_ex, top4, target_out, op_code, funct_out, ZERO)
 
 def main():
     """Run the simulation!!"""
@@ -514,7 +526,7 @@ def main():
     # TODO: Why does Verilog not function properly?
     sim = Simulation(getDUT(), stim(start), clock_inst)
     while 1:
-        length = int(raw_input("How many clock cycles to run for?: "))
+        length = int(raw_input("How many clock cycles to run for?: ") * 10)
         sim.run(duration=length)
 
 
