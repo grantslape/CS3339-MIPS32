@@ -36,9 +36,7 @@ module id_ex (
     rt_out,
     rd_out,
     pc_value_out,
-    imm_out,
-    jmp_imm,
-    jmp_imm_out
+    imm_out
 );
 
 
@@ -88,12 +86,6 @@ output [31:0] pc_value_out;
 reg [31:0] pc_value_out;
 output signed [31:0] imm_out;
 reg signed [31:0] imm_out;
-input signed [31:0] jmp_imm;
-output signed [31:0] jmp_imm_out;
-reg signed [31:0] jmp_imm_out;
-
-
-
 
 
 
@@ -113,7 +105,6 @@ always @(posedge clock) begin: ID_EX_SEQ_LOGIC
     rd_out <= rd;
     pc_value_out <= pc_value_in;
     imm_out <= imm;
-    jmp_imm_out <= jmp_imm;
 end
 
 endmodule

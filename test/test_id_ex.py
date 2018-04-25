@@ -23,8 +23,7 @@ class TestIdExRegister(TestCase):
         self.alu_op_in, self.alu_op_out, self.alu_op_out_v = unsigned_signal_set(3, width=sf['ALU_CODE_SIZE'])
         self.pc_value_in, self.pc_value_out, self.pc_value_out_v = unsigned_signal_set(3)
         self.r_data1, self.r_data1_out, self.r_data1_out_v, self.r_data2, self.r_data2_out, \
-            self.r_data2_out_v, self.imm_out, self.imm_out_v, self.jmp_imm, \
-            self.jmp_imm_out_v, self.jmp_imm_out = signed_signal_set(11)
+            self.r_data2_out_v, self.imm_out, self.imm_out_v = signed_signal_set(8)
         self.rs, self.rt, self.rd, self.rs_out, self.rs_out_v, self.rt_out, self.rt_out_v, \
             self.rd_out, self.rd_out_v = unsigned_signal_set(9, width=5)
         self.imm = Signal(intbv(min=sf['16_SIGNED_MIN_VALUE'], max=sf['16_SIGNED_MAX_VALUE']))
@@ -70,9 +69,7 @@ class TestIdExRegister(TestCase):
             'alu_src_out': self.alu_src_out if which == "python" else self.alu_src_out_v,
             'reg_write_out': self.reg_write_out if which == "python" else self.reg_write_out_v,
             'reg_dst_out': self.reg_dst_out if which == "python" else self.reg_dst_out_v,
-            'mem_to_reg_out': self.mem_to_reg_out if which == "python" else self.mem_to_reg_out_v,
-            'jmp_imm': self.jmp_imm,
-            'jmp_imm_out': self.jmp_imm_out if which == "python" else self.jmp_imm_out_v
+            'mem_to_reg_out': self.mem_to_reg_out if which == "python" else self.mem_to_reg_out_v
         }
 
     def deassert(self, python=False, verilog=False):
@@ -95,7 +92,6 @@ class TestIdExRegister(TestCase):
                 self.assertEqual(bin(0b0), bin(self.rs_out))
                 self.assertEqual(bin(0b0), bin(self.rt_out))
                 self.assertEqual(bin(0b0), bin(self.rd_out))
-                self.assertEqual(bin(0), bin(self.jmp_imm_out))
             if verilog:
                 self.assertEqual(bin(self.branch_out_v), bin(0b0))
                 self.assertEqual(bin(0b0), bin(self.mem_read_out_v))
@@ -112,7 +108,6 @@ class TestIdExRegister(TestCase):
                 self.assertEqual(bin(0b0), bin(self.rs_out_v))
                 self.assertEqual(bin(0b0), bin(self.rt_out_v))
                 self.assertEqual(bin(0b0), bin(self.rd_out_v))
-                self.assertEqual(bin(0), bin(self.jmp_imm_out_v))
         raise StopSimulation
 
     def dynamic(self, python=False, verilog=False):
@@ -123,8 +118,8 @@ class TestIdExRegister(TestCase):
             self.mem_to_reg_in.next, self.reg_dst_in.next = unsigned_signal_set(2, randint(0,2), 1)
             self.alu_op_in = Signal(intbv()[sf['ALU_CODE_SIZE']:])
             self.pc_value_in.next = Signal(intbv(randint(0, 15))[4:])
-            self.r_data1.next, self.r_data2.next, self.jmp_imm.next = [
-                Signal(random_signed_intbv()) for _ in range(3)
+            self.r_data1.next, self.r_data2.next = [
+                Signal(random_signed_intbv()) for _ in range(2)
             ]
             self.rs.next, self.rt.next, self.rd.next = [
                 Signal(intbv(randint(0, sf['WIDTH'] - 1))[5:]) for _ in range(3)
@@ -148,7 +143,6 @@ class TestIdExRegister(TestCase):
                 self.assertEqual(bin(self.rs), bin(self.rs_out))
                 self.assertEqual(bin(self.rt), bin(self.rt_out))
                 self.assertEqual(bin(self.rd), bin(self.rd_out))
-                self.assertEqual(bin(self.jmp_imm), bin(self.jmp_imm_out))
             if verilog:
                 self.assertEqual(bin(self.branch_out_v), bin(self.branch_in))
                 self.assertEqual(bin(self.mem_read_in), bin(self.mem_read_out_v))
@@ -165,7 +159,6 @@ class TestIdExRegister(TestCase):
                 self.assertEqual(bin(self.rs), bin(self.rs_out_v))
                 self.assertEqual(bin(self.rt), bin(self.rt_out_v))
                 self.assertEqual(bin(self.rd), bin(self.rd_out_v))
-                self.assertEqual(bin(self.jmp_imm), bin(self.jmp_imm_out_v))
         raise StopSimulation
 
     def testDeassertPython(self):

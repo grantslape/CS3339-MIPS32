@@ -31,8 +31,6 @@ wire [4:0] rt_out;
 wire [4:0] rd_out;
 wire [31:0] pc_value_out;
 wire [31:0] imm_out;
-reg [31:0] jmp_imm;
-wire [31:0] jmp_imm_out;
 
 initial begin
     $from_myhdl(
@@ -51,8 +49,7 @@ initial begin
         rt,
         rd,
         pc_value_in,
-        imm,
-        jmp_imm
+        imm
     );
     $to_myhdl(
         reg_dst_out,
@@ -69,8 +66,7 @@ initial begin
         rt_out,
         rd_out,
         pc_value_out,
-        imm_out,
-        jmp_imm_out
+        imm_out
     );
 end
 
@@ -105,9 +101,7 @@ id_ex dut(
     rt_out,
     rd_out,
     pc_value_out,
-    imm_out,
-    jmp_imm,
-    jmp_imm_out
+    imm_out
 );
 
 endmodule
