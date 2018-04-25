@@ -38,14 +38,14 @@ From the project root:
 ```
 
 ### Repository Explained :mag_right:
-- docs/:
+- **docs/:**
 Find in depth instructions on how to run this repository through an Oracle virtual box.
 Other files such as structure of modules and the operation codes for the arithmetic logic unit used in the machine.
   - Here's a snapshot of structure.txt, every module is described by the inputs and outputs as well as what module each signal came
   from or is going to.
 *** insert structure_pic ***
 
-- Main.py:
+- **Main.py:**
 To kick off the simulation we start by running the main.py file at the root of the directory.
 This is the driver to the simulation. Inside of main.py will be the code that initializes all of the components
 of our processor so that we can also begin the simulation within this same file.
@@ -54,7 +54,7 @@ of our processor so that we can also begin the simulation within this same file.
 working together properly. The output gives us a clear idea of the 5 stages of the pipeline.
 *** insert picture of output ***
 
-- src/:
+- **src/:**
 Holds all the elements necessary to simulate the 5-stage pipeline co-simulation
   - commons/: modules that get called regularly by the component modules of the machine. (ex. clock)
   - python/: all the component modules of the machine written in the Python language.
@@ -62,10 +62,10 @@ Holds all the elements necessary to simulate the 5-stage pipeline co-simulation
   - verilog/: all the component modules of the machine written in the verilog hardware description language. The directory also
   includes test benches for every module denoted with "_tb" following the specific module name.
 
-- lib/:
+- **lib/:**
 Holds all of the static files used in the simulation. Files that represent the instruction memory and data memory are stored here.
 
-- test/:
+- **test/:**
 Stores the tests used to check that both the python and verilog are working in sync.
 
 To test all modules (from root):
@@ -86,7 +86,7 @@ python test/test_module_name.py
 
 - [virtualenv Download](https://virtualenv.pypa.io/en/stable/)
 
-### Contributors :computer:
+### Authors :computer:
 - Grant Slape
 - Isaac Jaimes
 - Patrick Vinas
