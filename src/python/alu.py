@@ -1,7 +1,8 @@
 from os import system
-from myhdl import always_comb, Cosimulation
+from myhdl import always_comb, Cosimulation, block
 
 
+@block
 def alu(op_1, op_2, alu_op, z, result):
     """
         alu: The main ALU
