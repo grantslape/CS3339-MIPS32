@@ -19,14 +19,14 @@ RUN make -C /usr/local/share/myhdl/cosimulation/icarus
 RUN mv /usr/local/share/myhdl/cosimulation/icarus/myhdl.vpi \
 	./lib/myhdl.vpi
 
-# python path hack for now
-RUN export PYTHONPATH=`pwd`
-
 # Expose port 80 to world
 EXPOSE 80
 
 # Environment variables here
 ENV NAME MIPS32
 
+#TODO: THESE DO NOT SEEM TO WORK FOR NOW
+# python path hack
+# CMD ["export", "PYTHONPATH=`pwd`"]
 # Try running the tests
-CMD ["python", "test/test_all_modules.py"]
+# CMD ["python", "test/test_all_modules.py"]
