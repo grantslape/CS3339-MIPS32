@@ -16,10 +16,6 @@ From the project root:
 ```shell
   $ docker run -it mips32 bash
 ```
-4. Add modules to PYTHONPATH:
-```shell
-    $ export PYTHONPATH=`pwd`
-```
 5. Run tests:
 ```shell
   $ python test/test_all_modules.py
@@ -28,6 +24,8 @@ From the project root:
 ```shell
     $ python main.py
 ```
+
+If needed run export PYTHONPATH=`pwd`
 
 ### Repository Explained :mag_right:
 - **docs/:**
