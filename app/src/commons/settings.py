@@ -1,6 +1,6 @@
 settings = {
     'PERIOD': 10,
-    'DEFAULT_TEST_LENGTH': 5000,
+    'DEFAULT_TEST_LENGTH': 2000,
     # EXCLUSIVE
     'UNSIGNED_MAX_VALUE': 2 ** 32,
     # EXCLUSIVE

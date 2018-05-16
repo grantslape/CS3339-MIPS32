@@ -1,5 +1,5 @@
-# Official Python 2.7 image for now
-FROM python:2.7
+# Official Python 3.6 image for now
+FROM python:3.6
 
 # Set the working directory to /app
 WORKDIR /app
@@ -11,16 +11,14 @@ ADD app /app
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 #Install iverilog
-RUN apt-get update && apt-get -y upgrade
-RUN apt-get install iverilog
+RUN apt-get update && apt-get -y upgrade && \
+	apt-get -y install iverilog && apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
 
 # Compile myhdl.vpi
 RUN make -C /usr/local/share/myhdl/cosimulation/icarus
 RUN mv /usr/local/share/myhdl/cosimulation/icarus/myhdl.vpi \
 	./lib/myhdl.vpi
-
-# Expose port 80 to world
-EXPOSE 80
 
 # Environment variables here
 ENV NAME MIPS32

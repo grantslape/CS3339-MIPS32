@@ -9,4 +9,4 @@ def clock_gen(clock):
 
 
 def half_period(period=sf['PERIOD']):
-    return delay(period / 2)
+    return delay(period // 2)

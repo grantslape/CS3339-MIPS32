@@ -138,7 +138,7 @@ class TestALU(TestCase):
 
     def slt_test(self, python=False, verilog=False):
         """Stim for SLT"""
-        for _ in range(sf['DEFAULT_TEST_LENGTH'] / 10):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.alu_op.next = intbv(0b1001)
             result = 1 if self.op_1 < self.op_2 else 0
             yield half_period()
