@@ -24,9 +24,8 @@ EXPOSE 80
 
 # Environment variables here
 ENV NAME MIPS32
+# python path hack TODO: fix this up
+ENV PYTHONPATH /app
 
-#TODO: THESE DO NOT SEEM TO WORK FOR NOW
-# python path hack
-# CMD ["export", "PYTHONPATH=`pwd`"]
 # Try running the tests
-# CMD ["python", "test/test_all_modules.py"]
+CMD ["python", "test/test_all_modules.py"]

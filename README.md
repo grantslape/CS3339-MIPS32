@@ -12,22 +12,20 @@ From the project root:
 ```shell
   $ docker build -t mips32 .
 ```
-3. Start an interactive session:
+3. Run tests:
+```shell
+  $ docker run mips32
+```
+5. SSH into container:
 ```shell
   $ docker run -it mips32 bash
 ```
-4. Add modules to PYTHONPATH:
-```shell
-    $ export PYTHONPATH=`pwd`
-```
-5. Run tests:
-```shell
-  $ python test/test_all_modules.py
-```
 6. Execute processor!
 ```shell
-    $ python main.py
+  $ python main.py
 ```
+
+If needed run export PYTHONPATH=`pwd`
 
 ### Repository Explained :mag_right:
 - **docs/:**
