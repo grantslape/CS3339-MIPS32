@@ -7,45 +7,35 @@ This project simulates a MIPS-like 5 stage pipeline through co-simulation betwee
 The machine is implemented with a 32-bit architecture through the myHDL library.
 ### Execution :rocket:
 From the project root:
-1. Make sure Icarus Verilog is installed. Available on Homebrew for MacOS.  For Ubuntu:
+1. Install [Docker](https://docs.docker.com/install/)
+2. Build the container:
 ```shell
-    $ sudo apt-get install iverilog
+  $ docker build -t mips32 .
 ```
-2. Create a virtual env if you don't already have one:
+3. Run tests:
 ```shell
-    $ pip install virtualenv
-    $ virtualenv venv
+  $ docker run mips32
 ```
-3. Activate and install MyHDL:
+5. SSH into container:
 ```shell
-    $ source venv/bin/activate
-    $ pip install -r requirements.txt
-```
-4. Set up Cosimulation:
-```shell
-    $ cd venv/share/myhdl/cosimulation/icarus
-    $ make
-    $ cd ../../../../..
-    $ mv venv/share/myhdl/cosimulation/icarus/myhdl.vpi ./lib
-```
-5. Add modules to PYTHONPATH:
-```shell
-    $ export PYTHONPATH=`pwd`
+  $ docker run -it mips32 bash
 ```
 6. Execute processor!
 ```shell
-    $ python main.py
+  $ python main.py
 ```
+
+If needed run export PYTHONPATH=`pwd`
 
 ### Repository Explained :mag_right:
 - **docs/:**
-Find in depth instructions on how to run this repository through an Oracle virtual box.
+Find (deprecated) in depth instructions on how to run this repository through an Oracle virtual box.
 Other files such as structure of modules and the operation codes for the arithmetic logic unit used in the machine.
   - Here's a snapshot of structure.txt, every module is described by the inputs and outputs as well as what module each signal came
   from or is going to.
 ![](https://github.com/grantslape/CS3339-MIPS32/docs/images/structure_pic.png)
 - **Main.py:**
-To kick off the simulation we start by running the main.py file at the root of the directory.
+To kick off the simulation we start by running the main.py file at the root of the app directory.
 This is the driver to the simulation. Inside of main.py will be the code that initializes all of the components
 of our processor so that we can also begin the simulation within this same file.
 
@@ -77,12 +67,11 @@ python test/test_module_name.py
 >run these commands only after you've gone through the Execution steps.
 
 ### Links :key:
+- [Docker](https://www.docker.com/)
 - [myHDL Download](myhdl.org)
 - [myHDL Documentation](http://docs.myhdl.org/en/master/index.html)
 
 - [iverilog Download](http://iverilog.wikia.com/wiki/Installation_Guide)
-
-- [virtualenv Download](https://virtualenv.pypa.io/en/stable/)
 
 ### Authors :computer:
 - Grant Slape

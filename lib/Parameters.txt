@@ -1,4 +1,0 @@
-NumberOfInstructions=131072
-BranchFrequencyPercentage=10
-DataDependency=25
-Debug=0
