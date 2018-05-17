@@ -5,10 +5,10 @@ twoExp15MinusOne = 32767
 negativeTwoExp15 = -32768
 maxInstructions = (2**20) - 1
 debug = 0
-INSTRUCTION_PATH = "lib/instructions"
-PARAM_PATH = "lib/Parameters.txt"
-INST_LIST_PATH = "lib/InstructionList.txt"
-INSTRUCTION_PATH2 = "lib/instructions2"
+INSTRUCTION_PATH = "app/lib/instructions"
+PARAM_PATH = "app/lib/Parameters.txt"
+INST_LIST_PATH = "app/lib/InstructionList.txt"
+INSTRUCTION_PATH2 = "app/lib/instructions2"
 #######################################################################################
 #get the parameters (only instruction count for now)
 def getParameters():

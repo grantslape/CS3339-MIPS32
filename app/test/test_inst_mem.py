@@ -9,7 +9,6 @@ from src.commons.signal_generator import unsigned_signal_set
 from src.python.inst_mem import inst_mem, inst_mem_v
 
 
-@unittest.skip("Build server cannot support parameters")
 class TestInstructionMemory(TestCase):
     """Unit Tests for Instruction Memory"""
     def setUp(self):
