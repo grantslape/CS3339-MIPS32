@@ -9,7 +9,7 @@ settings = {
     '16_SIGNED_MIN_VALUE': -1 * 2**15,
     # EXCLUSIVE
     '16_SIGNED_MAX_VALUE': 2**15,
-    'MEMORY_WIDTH': 20,
+    'MEMORY_WIDTH': 15,
     'WIDTH': 32,
     'ACTIVE_LOW': 0,
     'INACTIVE_HIGH': 1,

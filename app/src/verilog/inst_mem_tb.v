@@ -1,5 +1,4 @@
 module inst_mem_tb;
-parameter TBSIZE = 0;
 
 reg [31:0] inst_reg;
 wire [31:0] inst_out;
@@ -14,7 +13,7 @@ initial begin
 	);
 end
 
-inst_mem #(TBSIZE) dut(
+inst_mem dut(
     inst_reg,
     inst_out
 );
