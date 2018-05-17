@@ -2,6 +2,7 @@
 from os import system
 from myhdl import always, Cosimulation, intbv
 
+
 def data_mem2(clk, address, write_wire, read_wire, write_data, read_data):
     """
     main data memory

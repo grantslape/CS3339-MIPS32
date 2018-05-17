@@ -33,11 +33,11 @@ class TestNormalOperation(TestCase):
     def stall(self, python=False, verilog=False):
         """test stalling operations"""
         self.pc_write.next = 0
-        for _ in range(sf['DEFAULT_TEST_LENGTH'] / 2):
+        for _ in range(sf['DEFAULT_TEST_LENGTH'] // 2):
             self.nxt_inst.next = random_unsigned_intbv()
             yield posedge(self.clock)
         self.pc_write.next = 1
-        for _ in range(sf['DEFAULT_TEST_LENGTH'] / 2):
+        for _ in range(sf['DEFAULT_TEST_LENGTH'] // 2):
             yield posedge(self.clock)
             if python:
                 self.assertEqual(self.nxt_inst, self.cur_pc)

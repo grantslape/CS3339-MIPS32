@@ -26,7 +26,7 @@ class TestBranchUnit(TestCase):
     def deassert(self, python=False, verilog=False):
         """Test when branch_Ctrl off"""
         self.branch_ctrl.next = 0
-        for _ in range(sf['DEFAULT_TEST_LENGTH'] / 10):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             self.zero_in.next = randint(0, 1)
             yield half_period()
             if python:
@@ -39,7 +39,7 @@ class TestBranchUnit(TestCase):
         """Test when branch_Ctrl on"""
         self.branch_ctrl.next = 1
         self.zero_in.next = 1
-        for _ in range(sf['DEFAULT_TEST_LENGTH'] / 10):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             yield half_period()
             if python:
                 self.assertEqual(Signal(unsigned_intbv(1, width=1)), self.pc_src)

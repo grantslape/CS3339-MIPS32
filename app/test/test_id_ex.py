@@ -74,7 +74,7 @@ class TestIdExRegister(TestCase):
 
     def deassert(self, python=False, verilog=False):
         """test deassert functionality"""
-        for _ in range(sf['DEFAULT_TEST_LENGTH'] / 2):
+        for _ in range(sf['DEFAULT_TEST_LENGTH']):
             yield self.clock.negedge
             if python:
                 self.assertEqual(bin(self.branch_out), bin(0b0))

@@ -4,7 +4,6 @@ module inst_mem(
         inst_reg, 
         inst_out
 );
-parameter SIZE = 0; //default value for array size
 
 // Inst_Mem
 // :param inst_reg: address to read from, from nxt_inst. This is an index of raw_mem
@@ -15,7 +14,7 @@ parameter SIZE = 0; //default value for array size
 input [31:0] inst_reg;
 output reg [31:0] inst_out;
 
-reg [31:0] raw_mem [0:SIZE]; //1048576 max value for the array
+reg [31:0] raw_mem [0:32767]; //32768 max value for the array
 
 //load the buffer with data from the .bin file
 initial
