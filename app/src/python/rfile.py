@@ -1,11 +1,11 @@
 """ Register file """
 from os import system
-
-from myhdl import Cosimulation, always_seq, always
-
+from myhdl import Cosimulation, always, block
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import signed_signal_set
 
+
+@block
 def rfile(clock, reg_write, r_addr1, r_addr2, w_addr, w_data, r_data1, r_data2):
     """
     32-bit Register File of 32 registers

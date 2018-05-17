@@ -1,9 +1,10 @@
 """Main Ctrl unit"""
 from os import system
 
-from myhdl import Cosimulation, always, always_comb
+from myhdl import Cosimulation, always_comb, block
 
 
+@block
 def ctrl(funct_in, op_in, jump, branch, mem_read, mem_to_reg, mem_write, alu_src, reg_write,
          reg_dst, alu_op):
     """

@@ -1,7 +1,8 @@
-import os
-from myhdl import Cosimulation, always_comb
+from os import system
+from myhdl import Cosimulation, always_comb, block
 
 
+@block
 def pc_adder(cur_pc, next_pc):
     """
     PC Adder
@@ -23,6 +24,6 @@ def pc_adder_v(cur_pc, next_pc):
     :return: cosimulation
     """
     cmd = "iverilog -o bin/pc_adder.out src/verilog/pc_adder.v src/verilog/pc_adder_tb.v"
-    os.system(cmd)
+    system(cmd)
 
     return Cosimulation("vvp -m lib/myhdl.vpi bin/pc_adder.out", cur_pc=cur_pc, next_pc=next_pc)

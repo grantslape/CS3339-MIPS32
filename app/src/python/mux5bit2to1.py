@@ -1,8 +1,9 @@
-import os
+from os import system
 
-from myhdl import always_comb, Cosimulation
+from myhdl import always_comb, Cosimulation, block
 
 
+@block
 def mux5bit2to1(ctrl_line, input1, input2, out):
     """
     5_bit_2_to_1_mux
@@ -40,7 +41,7 @@ def mux5bit2to1_v(ctrl_line, input1, input2, out):
     :return: Cosimulation
     """
     cmd = "iverilog -o bin/mux5bit2to1.out src/verilog/mux5bit2to1.v src/verilog/mux5bit2to1_tb.v"
-    os.system(cmd)
+    system(cmd)
     return Cosimulation("vvp -m lib/myhdl.vpi bin/mux5bit2to1.out",
                         ctrl_line=ctrl_line,
                         input1=input1,

@@ -1,7 +1,7 @@
 import os
-from myhdl import always_comb, Cosimulation
+from myhdl import always_comb, Cosimulation, block
 
-
+@block
 def branch_adder(pc_in, imm_in, addr_out):
     """
     calculate addresses for branches

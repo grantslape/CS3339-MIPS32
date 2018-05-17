@@ -1,7 +1,8 @@
-import os
-from myhdl import Cosimulation, always
+from os import system
+from myhdl import Cosimulation, always, block
 
 
+@block
 def program_counter(clock, pc_write, nxt_inst, cur_pc):
     """
     Program Counter
@@ -30,7 +31,7 @@ def program_counter_v(clock, pc_write, nxt_inst, cur_pc):
     :return: cosimulation
     """
     cmd = "iverilog -o bin/program_counter.out src/verilog/program_counter.v src/verilog/program_counter_tb.v"
-    os.system(cmd)
+    system(cmd)
 
     return Cosimulation("vvp -m lib/myhdl.vpi bin/program_counter.out",
                         clock=clock,

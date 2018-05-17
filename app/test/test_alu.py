@@ -8,7 +8,7 @@ from src.python.alu import alu, alu_v
 from src.commons.settings import settings as sf
 from src.commons.clock import half_period
 from src.commons.signal_generator import signed_signal_set, unsigned_signal_set, \
-    rand_signed_signal_set, signed_intbv, random_signed_intbv
+    rand_signed_signal_set, signed_intbv
 
 
 class TestALU(TestCase):

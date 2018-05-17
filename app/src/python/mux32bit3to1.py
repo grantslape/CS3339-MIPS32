@@ -1,8 +1,9 @@
-import os
+from os import system
 
-from myhdl import always_comb, Cosimulation
+from myhdl import always_comb, Cosimulation, block
 
 
+@block
 def mux32bit3to1(ctrl_line, data1, data2, data3, out):
     """
     3:1 Mux for forwarding results from 2 cycles ago
@@ -40,7 +41,7 @@ def mux32bit3to1_v(ctrl_line, data1, data2, data3, out):
     """
 
     cmd = "iverilog -o bin/mux32bit3to1.out src/verilog/mux32bit3to1.v src/verilog/mux32bit3to1_tb.v"
-    os.system(cmd)
+    system(cmd)
     return Cosimulation("vvp -m  lib/myhdl.vpi bin/mux32bit3to1.out",
                         ctrl_line=ctrl_line,
                         data1=data1,

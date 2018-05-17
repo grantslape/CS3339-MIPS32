@@ -1,7 +1,8 @@
-import os
-from myhdl import Cosimulation, always_comb, intbv, ConcatSignal, concat
+from os import system
+from myhdl import Cosimulation, always_comb, intbv, concat, block
 
 
+@block
 def id_shift_left(top4, target, jaddr_out):
     """
     early jump support shift target left 2, then concat with top4
@@ -28,7 +29,7 @@ def id_shift_left_v(top4, target, jaddr_out):
         """
 
     cmd = "iverilog -o bin/id_shift_left.out src/verilog/id_shift_left.v src/verilog/id_shift_left_tb.v"
-    os.system(cmd)
+    system(cmd)
 
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/id_shift_left.out",
                         top4=top4,

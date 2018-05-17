@@ -1,8 +1,9 @@
 from os import system
 
-from myhdl import always_comb, Cosimulation
+from myhdl import always_comb, Cosimulation, block
 
 
+@block
 def ex_mux(reg_dst, rt_in, rd_in, dest):
     """
     2:1 Mux to select write address

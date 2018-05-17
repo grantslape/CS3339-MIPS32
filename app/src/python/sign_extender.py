@@ -1,9 +1,9 @@
 """Sign Extender Module"""
 from os import system
+from myhdl import always_comb, Cosimulation, block
 
-from myhdl import always_comb, Cosimulation
 
-
+@block
 def sign_extender(imm_in, imm_out):
     """
     Sign Extend 16 bit immediate to 32 bit

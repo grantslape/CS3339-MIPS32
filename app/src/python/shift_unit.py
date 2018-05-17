@@ -1,8 +1,8 @@
-import os
+from os import system
+from myhdl import always_comb, Cosimulation, block
 
-from myhdl import always_comb, Cosimulation
 
-
+@block
 def shift_unit(imm_in, imm_out):
     """
     Shift Unit
@@ -25,7 +25,7 @@ def shift_unit_v(imm_in, imm_out):
     """
 
     cmd = "iverilog -o bin/shift_unit.out src/verilog/shift_unit.v src/verilog/shift_unit_tb.v"
-    os.system(cmd)
+    system(cmd)
 
     return Cosimulation("vvp -m ./lib/myhdl.vpi bin/shift_unit.out",
                         imm_in=imm_in,

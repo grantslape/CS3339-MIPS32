@@ -1,8 +1,9 @@
 """IF/ID state register"""
 from os import system
-from myhdl import always, Cosimulation
+from myhdl import always, Cosimulation, block
 
 
+@block
 def if_id(clock, if_id_write, nxt_pc, inst_in, op_code, rs, rt, imm, rd, funct_out, pc_out, top4,
           target_out):
     """

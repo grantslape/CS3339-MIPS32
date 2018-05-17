@@ -1,7 +1,8 @@
-import os
-from myhdl import Cosimulation, always
+from os import system
+from myhdl import Cosimulation, always, block
 
 
+@block
 def id_ex(clock, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_in, mem_to_reg_in, alu_op_in,
           branch_in, r_data1, r_data2, rs, rt, rd, pc_value_in, imm, reg_dst_out, reg_write_out, alu_src_out,
           mem_read_out, mem_write_out, mem_to_reg_out, alu_op_out, branch_out, r_data1_out, r_data2_out, rs_out, rt_out,
@@ -32,7 +33,7 @@ def id_ex_v(clock, reg_dst_in, reg_write_in, alu_src_in, mem_read_in, mem_write_
             mem_read_out, mem_write_out, mem_to_reg_out, alu_op_out, branch_out, r_data1_out, r_data2_out, rs_out,
             rt_out, rd_out, pc_value_out, imm_out):
     cmd = "iverilog -o bin/id_ex.out src/verilog/id_ex.v src/verilog/id_ex_tb.v"
-    os.system(cmd)
+    system(cmd)
 
     return Cosimulation("vvp -m lib/myhdl.vpi bin/id_ex.out",
                         clock=clock,

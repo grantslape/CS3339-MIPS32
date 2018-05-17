@@ -1,12 +1,13 @@
 """Data memory module"""
 from os import system
-from myhdl import always, Cosimulation
+from myhdl import always, Cosimulation, block
 
 from src.commons.settings import settings as sf
 from src.commons.signal_generator import signed_intbv
 
 
 # TODO: Generate verilog from this after 0.10 upgrade
+@block
 def data_mem(clk, address, write_wire, read_wire, write_data, read_data):
     """
     main data memory

@@ -1,6 +1,8 @@
 import os
-from myhdl import always_comb, Cosimulation
+from myhdl import always_comb, Cosimulation, block
 
+
+@block
 def hazard_unit(if_id_rs, if_id_rt, id_ex_rt, mem_read, pc_write, if_id_write, ex_stall):
     """
     Hazard detection unit

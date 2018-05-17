@@ -1,9 +1,8 @@
 from os import system
-
-from myhdl import always_comb, intbv, Cosimulation, Signal
-from src.commons.settings import settings as sf
+from myhdl import always_comb, intbv, Cosimulation, block
 
 
+@block
 def inst_mem(inst_reg, inst_out):
     """
     Instruction Memory.  Stores the instructions that will be executed
@@ -12,7 +11,6 @@ def inst_mem(inst_reg, inst_out):
     :param inst_out: Inst_mem logic to inst_mem_mux
     :return: module logic
     """
-    TB_SIZE = 0
     mem_file = open('lib/instructions',)
     try:
         raw_mem = [intbv(line)[32:]for line in mem_file]

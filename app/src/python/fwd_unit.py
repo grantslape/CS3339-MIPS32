@@ -1,8 +1,9 @@
 import os
 
-from myhdl import always_comb, intbv, Cosimulation
+from myhdl import always_comb, intbv, Cosimulation, block
 
 
+@block
 def fwd_unit(rt_in, rs_in, ex_rd, mem_rd, mem_reg_write, wb_reg_write, forward_a, forward_b):
     """
     Main Forwading Unit.  Detects matches on either rt or rs from previous two cycles, and forwards appropriately

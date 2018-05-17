@@ -1,7 +1,8 @@
 """ Branch control unit """
 from os import system
-from myhdl import always_comb, Cosimulation
+from myhdl import always_comb, Cosimulation, block
 
+@block
 def branch_unit(branch_ctrl, zero_in, pc_src):
     """
     Branch Unit - python

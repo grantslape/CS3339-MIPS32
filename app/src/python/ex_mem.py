@@ -1,8 +1,9 @@
 """EX/MEM Pipeline register"""
 import os
-from myhdl import always, Cosimulation
+from myhdl import always, Cosimulation, block
 
 
+@block
 def ex_mem(clock, branch_in, mem_read_in, mem_write_in, mem_to_reg_in, reg_write_in, jmp_addr,
            z_in, pc_value_in, result_in, rt_in, reg_dst_in, jmp_addr_out, z_out, result_out,
            rt_out, branch_out, mem_read_out, mem_write_out, reg_write_out, reg_dst_out,
