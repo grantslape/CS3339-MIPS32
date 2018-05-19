@@ -11,8 +11,7 @@ ADD app /app
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 #Install iverilog
-RUN apt-get update && apt-get -y upgrade \
-    && apt-get -y install iverilog && apt-get clean \
+RUN apt-get update && apt-get -y install iverilog && apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Compile myhdl.vpi

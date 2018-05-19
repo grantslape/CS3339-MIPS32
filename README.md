@@ -14,15 +14,15 @@ From the project root:
 ```
 3. Run tests:
 ```shell
-  $ docker run mips32
+  $ docker run --rm mips32
 ```
-5. SSH into container:
+5. SSH into a new container if you want:
 ```shell
-  $ docker run -it mips32 bash
+  $ docker run --rm -it mips32 bash
 ```
 6. Execute processor!
 ```shell
-  $ python main.py
+  $ docker run --rm mips32 python main.py
 ```
 
 If needed run export PYTHONPATH=`pwd`

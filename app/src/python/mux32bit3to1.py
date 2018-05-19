@@ -42,7 +42,7 @@ def mux32bit3to1_v(ctrl_line, data1, data2, data3, out):
 
     cmd = "iverilog -o bin/mux32bit3to1.out src/verilog/mux32bit3to1.v src/verilog/mux32bit3to1_tb.v"
     system(cmd)
-    return Cosimulation("vvp -m  lib/myhdl.vpi bin/mux32bit3to1.out",
+    return Cosimulation("vvp -m lib/myhdl.vpi bin/mux32bit3to1.out",
                         ctrl_line=ctrl_line,
                         data1=data1,
                         data2=data2,
