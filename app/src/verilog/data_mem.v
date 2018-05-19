@@ -24,11 +24,7 @@ input [0:0] read_wire;
 input signed [31:0] write_data;
 output reg signed [31:0] read_data;
 
-reg signed [31:0] mem_array [0:1048576];
-
-//load the buffer with data from the memory file
-initial
-  $readmemb("lib/memory_file", mem_array);
+reg signed [31:0] mem_array [0:32767];
 
 always @(posedge clk)
 begin
