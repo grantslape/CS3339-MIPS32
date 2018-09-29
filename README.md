@@ -3,6 +3,9 @@
 [![Build Status](https://semaphoreci.com/api/v1/projects/60cb7614-3fe5-40f7-9c80-8cf79916ae93/1881968/badge.svg)](https://semaphoreci.com/grantslape-61/cs3339-mips32)
 [![CodeFactor](https://www.codefactor.io/repository/github/grantslape/cs3339-mips32/badge)](https://www.codefactor.io/repository/github/grantslape/cs3339-mips32)
 
+**Only the myHDL side of this project is currently functional.**
+**Please see [this issue](https://github.com/grantslape/CS3339-MIPS32/issues/73) for more information**
+
 This project simulates a MIPS-like 5 stage pipeline through co-simulation between Python and Icarus Verilog.
 The machine is implemented with a 32-bit architecture through the myHDL library.
 ### Execution :rocket:
