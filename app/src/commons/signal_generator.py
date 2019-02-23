@@ -81,7 +81,7 @@ def rand_signed_signal_set(j):
     :return: list of Signals
     """
     response = []
-    for i in range(j):
+    for _ in range(j):
         response.append(Signal(random_signed_intbv()))
     return response
 
@@ -94,6 +94,6 @@ def rand_unsigned_signal_set(j, width=sf['WIDTH']):
     :return: list of Signals
     """
     response = []
-    for i in range(j):
+    for _ in range(j):
         response.append(Signal(random_unsigned_intbv(width)))
     return response

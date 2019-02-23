@@ -1,21 +1,27 @@
 # Official Python 3.6 image for now
 FROM python:3.6
 
+# Add requirements first
+RUN mkdir /app
+ADD app/requirements.txt /app/
+
 # Set the working directory to /app
 WORKDIR /app
-
-# Copy the current directory contents into the container at /app
-ADD app /app
-
-# Install dependencies
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 #Install iverilog
 RUN apt-get update && apt-get -y install iverilog && apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
+# Install dependencies
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
 # Compile myhdl.vpi
 RUN make -C /usr/local/share/myhdl/cosimulation/icarus
+
+# Copy the app into the container at /app
+ADD app /app
+
+# Move compiled vpi
 RUN mv /usr/local/share/myhdl/cosimulation/icarus/myhdl.vpi \
 	./lib/myhdl.vpi
 
