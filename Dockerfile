@@ -1,5 +1,6 @@
 # Official Python 3.6 image for now
-FROM python:3.6
+ARG PYTHON_VERSION=3.6
+FROM python:${PYTHON_VERSION}
 
 # Add requirements first
 RUN mkdir /app
